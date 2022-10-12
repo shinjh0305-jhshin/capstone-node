@@ -31,35 +31,31 @@
 </template>
 
 <script>
-    import { inject, reactive, toRefs, ref } from 'vue';
-
     export default {
         name: 'TodoListNew',
-        setup() {
-            const today = inject('today')
-            const addTodo = inject('addTodo')
-            const val_obj = reactive({
-                job: '',
-                date: today,
-                today: today
-            })
+    }
+</script>
 
-            const onAddTodo = () => {
-                if (val_obj.job.length > 0) {
-                    const newjob = val_obj.job;
-                    const newDate = val_obj.date;
+<script setup>
+    import { inject, reactive, toRefs } from 'vue';
+    const today = inject('today')
+    const addTodo = inject('addTodo')
+    const val_obj = reactive({
+        job: '',
+        date: today,
+    })
 
-                    val_obj.job = '';
-                    val_obj.date = today;
-                    addTodo(newjob, newDate);
-                }
-            }
+    const onAddTodo = () => {
+        if (val_obj.job.length > 0) {
+            const newjob = val_obj.job;
+            const newDate = val_obj.date;
 
-            return {
-                ...toRefs(val_obj),
-                onAddTodo,
-            }
+            val_obj.job = '';
+            val_obj.date = today;
+            addTodo(newjob, newDate);
         }
     }
 
+    //디스트럭처링이 불가능하다.
+    const { job, date } = toRefs(val_obj);
 </script>

@@ -9,17 +9,17 @@
 </template>
 
 <script>
+  export default {
+    name: 'App',
+  }
+</script>
+
+<script setup>
+  //script setup에서는 return 및 component가 필요없다.
   import { inject } from 'vue'
   import TodoListContainer from './components/TodoListContainer.vue'
 
-  export default {
-    name: 'App',
-    setup() {
-      const today = inject('today');
-      return { today };
-    },
-    components: { TodoListContainer }
-  }
+  const today = inject('today');
 </script>
 
 <style>
