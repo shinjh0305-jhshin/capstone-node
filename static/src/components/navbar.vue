@@ -42,7 +42,7 @@
     const menus = [
         { key: 'home', value: '홈', URL: '#', position: 'left' },
         { key: 'chat', value: '채팅', URL: '#', position: 'left' },
-        { key: 'me', value: 'Profile', URL: '#', position: 'right' }
+        { key: 'login', value: '로그인', URL: '#', position: 'right' }
     ]
 
     const left_menus = computed(() => menus.filter((i) => i.position == 'left'));
