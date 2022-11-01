@@ -1,8 +1,7 @@
-const client = require("../tools/client");
 const { sign, verify, refreshVerify } = require("../tools/jwt");
 const jwt = require("jsonwebtoken");
 
-export const refresh = async (req, res) => {
+const refresh = async (req, res) => {
     // check access token and refresh token exist
     if (req.headers.authorization && req.headers.refresh) {
         const authToken = req.headers.authorization.split('Bearer ')[1];
@@ -71,3 +70,5 @@ export const refresh = async (req, res) => {
         })
     }
 }
+
+module.exports = {refresh};

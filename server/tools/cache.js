@@ -1,13 +1,15 @@
 const redis = require('redis');
-const redisClient = redis.createClient(process.env.REDIS_PORT);
+const redisClient = redis.createClient({legacyMode: true});
+redisClient.connect().then();
+const redisCli = redisClient.v4;
 
-const set = (key, value) => {
-    redisClient.set(key, JSON.stringify(value));
+const set = async (key, value) => {
+    await redisCli.set(key, value);
 };
 
 const get = (req, res, next) => {
     let key = req.originalUrl;
-    redisClient.get(key, (error, data) => {
+    redisCli.get(key, (error, data) => {
         if (error) {
             res.status(400).send({
                 ok: false,
@@ -25,5 +27,5 @@ const get = (req, res, next) => {
 }
 
 module.exports = {
-    redisClient, set, get
+    redisCli, set, get
 };

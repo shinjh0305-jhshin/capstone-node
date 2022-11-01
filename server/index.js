@@ -4,11 +4,9 @@ const cors = require('cors');
 const morgan = require('morgan');
 const app = express();
 
-import {router as users} from "./routes/index";
-
 app.use(cors());
 
-//const users = require('./routes/index');
+const users = require('./routes/index');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

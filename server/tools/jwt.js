@@ -5,11 +5,11 @@ const db = require('../tools/authdb');
 
 const jwtSecret = process.env.JWT_SECRET;
 
-const jwt = {
+const client = {
     sign: (user) => {  //access token 발급 
         const payload = { //user custom
-            id: user.id,
-            role: user.role
+            id: user.ID,
+            nick: user.NICK
         };
 
         return jwt.sign(payload, jwtSecret, {
@@ -20,11 +20,11 @@ const jwt = {
     verify: (token) => { //access token 검증
         let decoded = null;
         try {
-            decoded = jwt.verify(token, secret);
+            decoded = jwt.verify(token, jwtSecret);
             return { //user custom
                 ok: true,
                 id: decoded.id,
-                role: decoded.role
+                nick: decoded.nick
             };
         } catch(err) {
             return {
@@ -34,7 +34,7 @@ const jwt = {
         }
     },
     refresh: () => { //refresh token 발급
-        return jwt.sign({}, secret, {
+        return jwt.sign({}, jwtSecret, {
             algorithm: 'HS256',
             expiresIn: '14d'
         });
@@ -45,7 +45,7 @@ const jwt = {
             const data = await getAsync(userId);
             if (token === data) {
                 try {
-                    jwt.verify(token, secret);
+                    jwt.verify(token, jwtSecret);
                     return true;
                 } catch(err) {
                     return false;
@@ -60,4 +60,4 @@ const jwt = {
     }
 }
 
-export default jwt;
+module.exports = {client};
