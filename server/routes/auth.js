@@ -1,31 +1,25 @@
-const router = require('express').Router();
-const db = require('../tools/authdb');
+const {client} = require("../tools/jwt.js");
 
-router.post('/login_process', async (req, res) => {
-    const user_id = req.body.userID;
-    const user_password = req.body.userPWD;
-
-    const [result] = await db.query(`SELECT * FROM user WHERE ID = '${user_id}'`);
-    const userData = result[0];
-
-    let msg;
-    let status = 0;
-
-    if (userData === undefined) {
-        status = 1;
-        msg = "Wrong User ID";
+const authJWT = (req, res, next) => {
+    if (req.headers.authorization) {
+        const token = req.headers.authorization.split('Bearer ')[1];
+        const result = client.verify(token);
+        if (result.ok) {
+            //req.id = result.id;
+            //req.role = result.role;
+            //next(); //////없앨까???
+            console.log(`ID : ${result.id} Nick : ${result.nick}`);
+            res.json({
+                message: "SUCCESS!!"
+            });
+        } else {
+            return res.status(401).send({
+                ok: false,
+                message: result.message
+            })
+        }
     }
-    else if (userData.PWD !== user_password) {
-        status = 2;
-        msg = "Check Password again";
-    }
-    else {
-        msg = `Welcome ${userData.NICK}`;
-    }
+    return res.send("HELLO");
+}
 
-    const userInfo = status == 0 ? { ID: userData.ID, NICK: userData.NICK } : {};
-    
-    res.status(200).json({ status, userInfo, msg });
-})
-
-module.exports = router;
+module.exports = {authJWT};
