@@ -4,9 +4,7 @@ const { redisCli, get, set } = require("../tools/cache");
 const db = require("../tools/authdb");
 
 const login = async (req, res) => {
-  console.log("LOGIN START");
   const { username, password } = req.body;
-  console.log(`FROM req.body: ${username}, ${password}`);
   const [result] = await db.query(
     `SELECT * FROM user WHERE ID = '${username}'`
   );
