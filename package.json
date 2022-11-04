@@ -4,6 +4,7 @@
   "description": "서강대학교 캡스톤디자인1",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon --exec babel-node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,5 +31,11 @@
     "promisify": "^0.0.3",
     "redis": "^4.3.1",
     "vue": "^3.2.40"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/node": "^7.20.0",
+    "@babel/preset-env": "^7.19.4",
+    "@volar/vue-language-plugin-pug": "^1.0.9"
   }
 }
