@@ -47,8 +47,11 @@ const userInfo = reactive({
 
 const onLoginSuccess = (respData) => {
   //console.log("Success - set LocalStorage");
+  const userStore = useUserInfoStore();
   localStorage.setItem("userID", respData.data.userID);
   localStorage.setItem("NICK", respData.data.NICK);
+  userStore.setInfo(respData.data.userID, respData.data.NICK, true);
+  console.log("userStore", userStore.getInfo);
 };
 
 const onLoginFail = (respData) => {

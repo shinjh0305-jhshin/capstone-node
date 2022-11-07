@@ -11,6 +11,7 @@
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
+        <span>{{ userStore.getInfo[1] }}</span>
         <ul
           :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
           v-for="menu in menu_category"
@@ -46,6 +47,9 @@ export default {
 
 <script setup>
 import { ref, computed } from "vue";
+import { useUserInfoStore } from "/@stores/userInfo";
+
+const userStore = useUserInfoStore();
 
 const menu = ref("home");
 const menus = [
