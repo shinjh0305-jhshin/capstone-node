@@ -5,7 +5,7 @@ div(class="container p-5")
     form
       div(class="mb-2 row")
         div(class="col-sm-8 w-100")
-          input(name="name" class="form-control" placeholder="Name" type="text", required) 
+          input(name="name" class="form-control" placeholder="Name" type="text", required)
       div(class="mb-2 row")
         div(class="col-sm-8 w-100")
           input(name="email" class="form-control" placeholder="Email" type="email", required)

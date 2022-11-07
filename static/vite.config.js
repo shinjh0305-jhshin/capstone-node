@@ -14,6 +14,17 @@ export default defineConfig({
       "/@stores": path.resolve(__dirname, "./src/stores"),
     },
   },
+  devServer: {
+    proxy: {
+      "/": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+        pathRewrite: {
+          "^/api": "",
+        },
+      },
+    },
+  },
 });
 
 module.rules = {

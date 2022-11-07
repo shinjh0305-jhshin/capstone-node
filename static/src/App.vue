@@ -13,7 +13,7 @@ export default {
 <script setup>
 import navbar from "./components/navbar.vue";
 import LoginPrompt from "./components/LoginPrompt.vue";
-import JoinPrompt from "./components/join.vue";
+//import JoinPrompt from "./components/join.vue";
 </script>
 
 <style>

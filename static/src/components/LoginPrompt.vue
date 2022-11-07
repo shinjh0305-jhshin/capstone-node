@@ -16,18 +16,26 @@ div(class="container p-5")
 </template>
 
 <script>
+//import { DefineComponent } from "vue";
+//import { useUserInfoStore } from "../stores/userInfo";
+//import axios from "@bundled-es-modules/axios/axios";
+
 export default {
   name: "LoginPrompt",
-  computed: {
-    console: () => console,
-    window: () => window,
+  /*
+  setup() {
+    const user = useUserInfoStore();
+    return {
+      user,
+    };
   },
+  */
 };
 </script>
 
 <script setup>
 import useAxios from "../modules/axios";
-import { useUserInfoStore } from "/@stores/userinfo";
+import { useUserInfoStore } from "/@stores/userInfo";
 import { reactive } from "vue";
 
 const { axiosGet, axiosPost } = useAxios();
@@ -38,15 +46,24 @@ const userInfo = reactive({
 });
 
 const onLoginSuccess = (respData) => {
-  console.log("Success - set LocalStorage");
-  localStorage.setItem("userID", respData.userInfo.username);
-  localStorage.setItem("NICK", respData.userInfo.password);
+  //console.log("Success - set LocalStorage");
+  localStorage.setItem("userID", respData.data.userID);
+  localStorage.setItem("NICK", respData.data.NICK);
+};
+
+const onLoginFail = (respData) => {
+  console.log("FAILED");
 };
 
 const loginSubmit = () => {
   console.log("hi");
   console.log(`userId : ${userInfo.username} userPWD : ${userInfo.password}`);
-  axiosPost("http://localhost:8080/users/login", userInfo, onLoginSuccess);
+  axiosPost(
+    "http://localhost:8080/users/login",
+    userInfo,
+    onLoginSuccess,
+    onLoginFail
+  );
 };
 </script>
 
