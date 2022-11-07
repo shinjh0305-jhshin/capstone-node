@@ -1,5 +1,4 @@
 const { client } = require("../tools/jwt");
-//import client from '../tools/client';
 const { redisCli, get, set } = require("../tools/cache");
 const db = require("../tools/authdb");
 
@@ -16,14 +15,17 @@ const login = async (req, res) => {
     if (chk) {
       const accessToken = client.sign(user);
       const refreshToken = client.refresh();
-      console.log(`refreshToken : ${refreshToken}`);
+      console.log(user);
+      //console.log(`refreshToken : ${refreshToken}`);
       await set(username, refreshToken);
 
-      return res.status(200).send({
+      return res.status(200).json({
         ok: true,
         data: {
           accessToken,
           refreshToken,
+          userID: user.ID,
+          NICK: user.NICK,
         },
       });
     } else {
@@ -35,7 +37,7 @@ const login = async (req, res) => {
   } else {
     return res.status(401).send({
       ok: false,
-      message: "user not exist",
+      message: "user does not exist",
     });
   }
 };
