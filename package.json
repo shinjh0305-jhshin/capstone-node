@@ -37,5 +37,6 @@
     "@babel/node": "^7.20.0",
     "@babel/preset-env": "^7.19.4",
     "@volar/vue-language-plugin-pug": "^1.0.9"
-  }
+  },
+  "proxy": "http://localhost:5173"
 }

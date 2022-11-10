@@ -1,4 +1,5 @@
 import { axios } from "@bundled-es-modules/axios";
+
 export default function () {
   const BASE_URL = "http://localhost:8080";
   const axiosGet = (URL, onSuccess = null, onFailed = null) => {
@@ -14,16 +15,15 @@ export default function () {
   const axiosPost = (URL, Data, onSuccess = null, onFailed = null) => {
     const final_URL = URL.startsWith("http") ? URL : BASE_URL + URL;
     console.log("axiosPost", final_URL, Data);
-    axios.post(final_URL, Data).then((resp) => {
-      console.log("RESP", resp);
+    axios.post(final_URL, JSON.stringify(Data)).then((resp) => {
+      console.log("RESP", resp.data);
       if (resp.status === 200 && resp.data.ok == true) {
         console.log("YES!!! STATUS - 200");
-        console.log(resp.data.data);
+
         if (onSuccess) onSuccess(resp.data);
         else if (onFailed) onFailed(resp.data);
       }
     });
   };
-
   return { axiosGet, axiosPost };
 }

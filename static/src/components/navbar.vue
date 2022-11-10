@@ -10,11 +10,40 @@
       >
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <span>{{ userStore.getInfo[1] }}</span>
+      <div
+        class="collapse navbar-collapse"
+        id="navbarNav"
+        v-if="userStore.getInfo[2] === false"
+      >
+        <!-- 로그인하지 않은 경우 초기 menu -->
         <ul
           :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
           v-for="menu in menu_category"
+          :key="menu.id"
+        >
+          <li
+            class="nav-item"
+            v-for="menu_object in menu.value"
+            :key="menu_object.key"
+          >
+            <a
+              :class="{
+                'nav-link': true,
+                active: menu == menu_object.key,
+                'text-white': true,
+              }"
+              @click="onMovePage($event, menu_object)"
+              href="#"
+              >{{ menu_object.value }}</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarNav" v-else>
+        <!-- 로그인한 경우 menu -->
+        <ul
+          :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
+          v-for="menu in loggedInMenus_category"
           :key="menu.id"
         >
           <li
@@ -58,8 +87,21 @@ const menus = [
   { key: "login", value: "로그인", URL: "#", position: "right" },
 ];
 
+const loggedInMenus = [
+  { key: "home", value: "홈", URL: "#", position: "left" },
+  { key: "chat", value: "채팅", URL: "#", position: "left" },
+  { key: "nick", value: userStore.getInfo[1], URL: "#", position: "right" },
+  { key: "logout", value: "로그아웃", URL: "#", position: "right" },
+];
+
 const left_menus = computed(() => menus.filter((i) => i.position == "left"));
 const right_menus = computed(() => menus.filter((i) => i.position == "right"));
+const left_loggedInMenus = computed(() =>
+  loggedInMenus.filter((i) => i.position == "left")
+);
+const right_loggedInMenus = computed(() =>
+  loggedInMenus.filter((i) => i.position == "right")
+);
 
 const onMovePage = (evt, menu_object) => {
   if (evt) {
@@ -67,6 +109,11 @@ const onMovePage = (evt, menu_object) => {
   }
   menu.value = menu_object.key;
 };
+
+const loggedInMenus_category = [
+  { id: 1, me_auto: true, value: left_loggedInMenus.value },
+  { id: 2, me_auto: false, value: right_loggedInMenus.value },
+];
 
 const menu_category = [
   { id: 1, me_auto: true, value: left_menus.value },

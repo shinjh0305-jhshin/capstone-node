@@ -16,7 +16,6 @@ export const useUserInfoStore = defineStore("userInfo", {
     },
   },
   persist: {
-    key: "NICK",
     storage: localStorage,
   },
 });
