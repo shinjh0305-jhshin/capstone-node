@@ -4,10 +4,9 @@ const db = require("../tools/authdb");
 
 const login = async (req, res) => {
   //const { username, password } = req.body;
-  const obj = JSON.parse(Object.keys(req.body));
 
-  const username = obj.userID;
-  const password = obj.userPWD;
+  const username = req.body.userID;
+  const password = req.body.userPWD;
   const [result] = await db.query(
     `SELECT * FROM user WHERE ID = '${username}'`
   );

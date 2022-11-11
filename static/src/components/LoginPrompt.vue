@@ -2,7 +2,7 @@
   <div class="container p-5">
     <div class="mb-4 bg-light rounded-3" id="login-box">
       <h1 class="mb-5">Login</h1>
-      <form @submit="loginSubmit">
+      <form>
         <div class="mb-2 row">
           <label for="userID" class="col-sm-4 col-form-label">ID</label>
           <div class="col-sm-8">
@@ -32,7 +32,9 @@
             <br />
           </div>
         </div>
-        <button class="btn btn-danger w-100">Login</button>
+        <button type="button" class="btn btn-danger w-100" @click="loginSubmit">
+          Login
+        </button>
       </form>
       <p id="noAccount">If you don't have an account....</p>
       <button
@@ -72,12 +74,9 @@ const userInfo = reactive({
 });
 
 const onLoginSuccess = (respData) => {
-  //console.log("Success - set LocalStorage");
   const userStore = useUserInfoStore();
-  //localStorage.setItem("userID", respData.data.userID);
-  //localStorage.setItem("userNick", respData.data.userNick);
   userStore.setInfo(respData.data.userID, respData.data.userNick, true);
-  console.log("userStore", userStore.getInfo);
+  // console.log("✅ userStore", userStore.getInfo);
 };
 
 const onLoginFail = (respData) => {
@@ -85,14 +84,7 @@ const onLoginFail = (respData) => {
 };
 
 const loginSubmit = () => {
-  console.log("hi");
-  console.log(`userId : ${userInfo.userID} userPWD : ${userInfo.userPWD}`);
-  axiosPost(
-    "http://localhost:8080/users/login",
-    userInfo,
-    onLoginSuccess,
-    onLoginFail
-  );
+  axiosPost("/users/login", userInfo, onLoginSuccess, onLoginFail);
 };
 </script>
 
