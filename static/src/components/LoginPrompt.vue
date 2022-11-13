@@ -37,10 +37,7 @@
         </button>
       </form>
       <p id="noAccount">If you don't have an account....</p>
-      <button
-        class="btn btn-primary w-100"
-        onclick="location.href='http://www.naver.com'"
-      >
+      <button type="button" class="btn btn-primary w-100" @click="goToJoin">
         Create account
       </button>
     </div>
@@ -65,6 +62,7 @@ export default {
 import useAxios from "../modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
 import { reactive } from "vue";
+import router from "../routers";
 
 const { axiosGet, axiosPost } = useAxios();
 
@@ -73,14 +71,21 @@ const userInfo = reactive({
   userPWD: "",
 });
 
+const goToJoin = () => {
+  router.push("join");
+};
+
 const onLoginSuccess = (respData) => {
   const userStore = useUserInfoStore();
   userStore.setInfo(respData.data.userID, respData.data.userNick, true);
-  // console.log("✅ userStore", userStore.getInfo);
+  console.log("✅ userStore", userStore.getInfo);
+  if (userStore.loggedIn) {
+    router.push({ name: "landingPage" });
+  }
 };
 
-const onLoginFail = (respData) => {
-  console.log("FAILED");
+const onLoginFail = (respData = null) => {
+  console.log("❌ FAILED");
 };
 
 const loginSubmit = () => {

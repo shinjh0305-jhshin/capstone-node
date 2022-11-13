@@ -15,7 +15,7 @@ div(class="container p-5")
       div(class="mb-2 row")
         div(class="col-sm-8 w-100")
           input(name="password2" class="form-control" placeholder="Confirm password" type="password", required)
-      button(class="btn btn-danger w-100", onclick="submit") Join
+      button(type="button" class="btn btn-danger w-100", onclick="submit") Join
 </template>
 
 <script>

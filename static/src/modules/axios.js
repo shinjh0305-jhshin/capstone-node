@@ -17,7 +17,7 @@ export default function () {
     //console.log("axiosPost", final_URL, Data);
     try {
       axios.post(final_URL, Data).then((resp) => {
-        if (resp.status === 200 && resp.data.ok == true) {
+        if (resp.status === 200 && resp.data.ok === true) {
           if (onSuccess) onSuccess(resp.data);
         } else {
           onFailed(resp.data);

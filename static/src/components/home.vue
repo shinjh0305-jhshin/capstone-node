@@ -1,4 +1,4 @@
 <!-- Just for test -->
 <template>
-  <h1>Landing Page - test</h1>
+  <h1>Home - just for test</h1>
 </template>

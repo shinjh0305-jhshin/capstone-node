@@ -13,7 +13,7 @@
       <div
         class="collapse navbar-collapse"
         id="navbarNav"
-        v-if="userStore.getInfo[2] === false"
+        v-if="userStore.loggedIn === false"
       >
         <!-- 로그인하지 않은 경우 초기 menu -->
         <ul
@@ -52,6 +52,29 @@
             :key="menu_object.key"
           >
             <a
+              v-if="menu_object.key === 'nick'"
+              :class="{
+                'nav-link': true,
+                active: menu == menu_object.key,
+                'text-white': true,
+              }"
+              @click="onMovePage($event, menu_object)"
+              href="#"
+              >{{ userStore.userNick }}
+            </a>
+            <a
+              v-else-if="menu_object.key === 'logout'"
+              :class="{
+                'nav-link': true,
+                active: menu == menu_object.key,
+                'text-white': true,
+              }"
+              @click="onMovePage($event, menu_object)"
+              href="#"
+              >{{ menu_object.value }}
+            </a>
+            <a
+              v-else
               :class="{
                 'nav-link': true,
                 active: menu == menu_object.key,
@@ -77,6 +100,7 @@ export default {
 <script setup>
 import { ref, computed } from "vue";
 import { useUserInfoStore } from "/@stores/userInfo";
+import router from "../routers";
 
 const userStore = useUserInfoStore();
 
@@ -90,7 +114,7 @@ const menus = [
 const loggedInMenus = [
   { key: "home", value: "홈", URL: "#", position: "left" },
   { key: "chat", value: "채팅", URL: "#", position: "left" },
-  { key: "nick", value: userStore.getInfo[1], URL: "#", position: "right" },
+  { key: "nick", URL: "#", position: "right" },
   { key: "logout", value: "로그아웃", URL: "#", position: "right" },
 ];
 
@@ -104,7 +128,14 @@ const right_loggedInMenus = computed(() =>
 );
 
 const onMovePage = (evt, menu_object) => {
+  if (menu_object.key === "logout") {
+    userStore.setInfo("", "", false);
+  }
+  console.log(menu_object);
   if (evt) {
+    if (menu_object.key === "logout" || menu_object.key === "login") {
+      router.push("login");
+    }
     evt.preventDefault();
   }
   menu.value = menu_object.key;
