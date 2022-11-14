@@ -3,6 +3,7 @@ import landingPage from "../components/landingPage.vue";
 import login from "../components/loginPrompt.vue";
 import product from "../components/product.vue";
 import join from "../components/join.vue";
+import room from "../components/room.vue";
 import { useUserInfoStore } from "/@stores/userInfo";
 
 const routes = [
@@ -28,6 +29,12 @@ const routes = [
     path: "/product",
     name: "product",
     component: product,
+    meta: { authRequired: true },
+  },
+  {
+    path: "/room",
+    name: "room",
+    component: room,
     meta: { authRequired: true },
   },
 ];

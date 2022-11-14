@@ -135,6 +135,8 @@ const onMovePage = (evt, menu_object) => {
   if (evt) {
     if (menu_object.key === "logout" || menu_object.key === "login") {
       router.push("login");
+    } else if (menu_object.key === "chat") {
+      router.push("room");
     }
     evt.preventDefault();
   }

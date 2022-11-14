@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 export const useUserInfoStore = defineStore("userInfo", {
-  state: () => ({ username: "", userNick: "", loggedIn: false }),
+  state: () => ({ userName: "", userNick: "", loggedIn: false }),
   actions: {
     setInfo(name, nick, isLoggedIn) {
       this.userName = name;

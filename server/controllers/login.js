@@ -5,30 +5,30 @@ const db = require("../tools/authdb");
 const login = async (req, res) => {
   //const { username, password } = req.body;
 
-  const username = req.body.userID;
+  const nickname = req.body.userID;
   const password = req.body.userPWD;
   const [result] = await db.query(
-    `SELECT * FROM user WHERE ID = '${username}'`
+    `SELECT * FROM User WHERE nickname = '${nickname}'`
   );
-  //console.log(result);
+
   const user = result[0];
 
   if (user) {
-    const chk = password === user.PWD;
+    const chk = password === user.password;
     if (chk) {
       const accessToken = client.sign(user);
       //const refreshToken = client.refresh();
       //console.log(`refreshToken : ${refreshToken}`);
       //await set(username, refreshToken);
       console.log("✅ POST LOGIN RETRUN", user);
-
+      console.log(user);
       return res.status(200).json({
         ok: true,
         data: {
           //accessToken: accessToken,
           //refreshToken,
-          userID: user.ID,
-          userNick: user.NICK,
+          userID: user.email,
+          userNick: user.nickname,
         },
       });
     } else {
