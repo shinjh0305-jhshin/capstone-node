@@ -33,7 +33,7 @@
                 'text-white': true,
               }"
               @click="onMovePage($event, menu_object)"
-              href="#"
+              :href="menu_object.URL"
               >{{ menu_object.value }}</a
             >
           </li>
@@ -59,7 +59,7 @@
                 'text-white': true,
               }"
               @click="onMovePage($event, menu_object)"
-              href="#"
+              :href="menu_object.URL"
               >{{ userStore.userNick }}
             </a>
             <a
@@ -70,7 +70,7 @@
                 'text-white': true,
               }"
               @click="onMovePage($event, menu_object)"
-              href="#"
+              :href="menu_object.URL"
               >{{ menu_object.value }}
             </a>
             <a
@@ -81,7 +81,7 @@
                 'text-white': true,
               }"
               @click="onMovePage($event, menu_object)"
-              href="#"
+              :href="menu_object.URL"
               >{{ menu_object.value }}</a
             >
           </li>
@@ -106,16 +106,42 @@ const userStore = useUserInfoStore();
 
 const menu = ref("home");
 const menus = [
-  { key: "home", value: "홈", URL: "#", position: "left" },
-  { key: "chat", value: "채팅", URL: "#", position: "left" },
-  { key: "login", value: "로그인", URL: "#", position: "right" },
+  { key: "home", value: "홈", URL: "http://localhost:5173", position: "left" },
+  {
+    key: "chat",
+    value: "채팅",
+    URL: "http://localhost:5173/room",
+    position: "left",
+  },
+  {
+    key: "login",
+    value: "로그인",
+    URL: "http://localhost:5173/login",
+    position: "right",
+  },
 ];
 
 const loggedInMenus = [
-  { key: "home", value: "홈", URL: "#", position: "left" },
-  { key: "chat", value: "채팅", URL: "#", position: "left" },
+  { key: "home", value: "홈", URL: "http://localhost:5173", position: "left" },
+  {
+    key: "chat",
+    value: "전체 채팅",
+    URL: "http://localhost:5173/room",
+    position: "left",
+  },
+  {
+    key: "mychat",
+    value: "공구 채팅",
+    URL: `http://localhost:5173/${userStore.userNick}/room`,
+    position: "left",
+  },
   { key: "nick", URL: "#", position: "right" },
-  { key: "logout", value: "로그아웃", URL: "#", position: "right" },
+  {
+    key: "logout",
+    value: "로그아웃",
+    URL: "http://localhost:5173/login",
+    position: "right",
+  },
 ];
 
 const left_menus = computed(() => menus.filter((i) => i.position == "left"));
@@ -133,12 +159,7 @@ const onMovePage = (evt, menu_object) => {
   }
   console.log(menu_object);
   if (evt) {
-    if (menu_object.key === "logout" || menu_object.key === "login") {
-      router.push("login");
-    } else if (menu_object.key === "chat") {
-      router.push("room");
-    }
-    evt.preventDefault();
+    //evt.preventDefault();
   }
   menu.value = menu_object.key;
 };

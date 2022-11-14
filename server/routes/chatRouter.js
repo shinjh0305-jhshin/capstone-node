@@ -1,8 +1,10 @@
 import express from "express";
-import { getRooms } from "../controllers/chat";
+import { getAllRooms, enterRoom, checkUserInRoom } from "../controllers/chat";
 
 const chatRouter = express.Router();
 
-chatRouter.get("/", getRooms);
+chatRouter.get("/", getAllRooms);
+chatRouter.post("/enter", enterRoom);
+chatRouter.get("/:roomId/nickname/:nickname", checkUserInRoom);
 
 export default chatRouter;

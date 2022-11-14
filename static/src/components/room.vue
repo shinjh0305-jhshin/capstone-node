@@ -1,39 +1,56 @@
 <template>
-  <h1>ROOMS!!</h1>
-  <div>
-    <ul v-for="room in roomList">
-      <li>
-        <a :href="`http://localhost:5173/room/` + room.roomId">{{
-          room.roomname
-        }}</a>
-      </li>
-    </ul>
+  <h1>Room {{ $route.params.roomId }}</h1>
+  <div v-for="message in messages">
+    <div>{{ message.content }}</div>
+  </div>
+  <div class="col-sm-8">
+    <form>
+      <input
+        type="text"
+        class="form-control"
+        v-model="newMessage"
+        id="message"
+        placeholder="send message"
+      />
+      <button
+        type="button"
+        @click.stop.prevent="sendMessage($route.params.roomId)"
+        :disabled="newMessage == ''"
+      >
+        Send
+      </button>
+    </form>
   </div>
 </template>
 
 <script>
-import useAxios from "../modules/axios";
+import io from "socket.io-client";
+const socket = io("http://localhost:8080");
 export default {
   name: "room",
   data() {
     return {
-      roomList: [],
+      newMessage: null,
+      roomObject: {},
+      messages: [],
     };
   },
-  beforeMount() {
-    const { axiosGet, axiosPost } = useAxios();
-
-    const getRoomSuccess = (respData) => {
-      console.log("✅ Get Rooms - Success");
-      console.log(respData);
-      this.roomList = respData.rooms;
-    };
-
-    const getRoomFail = (respData) => {
-      console.log("❌ Get Rooms - Fail");
-    };
-
-    axiosGet("/rooms", getRoomSuccess, getRoomFail);
+  beforeCreate() {
+    const curId = this.$route.params.roomId;
+  },
+  updated() {
+    socket.on("messageReceived", (content) => {
+      console.log("got new message:", content);
+      this.messages.push(content);
+    });
+  },
+  methods: {
+    sendMessage(roomId) {
+      this.messages.push({ content: this.newMessage });
+      socket.emit("messageSent", { roomId: roomId, content: this.newMessage });
+    },
   },
 };
 </script>
+
+<script setup></script>

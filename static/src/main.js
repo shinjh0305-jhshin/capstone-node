@@ -6,8 +6,8 @@ import piniaPluginPersistedState from "pinia-plugin-persistedstate";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.esm";
 
-import router from "./routers";
 import { createPinia } from "pinia";
+import router from "./routers";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedState);

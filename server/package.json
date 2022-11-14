@@ -30,6 +30,7 @@
     "nodemon": "^2.0.20",
     "promisify": "^0.0.3",
     "redis": "^4.3.1",
+    "socket.io": "^4.5.3",
     "vue": "^3.2.40",
     "vue-router": "^4.1.6"
   },
