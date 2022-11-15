@@ -6,6 +6,7 @@ import { createRoom, getAttachedRooms } from "../controllers/chat";
 
 const userRouter = express.Router();
 
+// api starts with 'users'
 userRouter.post("/login", login);
 userRouter.post("/refresh", refresh);
 userRouter.get("/test", authJWT);

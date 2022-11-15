@@ -27,7 +27,7 @@ app.use("/users", userRouter);
 app.use("/rooms", chatRouter);
 
 const server = app.listen(process.env.SERVER_PORT, () => {
-  console.log(`🎸 Server running on ${process.env.SERVER_PORT}`);
+  console.log(` Server running on ${process.env.SERVER_PORT}`);
 });
 
 const io = socket(server, {
@@ -49,10 +49,8 @@ io.on("connection", (socket) => {
   });
   */
   socket.on("messageSent", (roomInfo) => {
-    console.log("socket On:", roomInfo);
-    io.to(roomInfo.roomId).emit("messageReceived", {
-      content: roomInfo.content,
-    });
+    //console.log("socket On:", roomInfo);
+    io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
   });
   socket.on("joinRoom", (roomInfo) => {
     console.log("JOIN ROOM", roomInfo);

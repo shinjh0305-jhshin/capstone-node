@@ -109,3 +109,34 @@ export const checkUserInRoom = async (req, res) => {
     });
   }
 };
+
+export const getChat = async (req, res) => {
+  console.log("GET CHAT:", req.params);
+  const { roomId } = req.params;
+  if (roomId === undefined) {
+    return res.status(401).json({ ok: false });
+  }
+  try {
+    const [result] = await db.query(
+      `SELECT nickname, content, createdAt FROM CHAT WHERE roomId = '${roomId}';`
+    );
+    //console.log(result);
+    return res.status(200).json({ ok: true, msgList: result });
+  } catch (err) {
+    return res.status(401).json({ ok: false, msgList: [] });
+  }
+};
+
+export const postChat = async (req, res) => {
+  console.log(req.body);
+  const { content, sender, imgPath, roomId } = req.body;
+  try {
+    await db.query(
+      `INSERT INTO CHAT(roomId,nickname,content) VALUES('${roomId}','${sender}','${content}');`
+    );
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json({ ok: false });
+  }
+};
