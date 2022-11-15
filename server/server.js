@@ -1,9 +1,12 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import socket from "socket.io";
+import userRouter from "./routes/userRouter";
+import chatRouter from "./routes/chatRouter";
+
 const app = express();
-const socket = require("socket.io");
 
 app.use(cors());
 app.use(express.json());
@@ -20,14 +23,11 @@ app.use(function (req, res, next) {
   next();
 });
 
-import userRouter from "./routes/userRouter";
-import chatRouter from "./routes/chatRouter";
-
 app.use("/users", userRouter);
 app.use("/rooms", chatRouter);
 
 const server = app.listen(process.env.SERVER_PORT, () => {
-  console.log(`Server running on ${process.env.SERVER_PORT}`);
+  console.log(`🎸 Server running on ${process.env.SERVER_PORT}`);
 });
 
 const io = socket(server, {
@@ -38,6 +38,7 @@ const io = socket(server, {
 });
 
 io.on("connection", (socket) => {
+  /*
   socket.on("registerAll", (rooms) => {
     rooms.forEach((room) => {
       socket.join(room.roomId);
@@ -46,8 +47,18 @@ io.on("connection", (socket) => {
   socket.on("register", (room) => {
     socket.join(room.roomId);
   });
-  socket.on("messageSent", (data) => {
-    console.log("socket:", data);
-    socket.emit("messageReceived", data.content);
+  */
+  socket.on("messageSent", (roomInfo) => {
+    console.log("socket On:", roomInfo);
+    io.to(roomInfo.roomId).emit("messageReceived", {
+      content: roomInfo.content,
+    });
+  });
+  socket.on("joinRoom", (roomInfo) => {
+    console.log("JOIN ROOM", roomInfo);
+    socket.join(roomInfo.roomId, () => {});
+  });
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
   });
 });

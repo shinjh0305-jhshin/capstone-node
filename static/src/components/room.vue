@@ -12,11 +12,7 @@
         id="message"
         placeholder="send message"
       />
-      <button
-        type="button"
-        @click.stop.prevent="sendMessage($route.params.roomId)"
-        :disabled="newMessage == ''"
-      >
+      <button type="button" @click="sendMessage($route.params.roomId)">
         Send
       </button>
     </form>
@@ -24,30 +20,40 @@
 </template>
 
 <script>
-import io from "socket.io-client";
-const socket = io("http://localhost:8080");
+import { io } from "socket.io-client";
+import { useUserInfoStore } from "../stores/userInfo";
 export default {
   name: "room",
   data() {
     return {
+      curRoomId: null,
+      socket: null,
       newMessage: null,
       roomObject: {},
       messages: [],
     };
   },
   beforeCreate() {
-    const curId = this.$route.params.roomId;
+    this.curRoomId = this.$route.params.roomId;
   },
-  updated() {
-    socket.on("messageReceived", (content) => {
-      console.log("got new message:", content);
-      this.messages.push(content);
+  async created() {
+    this.socket = io("http://localhost:8080");
+    this.socket.on("connect", () => {
+      console.log("✅ connected");
     });
+    this.socket.on("messageReceived", (data) => {
+      console.log("✅ Received data:", data);
+      this.messages.push(data);
+    });
+    this.socket.emit("joinRoom", { roomId: this.$route.params.roomId });
   },
   methods: {
     sendMessage(roomId) {
-      this.messages.push({ content: this.newMessage });
-      socket.emit("messageSent", { roomId: roomId, content: this.newMessage });
+      this.socket.emit("messageSent", {
+        roomId: roomId,
+        content: this.newMessage,
+      });
+      this.newMessage = "";
     },
   },
 };

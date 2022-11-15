@@ -87,13 +87,13 @@ export const enterRoom = async (req, res) => {
 
 export const checkUserInRoom = async (req, res) => {
   const { roomId, nickname } = req.params;
-  console.log(roomId, nickname);
+  //console.log(roomId, nickname);
   try {
     const [result] = await db.query(
       `SELECT COUNT(*) as CNT FROM MEMBER WHERE roomId = ${roomId} and nickname = '${nickname}';`
     );
     const memCnt = result[0]["CNT"];
-    console.log("memcnt:", memCnt);
+    //console.log("memcnt:", memCnt);
     if (memCnt > 0) {
       return res.status(200).json({
         ok: true,
