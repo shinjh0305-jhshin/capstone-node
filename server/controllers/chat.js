@@ -128,7 +128,7 @@ export const getChat = async (req, res) => {
 };
 
 export const postChat = async (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const { content, sender, imgPath, roomId } = req.body;
   try {
     await db.query(

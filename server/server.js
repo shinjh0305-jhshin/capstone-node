@@ -50,6 +50,8 @@ io.on("connection", (socket) => {
   */
   socket.on("messageSent", (roomInfo) => {
     //console.log("socket On:", roomInfo);
+    //roomInfo.time = new Date(roomInfo.time);
+    console.log("SEND FROM SERVER - roomInfo:", roomInfo);
     io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
   });
   socket.on("joinRoom", (roomInfo) => {
