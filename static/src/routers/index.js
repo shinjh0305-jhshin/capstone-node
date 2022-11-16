@@ -42,7 +42,7 @@ const routes = [
   },
   {
     path: "/:userNick/room",
-    name: "myRoom",
+    name: "roomList",
     component: myRoom,
     meta: { authRequired: true },
   },
