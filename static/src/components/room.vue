@@ -1,8 +1,8 @@
 <template>
   <section class="room-page">
     <section class="left">
-      <div class="room-container">
-        <div class="room-header">Just Header</div>
+      <div class="room-left-container">
+        <div class="room-header">Rooms</div>
         <div class="room-box">
           <div
             class="room"
@@ -15,7 +15,7 @@
             <router-link
               :to="{ name: 'room', params: { roomId: myRoom.roomId } }"
               ><div class="room-name">
-                <p>{{ myRoom.roomName }}</p>
+                <span>{{ myRoom.roomName }}</span>
               </div></router-link
             >
           </div>
@@ -24,12 +24,23 @@
     </section>
     <section class="right">
       <div class="room-right-container">
-        <div v-for="message in messages">
-          <div>{{ message.sender }}</div>
-          <div>{{ message.content }}</div>
-          <div>{{ message.time }}</div>
-          <br />
+        <div class="message-header">ROOM NAME</div>
+        <div class="message-container">
+          <div class="message-body">
+            <div v-for="(messageObj, idx) in messageObjList" :key="idx">
+              <div class="divider" v-if="dayDivider(idx)">
+                <div></div>
+                <p>{{ getDividerDate(idx) }}</p>
+                <div></div>
+              </div>
+              <message
+                :message="messageObj"
+                :yours="String(currentUser) === String(messageObj.sender)"
+              />
+            </div>
+          </div>
         </div>
+
         <div class="col-sm-8">
           <form>
             <input
@@ -54,14 +65,23 @@ import axios from "axios";
 import useAxios from "../modules/axios";
 import { reactive } from "vue";
 import roomList from "./myRoom.vue";
+import message from "./message.vue";
 const { axiosGet, axiosPost } = useAxios();
 export default {
   name: "room",
+  components: {
+    message: message,
+  },
   data() {
     return {
       myRoomList: [],
       userNick: "",
       socket: null,
+      messageObj: {
+        sender: "",
+        content: "",
+        time: "",
+      },
       newMessageObj: {
         content: "",
         time: "",
@@ -70,7 +90,8 @@ export default {
         roomId: null,
       },
       roomObject: {},
-      messages: [],
+      messageObjList: [],
+      currentUser: "",
     };
   },
   async beforeMount() {
@@ -84,6 +105,7 @@ export default {
     };
     const store = useUserInfoStore();
     const nickname = store.userNick;
+    this.currentUser = store.userNick;
     axiosGet(`/users/${nickname}/room`, getMyRoomSuccess, getMyRoomFail);
   },
   mounted() {
@@ -93,18 +115,32 @@ export default {
     });
     this.socket.on("messageReceived", (msgObjFromServer) => {
       console.log("✅ Received data:", msgObjFromServer);
-      this.messages.push(msgObjFromServer);
+      this.messageObjList.push(msgObjFromServer);
     });
     this.socket.emit("joinRoom", { roomId: this.$route.params.roomId });
   },
   methods: {
-    onSaveSuccess(resp) {
-      console.log("✅ Msg Save Success");
+    dayDivider(idx) {
+      if (idx === 0) return true;
+      const prev = new Date(this.messageObjList[idx].time).getDate();
+      const today = new Date(this.messageObjList[idx - 1].time).getDate();
+      if (prev != today) return true;
+      return false;
+    },
+    getDividerDate(idx) {
+      const week = ["일", "월", "화", "수", "목", "금", "토"];
+      const today = new Date(this.messageObjList[idx].time);
+      return `${today.getFullYear()}년 ${
+        today.getMonth() + 1
+      }월 ${today.getDate()}일 ${week[today.getDay()]}요일`;
     },
     sendMessage() {
+      const onSaveSuccess = (resp) => {
+        console.log("✅ Msg Save Success");
+      };
       const store = useUserInfoStore();
       this.newMessageObj.roomId = this.$route.params.roomId;
-      this.newMessageObj.time = Date.now();
+      this.newMessageObj.time = new Date(Date.now());
       this.newMessageObj.sender = store.userNick;
       this.socket.emit("messageSent", this.newMessageObj);
       axiosPost("/rooms/saveChat", this.newMessageObj, this.onSaveSuccess);
@@ -112,16 +148,16 @@ export default {
     },
     changeRoom(id) {
       console.log("⭐️ CHANGE ROOM...", id);
-      this.messages = [];
+      this.messageObjList = [];
       const { axiosGet, axiosPost } = useAxios();
       const getMsgSucceed = async (resp) => {
         const { msgList } = resp;
         console.log("✅ Get Msg", msgList);
         for (const msg of msgList) {
-          this.messages.push({
+          this.messageObjList.push({
             content: msg.content,
             sender: msg.nickname,
-            time: msg.createdAt,
+            time: new Date(msg.createdAt),
             roomId: msg.roomId,
           });
         }
@@ -137,16 +173,18 @@ section.room-page {
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  height: 100vh;
+  height: 93vh;
   overflow: hidden;
   background-color: white;
 }
+
 section.left {
   width: 25%;
   height: 100%;
   transition: all ease 0.5s;
   position: relative;
   z-index: 50;
+  color: rgb(192, 192, 184);
 }
 section.right {
   width: 75%;
@@ -157,11 +195,13 @@ section.right {
   top: 0;
   bottom: 0;
   margin-left: auto;
+  background-color: rgb(40, 37, 37);
+  color: white;
 }
-div.room-container {
+div.room-left-container {
   height: 100%;
   position: relative;
-  background-color: #6246ea;
+  background-color: #353333;
 }
 div.room-header,
 div.room,
@@ -172,22 +212,29 @@ div.room-name {
 div.room-header {
   justify-content: space-between;
   padding: 0.8rem 1rem;
-  border-bottom: 3px solid;
+  border-bottom: 3px solid black;
   font-size: 0.9rem;
   margin-bottom: 2rem;
 }
 div.room {
+  height: 60px;
   width: 90%;
   margin: auto;
-  justify-content: space-between;
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 div.room :hover {
   color: white;
 }
 div.room.picked {
-  background-color: white;
-  color: #6246ea;
+  background-color: rgb(42, 40, 40);
+  color: #7e71bb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  border-radius: 10px;
 }
 div.room-box {
   -ms-overflow-style: none;
@@ -202,10 +249,57 @@ div.room-box::-webkit-scrollbar {
 
 div.room-name {
   width: 90%;
+  display: flex;
+  justify-content: center;
 }
 a {
   text-decoration: none;
   color: var(--button-text);
   width: 100%;
+}
+div.room-right-container {
+  position: relative;
+  height: 100%;
+}
+div.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  border-bottom: 3px solid black;
+  padding: 0.8rem 1rem;
+  padding-left: 2.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  z-index: 10;
+}
+div.message-container {
+  width: 100%;
+  height: 80%;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+div.message-body {
+  width: 89%;
+  margin: auto;
+}
+div.divider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+div.divider p {
+  margin: 0 0.3rem;
+  font-size: 0.85rem;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  color: #7e71bb;
+}
+div.divider div {
+  height: 1px;
+  width: 100%;
+  background: #7e71bb;
 }
 </style>

@@ -84,7 +84,7 @@ section.right {
 div.room-container {
   height: 100%;
   position: relative;
-  background-color: #6246ea;
+  background-color: #262528;
 }
 div.room-header,
 div.room,
