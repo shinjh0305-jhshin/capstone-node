@@ -35,7 +35,7 @@ const routes = [
     meta: { authRequired: true },
   },
   {
-    path: "/room",
+    path: "/allRoom",
     name: "allRoom",
     component: allRoom,
     meta: { authRequired: true },
@@ -83,12 +83,16 @@ router.beforeEach(async (to, from, next) => {
 
   const curRoomId = to.params.roomId;
 
-  if (isLoggedIn && currentUser && curRoomId) {
-    if ((await checkValidRoomMember(currentUser, curRoomId)) === true) {
-      next();
+  if (isLoggedIn && currentUser) {
+    if (curRoomId > 0) {
+      if ((await checkValidRoomMember(currentUser, curRoomId)) === true) {
+        next();
+      } else {
+        alert("방의 멤버가 아닙니다.");
+        next({ name: "landingPage" });
+      }
     } else {
-      alert("방의 멤버가 아닙니다.");
-      next({ name: "landingPage" });
+      next();
     }
   } else if (isLoggedIn && to.meta.authRequired === false) {
     console.log("❗️ NOT allowed");

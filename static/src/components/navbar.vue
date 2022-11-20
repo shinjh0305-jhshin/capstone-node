@@ -100,7 +100,6 @@ export default {
 <script setup>
 import { ref, computed } from "vue";
 import { useUserInfoStore } from "/@stores/userInfo";
-import router from "../routers";
 
 const userStore = useUserInfoStore();
 
@@ -126,13 +125,13 @@ const loggedInMenus = [
   {
     key: "chat",
     value: "전체 채팅",
-    URL: "http://localhost:5173/room",
+    URL: "http://localhost:5173/allRoom",
     position: "left",
   },
   {
     key: "mychat",
     value: "공구 채팅",
-    URL: `http://localhost:5173/${userStore.userNick}/room`,
+    URL: `http://localhost:5173/room/0`,
     position: "left",
   },
   { key: "nick", URL: "#", position: "right" },

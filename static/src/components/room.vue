@@ -14,10 +14,11 @@
           >
             <router-link
               :to="{ name: 'room', params: { roomId: myRoom.roomId } }"
-              ><div class="room-name">
-                <span>{{ myRoom.roomName }}</span>
-              </div></router-link
             >
+              <div class="room-name">
+                <span>{{ myRoom.roomName }}</span>
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -36,22 +37,31 @@
               <message
                 :message="messageObj"
                 :yours="String(currentUser) === String(messageObj.sender)"
+                :sameTime="isDisplayTime(idx)"
+                :sameUser="isDisplaySender(idx)"
+                :diffOtherUser="isDiffOther(idx)"
               />
             </div>
           </div>
         </div>
 
-        <div class="col-sm-8">
-          <form>
-            <input
-              type="text"
-              class="form-control"
-              v-model="newMessageObj.content"
-              id="message"
-              placeholder="send message"
-            />
-            <button type="button" @click="sendMessage()">Send</button>
-          </form>
+        <div class="send-container">
+          <div class="send-body">
+            <div class="input-container">
+              <input
+                type="text"
+                class="form-control"
+                v-model="newMessageObj.content"
+                id="message"
+                placeholder="send message"
+              />
+            </div>
+            <div class="click-container">
+              <div class="send-click" @click="sendMessage()">
+                <span>&rarr;</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -64,7 +74,6 @@ import { useUserInfoStore } from "../stores/userInfo";
 import axios from "axios";
 import useAxios from "../modules/axios";
 import { reactive } from "vue";
-import roomList from "./myRoom.vue";
 import message from "./message.vue";
 const { axiosGet, axiosPost } = useAxios();
 export default {
@@ -76,7 +85,7 @@ export default {
     return {
       myRoomList: [],
       userNick: "",
-      socket: null,
+      socket: io("http://localhost:8080"),
       messageObj: {
         sender: "",
         content: "",
@@ -108,18 +117,60 @@ export default {
     this.currentUser = store.userNick;
     axiosGet(`/users/${nickname}/room`, getMyRoomSuccess, getMyRoomFail);
   },
+  watch: {
+    $route(from, to) {
+      //console.log("✅ watch", from, to);
+      this.updatePage(to.params.roomId, from.params.roomId);
+    },
+  },
   mounted() {
-    this.socket = io("http://localhost:8080");
     this.socket.on("connect", () => {
       console.log("✅ connected");
     });
+
     this.socket.on("messageReceived", (msgObjFromServer) => {
       console.log("✅ Received data:", msgObjFromServer);
       this.messageObjList.push(msgObjFromServer);
     });
-    this.socket.emit("joinRoom", { roomId: this.$route.params.roomId });
+    this.socket.emit("joinRoom", {
+      roomId: this.$route.params.roomId,
+    });
   },
   methods: {
+    updatePage(prevRoomId, curRoomId) {
+      console.log("✅ prev -- UPDATE PAGE:", prevRoomId, curRoomId);
+      this.socket.emit("leaveRoom", { roomId: prevRoomId });
+      this.socket.emit("joinRoom", { roomId: curRoomId });
+    },
+    isDiffOther(idx) {
+      if (idx === 0) return false;
+      const prevUser = this.messageObjList[idx - 1].sender;
+      const curUser = this.messageObjList[idx].sender;
+      if (prevUser != this.currentUser && prevUser != curUser) return true;
+      return false;
+    },
+    isDisplaySender(idx) {
+      if (idx === 0) return true;
+      const prevUser = this.messageObjList[idx - 1].sender;
+      const curUser = this.messageObjList[idx].sender;
+      const prev = new Date(this.messageObjList[idx].time).getDate();
+      const today = new Date(this.messageObjList[idx - 1].time).getDate();
+      if (prev != today) return true;
+      if (prevUser === curUser) return false;
+      return true;
+    },
+    isDisplayTime(idx) {
+      if (idx + 1 === this.messageObjList.length) return true;
+      const curMinute = new Date(this.messageObjList[idx].time).getMinutes();
+      const nextMinute = new Date(
+        this.messageObjList[idx + 1].time
+      ).getMinutes();
+      const curUser = this.messageObjList[idx].sender;
+      const nextUser = this.messageObjList[idx + 1].sender;
+      if (curUser != nextUser) return true;
+      if (curMinute === nextMinute) return false;
+      return true;
+    },
     dayDivider(idx) {
       if (idx === 0) return true;
       const prev = new Date(this.messageObjList[idx].time).getDate();
@@ -301,5 +352,47 @@ div.divider div {
   height: 1px;
   width: 100%;
   background: #7e71bb;
+}
+div.send-container {
+  display: flex;
+  align-items: center;
+  border-radius: 0.3rem;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+div.send-body {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 70%;
+  background-color: rgb(19, 18, 18);
+  border-radius: 10px;
+  padding: 10px 20px;
+}
+div.input-container {
+  width: 85%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+div.click-container {
+  width: 15%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+div.send-body input {
+  width: 100%;
+  background: transparent;
+  color: white;
+}
+div.send-click {
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
 }
 </style>

@@ -1,15 +1,25 @@
 <template>
-  <div class="message" :class="{ viewer: yours }">
-    <div class="message-model" :class="{ viewer: yours }">
-      <div class="message-head" :class="{ viewer: yours }">
-        <div><i class="fa-regular fa-face-smile"></i></div>
-        <p v-if="!yours" class="sender">{{ message.sender }}</p>
+  <div
+    class="message"
+    :class="{
+      viewer: yours,
+      speaking: sameUser,
+      keepOn: sameTime,
+    }"
+  >
+    <div class="message-model" :class="{ viewer: yours, speaking: sameUser }">
+      <div
+        class="message-head"
+        v-if="!yours && sameUser"
+        :class="{ viewer: yours, diffAbove: diffOtherUser }"
+      >
+        <p class="sender">{{ message.sender }}</p>
       </div>
       <div class="content-body" :class="{ viewer: yours }">
         <span class="content" :class="{ viewer: yours }">{{
           message.content
         }}</span>
-        <div class="date-body">
+        <div class="date-body" v-if="sameTime">
           <span class="date">{{ formatDate(new Date(message.time)) }}</span>
         </div>
       </div>
@@ -19,7 +29,15 @@
 
 <script>
 export default {
-  props: ["message", "yours"],
+  props: [
+    "message",
+    "yours",
+    "sameUser",
+    "sameTime",
+    "dayDivide",
+    "diffOtherUser",
+  ],
+  updated() {},
   methods: {
     formatDate(date) {
       const padZero = (num) => {
@@ -29,7 +47,8 @@ export default {
       };
       let hour = Number(date.getHours());
       const mm = hour > 11 ? "오후" : "오전";
-      hour = hour > 12 ? hour - 12 : hour;
+      if (hour > 12) hour -= 12;
+      else if (hour == 0) hour = 12;
       let minute = Number(date.getMinutes());
       return `${mm} ${padZero(hour)}:${padZero(minute)}`;
     },
@@ -41,7 +60,7 @@ export default {
 div.message {
   display: flex;
   align-items: flex-end;
-  margin-bottom: 1.5rem;
+  margin-bottom: 5px;
 }
 div.message.viewer {
   margin: 0px;
@@ -55,6 +74,9 @@ div.message.viewer,
 div.message-head.viewer {
   justify-content: flex-end;
 }
+div.message-head.diffAbove {
+  margin-top: 20px;
+}
 div.message-head p.sender {
   margin-right: 0.65rem;
   font-size: 1rem;
@@ -62,9 +84,11 @@ div.message-head p.sender {
 }
 div.content-body {
   display: flex;
+  margin-bottom: 5px;
 }
 div.content-body.viewer {
   flex-direction: row-reverse;
+  margin-bottom: 10px;
 }
 div.date-body {
   display: flex;
@@ -78,6 +102,7 @@ span.content {
 }
 span.content.viewer {
   float: right;
+  background-color: #7e71bb;
 }
 span.date {
   color: rgb(172, 170, 170);
