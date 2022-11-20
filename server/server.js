@@ -55,7 +55,7 @@ io.on("connection", (socket) => {
     io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
   });
   socket.on("leaveRoom", (roomInfo) => {
-    console.log("leaveRoom", roomInfo);
+    console.log("LEAVE ROOM", roomInfo);
     socket.leave(roomInfo.roomId);
   });
   socket.on("joinRoom", (roomInfo) => {

@@ -10,10 +10,10 @@
             :class="{
               picked: String(myRoom.roomId) === String($route.params.roomId),
             }"
-            @click="changeRoom(myRoom.roomId)"
           >
             <router-link
               :to="{ name: 'room', params: { roomId: myRoom.roomId } }"
+              @click="changeRoom(myRoom.roomId)"
             >
               <div class="room-name">
                 <span>{{ myRoom.roomName }}</span>
@@ -25,7 +25,7 @@
     </section>
     <section class="right">
       <div class="room-right-container">
-        <div class="message-header">ROOM NAME</div>
+        <div class="message-header"></div>
         <div class="message-container">
           <div class="message-body">
             <div v-for="(messageObj, idx) in messageObjList" :key="idx">
@@ -54,6 +54,7 @@
                 v-model="newMessageObj.content"
                 id="message"
                 placeholder="send message"
+                @keyup.enter="sendMessage()"
               />
             </div>
             <div class="click-container">
@@ -84,7 +85,7 @@ export default {
   data() {
     return {
       myRoomList: [],
-      userNick: "",
+      curRoomName: "",
       socket: io("http://localhost:8080"),
       messageObj: {
         sender: "",
@@ -98,9 +99,9 @@ export default {
         imgPath: "",
         roomId: null,
       },
-      roomObject: {},
       messageObjList: [],
       currentUser: "",
+      msgScroll: null,
     };
   },
   async beforeMount() {
@@ -118,27 +119,31 @@ export default {
     axiosGet(`/users/${nickname}/room`, getMyRoomSuccess, getMyRoomFail);
   },
   watch: {
-    $route(from, to) {
-      //console.log("✅ watch", from, to);
-      this.updatePage(to.params.roomId, from.params.roomId);
+    $route(to, from) {
+      console.log("✅ Watch");
+      this.updatePage(from.params.roomId, to.params.roomId);
+      this.setRoomName(to.params.roomId);
     },
   },
   mounted() {
     this.socket.on("connect", () => {
       console.log("✅ connected");
     });
-
     this.socket.on("messageReceived", (msgObjFromServer) => {
       console.log("✅ Received data:", msgObjFromServer);
       this.messageObjList.push(msgObjFromServer);
     });
-    this.socket.emit("joinRoom", {
-      roomId: this.$route.params.roomId,
-    });
+    this.changeRoom(this.$route.params.roomId); // 현재 페이지 새로고침하는 경우
+    this.setRoomName(this.$route.params.roomId);
+  },
+  updated() {
+    this.msgScroll = document.querySelector("div.message-container");
+    this.msgScroll.scrollTop = this.msgScroll.scrollHeight;
+    console.log(this.msgScroll.scrollTop);
   },
   methods: {
     updatePage(prevRoomId, curRoomId) {
-      console.log("✅ prev -- UPDATE PAGE:", prevRoomId, curRoomId);
+      //console.log("✅ prev -- UPDATE PAGE:", prevRoomId, curRoomId);
       this.socket.emit("leaveRoom", { roomId: prevRoomId });
       this.socket.emit("joinRoom", { roomId: curRoomId });
     },
@@ -185,6 +190,14 @@ export default {
         today.getMonth() + 1
       }월 ${today.getDate()}일 ${week[today.getDay()]}요일`;
     },
+    setRoomName(id) {
+      for (const myRoom of this.myRoomList) {
+        if (String(myRoom.roomId) === String(id)) {
+          this.curRoomName = myRoom.roomName;
+          break;
+        }
+      }
+    },
     sendMessage() {
       const onSaveSuccess = (resp) => {
         console.log("✅ Msg Save Success");
@@ -200,10 +213,9 @@ export default {
     changeRoom(id) {
       console.log("⭐️ CHANGE ROOM...", id);
       this.messageObjList = [];
-      const { axiosGet, axiosPost } = useAxios();
       const getMsgSucceed = async (resp) => {
         const { msgList } = resp;
-        console.log("✅ Get Msg", msgList);
+        //console.log("✅ Get Msg", msgList);
         for (const msg of msgList) {
           this.messageObjList.push({
             content: msg.content,
@@ -228,9 +240,8 @@ section.room-page {
   overflow: hidden;
   background-color: white;
 }
-
 section.left {
-  width: 25%;
+  width: 20%;
   height: 100%;
   transition: all ease 0.5s;
   position: relative;
@@ -238,7 +249,7 @@ section.left {
   color: rgb(192, 192, 184);
 }
 section.right {
-  width: 75%;
+  width: 80%;
   height: 100%;
   position: relative;
   left: 0;
@@ -261,7 +272,7 @@ div.room-name {
   align-items: center;
 }
 div.room-header {
-  justify-content: space-between;
+  justify-content: center;
   padding: 0.8rem 1rem;
   border-bottom: 3px solid black;
   font-size: 0.9rem;
@@ -297,7 +308,6 @@ div.room-box {
 div.room-box::-webkit-scrollbar {
   display: none;
 }
-
 div.room-name {
   width: 90%;
   display: flex;
@@ -316,8 +326,6 @@ div.message-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
-  border-bottom: 3px solid black;
   padding: 0.8rem 1rem;
   padding-left: 2.5rem;
   margin-bottom: 0.5rem;
@@ -326,7 +334,7 @@ div.message-header {
 }
 div.message-container {
   width: 100%;
-  height: 80%;
+  height: 85%;
   overflow: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;

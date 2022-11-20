@@ -130,9 +130,10 @@ export const getChat = async (req, res) => {
 export const postChat = async (req, res) => {
   //console.log(req.body);
   const { content, sender, imgPath, roomId } = req.body;
+  const replacedContent = content.replace(/'/g, "''");
   try {
     await db.query(
-      `INSERT INTO CHAT(roomId,nickname,content) VALUES('${roomId}','${sender}','${content}');`
+      `INSERT INTO CHAT(roomId,nickname,content) VALUES('${roomId}','${sender}','${replacedContent}');`
     );
     return res.status(200).json({ ok: true });
   } catch (err) {
