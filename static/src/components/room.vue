@@ -202,13 +202,16 @@ export default {
       const onSaveSuccess = (resp) => {
         console.log("✅ Msg Save Success");
       };
-      const store = useUserInfoStore();
-      this.newMessageObj.roomId = this.$route.params.roomId;
-      this.newMessageObj.time = new Date(Date.now());
-      this.newMessageObj.sender = store.userNick;
-      this.socket.emit("messageSent", this.newMessageObj);
-      axiosPost("/rooms/saveChat", this.newMessageObj, this.onSaveSuccess);
-      this.newMessageObj.content = "";
+      if (this.newMessageObj.content.length > 0) {
+        const store = useUserInfoStore();
+        this.newMessageObj.roomId = this.$route.params.roomId;
+        this.newMessageObj.time = new Date(Date.now());
+        this.newMessageObj.sender = store.userNick;
+        this.newMessageObj.content.trim();
+        this.socket.emit("messageSent", this.newMessageObj);
+        axiosPost("/rooms/saveChat", this.newMessageObj, onSaveSuccess);
+        this.newMessageObj.content = "";
+      }
     },
     changeRoom(id) {
       console.log("⭐️ CHANGE ROOM...", id);
