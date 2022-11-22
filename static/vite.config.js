@@ -16,6 +16,10 @@ export default defineConfig({
   },
   devServer: {
     proxy: {
+      "//": {
+        target: "54.180.125.158:9090/upload",
+        changeOrigin: true,
+      },
       "/": {
         target: "http://localhost:8080",
         changeOrigin: true,

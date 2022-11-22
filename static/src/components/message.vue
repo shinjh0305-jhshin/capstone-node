@@ -15,10 +15,22 @@
       >
         <p class="sender">{{ message.sender }}</p>
       </div>
-      <div class="content-body" :class="{ viewer: yours }">
+      <div
+        class="content-body"
+        v-if="message.content"
+        :class="{ viewer: yours }"
+      >
         <span class="content" :class="{ viewer: yours }">{{
           message.content
         }}</span>
+        <div class="date-body" v-if="sameTime">
+          <span class="date">{{ formatDate(new Date(message.time)) }}</span>
+        </div>
+      </div>
+      <div v-else class="content-body-image" :class="{ viewer: yours }">
+        <div class="image-box" :class="{ viewer: yours }">
+          <img v-bind:src="message.imgPath" />
+        </div>
         <div class="date-body" v-if="sameTime">
           <span class="date">{{ formatDate(new Date(message.time)) }}</span>
         </div>
@@ -82,11 +94,13 @@ div.message-head p.sender {
   font-size: 1rem;
   font-weight: 600;
 }
-div.content-body {
+div.content-body,
+div.content-body-image {
   display: flex;
   margin-bottom: 5px;
 }
-div.content-body.viewer {
+div.content-body.viewer,
+div.content-body-image.viewer {
   flex-direction: row-reverse;
   margin-bottom: 10px;
 }
@@ -108,5 +122,16 @@ span.date {
   color: rgb(172, 170, 170);
   font-size: 0.65rem;
   margin: 0px 5px;
+}
+div.image-box {
+  height: 200px;
+  width: 200px;
+  background-color: black;
+  border-radius: 5px;
+}
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 </style>
