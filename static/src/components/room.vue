@@ -62,6 +62,18 @@
                 <span>&rarr;</span>
               </div>
             </div>
+            <div class="image-click-container">
+              <div class="image-click">
+                <label for="chat-img-upload">+</label>
+                <input
+                  type="file"
+                  @change="sendImage()"
+                  id="chat-img-upload"
+                  ref="chatImage"
+                  name="chatImg"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -76,6 +88,7 @@ import axios from "axios";
 import useAxios from "../modules/axios";
 import { reactive } from "vue";
 import message from "./message.vue";
+import FormData from "form-data";
 const { axiosGet, axiosPost } = useAxios();
 export default {
   name: "room",
@@ -91,6 +104,7 @@ export default {
         sender: "",
         content: "",
         time: "",
+        imgPath: "",
       },
       newMessageObj: {
         content: "",
@@ -198,6 +212,37 @@ export default {
         }
       }
     },
+    sendImage() {
+      const onSaveSuccess = (resp) => {
+        console.log("✅ Msg Save Success");
+      };
+      let data = new FormData();
+      const imgObj = this.$refs.chatImage.files[0];
+      const store = useUserInfoStore();
+      data.append("chatImg", imgObj);
+      const imgConfig = {
+        method: "post",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        url: "//54.180.125.158:9090/upload",
+        data: data,
+      };
+      axios(imgConfig)
+        .then((resp) => {
+          console.log(resp);
+          this.newMessageObj.roomId = this.$route.params.roomId;
+          this.newMessageObj.time = new Date(Date.now());
+          this.newMessageObj.sender = store.userNick;
+          this.newMessageObj.content = "";
+          this.newMessageObj.imgPath = resp.data.imgPath;
+          this.socket.emit("messageSent", this.newMessageObj);
+          axiosPost("/rooms/saveChat", this.newMessageObj, onSaveSuccess);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     sendMessage() {
       const onSaveSuccess = (resp) => {
         console.log("✅ Msg Save Success");
@@ -208,6 +253,7 @@ export default {
         this.newMessageObj.time = new Date(Date.now());
         this.newMessageObj.sender = store.userNick;
         this.newMessageObj.content.trim();
+        this.newMessageObj.imgPath = "";
         this.socket.emit("messageSent", this.newMessageObj);
         axiosPost("/rooms/saveChat", this.newMessageObj, onSaveSuccess);
         this.newMessageObj.content = "";
@@ -225,6 +271,7 @@ export default {
             sender: msg.nickname,
             time: new Date(msg.createdAt),
             roomId: msg.roomId,
+            imgPath: msg.imagePath,
           });
         }
       };
@@ -388,7 +435,7 @@ div.input-container {
   justify-content: center;
 }
 div.click-container {
-  width: 15%;
+  width: 10%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -405,5 +452,29 @@ div.send-click {
   width: 90%;
   display: flex;
   justify-content: center;
+  cursor: pointer;
+}
+div.image-click-container {
+  border-radius: 5px;
+  width: 5%;
+  height: 100%;
+}
+div.image-click label {
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 </style>

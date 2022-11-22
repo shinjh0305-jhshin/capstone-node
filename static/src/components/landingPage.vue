@@ -29,6 +29,10 @@
       </form>
     </div>
   </div>
+
+  <img
+    src="https://bucket-images-for-gongu.s3.ap-northeast-2.amazonaws.com/1669110017714_test.jpeg"
+  />
 </template>
 
 <script>
