@@ -1,25 +1,50 @@
-<template lang="pug">
-div(class="container p-5")
-  div(class="mb-4 bg-light rounded-3" id="login-box")
-    h1(class="mb-5") Login
-    form
-      div(class="mb-2 row")
-        div(class="col-sm-8 w-100")
-          input(type="text" class="form-control" v-model="userInfo.username" id="userID" placeholder="ID" required)
-      div(class="mb-2 row")
-        div(class="col-sm-8 w-100")
-          input(type="password" class="form-control" v-model="userInfo.password" id="userPWD" placeholder="Password" required)
-      button(class="btn btn-danger w-100" @click="loginSubmit()") Login 
-      <br/> <br/>
-      p(id="noAccount") If you don't have an account....
-      button(class="btn btn-primary w-100" onclick="login") Create account
+<template>
+  <div class="container p-5">
+    <div class="mb-4 bg-light rounded-3" id="login-box">
+      <h1 class="mb-5">Login</h1>
+      <form>
+        <div class="mb-2 row">
+          <label for="userID" class="col-sm-4 col-form-label">ID</label>
+          <div class="col-sm-8">
+            <input
+              type="text"
+              class="form-control"
+              v-model="userInfo.userID"
+              id="userID"
+              placeholder="ID"
+              required
+            />
+            <br />
+          </div>
+        </div>
+
+        <div class="mb-2 row">
+          <label for="userPWD" class="col-sm-4 col-form-label">Password</label>
+          <div class="col-sm-8">
+            <input
+              type="password"
+              class="form-control"
+              v-model="userInfo.userPWD"
+              id="userPWD"
+              placeholder="Password"
+              required
+            />
+            <br />
+          </div>
+        </div>
+        <button type="button" class="btn btn-danger w-100" @click="loginSubmit">
+          Login
+        </button>
+      </form>
+      <p id="noAccount">If you don't have an account....</p>
+      <button type="button" class="btn btn-primary w-100" @click="goToJoin">
+        Create account
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
-//import { DefineComponent } from "vue";
-//import { useUserInfoStore } from "../stores/userInfo";
-//import axios from "@bundled-es-modules/axios/axios";
-
 export default {
   name: "LoginPrompt",
   /*
@@ -37,33 +62,34 @@ export default {
 import useAxios from "../modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
 import { reactive } from "vue";
+import router from "../routers";
 
 const { axiosGet, axiosPost } = useAxios();
 
 const userInfo = reactive({
-  username: "",
-  password: "",
+  userID: "",
+  userPWD: "",
 });
 
-const onLoginSuccess = (respData) => {
-  //console.log("Success - set LocalStorage");
-  localStorage.setItem("userID", respData.data.userID);
-  localStorage.setItem("NICK", respData.data.NICK);
+const goToJoin = () => {
+  router.push("join");
 };
 
-const onLoginFail = (respData) => {
-  console.log("FAILED");
+const onLoginSuccess = (respData) => {
+  const userStore = useUserInfoStore();
+  userStore.setInfo(respData.data.userID, respData.data.userNick, true);
+  console.log("✅ userStore", userStore.getInfo);
+  if (userStore.loggedIn) {
+    router.push({ name: "landingPage" });
+  }
+};
+
+const onLoginFail = (respData = null) => {
+  console.log("❌ FAILED");
 };
 
 const loginSubmit = () => {
-  console.log("hi");
-  console.log(`userId : ${userInfo.username} userPWD : ${userInfo.password}`);
-  axiosPost(
-    "http://localhost:8080/users/login",
-    userInfo,
-    onLoginSuccess,
-    onLoginFail
-  );
+  axiosPost("/users/login", userInfo, onLoginSuccess, onLoginFail);
 };
 </script>
 
