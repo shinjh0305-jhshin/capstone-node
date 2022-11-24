@@ -133,7 +133,7 @@ export const postChat = async (req, res) => {
   const replacedContent = content.replace(/'/g, "''");
   try {
     await db.query(
-      `INSERT INTO CHAT(roomId,nickname,content,imgPath) VALUES('${roomId}','${sender}','${replacedContent}','${imgPath}');`
+      `INSERT INTO CHAT(roomId,nickname,content,imagePath) VALUES('${roomId}','${sender}','${replacedContent}','${imgPath}');`
     );
     return res.status(200).json({ ok: true });
   } catch (err) {

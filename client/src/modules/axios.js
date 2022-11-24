@@ -6,7 +6,7 @@ export default function () {
     const final_URL = URL.startsWith("http") ? URL : BASE_URL + URL;
     console.log("axiosGet", final_URL);
     axios.get(final_URL).then((resp) => {
-      if (resp.status === 200 && resp.data.ok === true) {
+      if (resp.status === 200 || resp.data.ok === true) {
         if (onSuccess) onSuccess(resp.data);
         else if (onFailed) onFailed(resp.data);
       }
@@ -18,10 +18,10 @@ export default function () {
     console.log("axiosPost", final_URL, Data);
     try {
       axios.post(final_URL, Data).then((resp) => {
-        if (resp.status === 200 && resp.data.ok === true) {
+        if (resp.status === 200 /*&& resp.data.ok === true*/) {
           if (onSuccess) onSuccess(resp.data);
         } else {
-          onFailed(resp.data);
+          if (onFailed) onFailed(resp.data);
         }
       });
     } catch (err) {

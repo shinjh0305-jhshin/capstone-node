@@ -6,15 +6,44 @@ import join from "../components/join.vue";
 import allRoom from "../components/allRoom.vue";
 import myRoom from "../components/myRoom.vue";
 import room from "../components/room.vue";
+import dealCreate from "../views/dealCreate.vue";
+import dealDetail from "../views/dealDetail.vue";
+import dealList from "../views/dealList.vue";
+import dealRaised from "../views/dealRaised.vue";
+import dealUpdate from "../views/dealUpdate.vue";
 import { useUserInfoStore } from "/@stores/userInfo";
 import axios from "axios";
 
 const routes = [
   {
     path: "/",
-    name: "landingPage",
-    component: landingPage,
-    meta: { authRequired: true },
+    name: "Home",
+    component: dealList,
+    meta: { authRequired: false },
+  },
+  {
+    path: "/create",
+    name: "Create",
+    component: dealCreate,
+    meta: { authRequired: false },
+  },
+  {
+    path: "/detail",
+    name: "Detail",
+    component: dealDetail,
+    meta: { authRequired: false },
+  },
+  {
+    path: "/raised",
+    name: "Raised",
+    component: dealRaised,
+    meta: { authRequired: false },
+  },
+  {
+    path: "/update",
+    name: "Update",
+    component: dealUpdate,
+    meta: { authRequired: false },
   },
   {
     path: "/login",
@@ -50,6 +79,12 @@ const routes = [
     path: "/room/:roomId",
     name: "room",
     component: room,
+    meta: { authRequired: true },
+  },
+  {
+    path: "/createChat",
+    name: "landingPage",
+    component: landingPage,
     meta: { authRequired: true },
   },
 ];

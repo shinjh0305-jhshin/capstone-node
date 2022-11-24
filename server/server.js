@@ -5,7 +5,9 @@ import morgan from "morgan";
 import socket from "socket.io";
 import userRouter from "./routes/userRouter";
 import chatRouter from "./routes/chatRouter";
-const db = require("./tools/authdb");
+const productRouter = require("./routes/productRouter");
+const imageRouter = require("./routes/imageRouter");
+// const db = require("./tools/authdb");
 
 const app = express();
 
@@ -24,9 +26,12 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use("/product", productRouter);
+app.use("/image", imageRouter);
 app.use("/users", userRouter);
 app.use("/rooms", chatRouter);
 
+/*
 const rdsTestRouter = express.Router();
 
 const rdsTestHandler = async (req, res) => {
@@ -38,6 +43,7 @@ const rdsTestHandler = async (req, res) => {
 
 rdsTestRouter.post("/", rdsTestHandler);
 app.use("/rdsTest", rdsTestRouter);
+*/
 
 const server = app.listen(process.env.SERVER_PORT, () => {
   console.log(`✅ Server running on ${process.env.SERVER_PORT}`);
