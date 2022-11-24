@@ -118,7 +118,7 @@ export const getChat = async (req, res) => {
   }
   try {
     const [result] = await db.query(
-      `SELECT nickname, content, createdAt, roomId FROM CHAT WHERE roomId = '${roomId}';`
+      `SELECT nickname, content, createdAt, roomId, imagePath FROM CHAT WHERE roomId = '${roomId}';`
     );
     //console.log(result);
     return res.status(200).json({ ok: true, msgList: result });
@@ -133,7 +133,7 @@ export const postChat = async (req, res) => {
   const replacedContent = content.replace(/'/g, "''");
   try {
     await db.query(
-      `INSERT INTO CHAT(roomId,nickname,content) VALUES('${roomId}','${sender}','${replacedContent}');`
+      `INSERT INTO CHAT(roomId,nickname,content,imgPath) VALUES('${roomId}','${sender}','${replacedContent}','${imgPath}');`
     );
     return res.status(200).json({ ok: true });
   } catch (err) {
