@@ -1,8 +1,0 @@
-routes/auth_process.js : 내가 만든 login_process	
-routes/login.js : jwt 인증 진행
-tools/authdb.js : mysql pool
-tools/cache.js : redis 객체
-tools/client.js : prisma ORM
-tools/jwt.js : jwt refresh 생성
-routes/auth.js : request header token parsing 및 verify 호출
-routes/refresh.js : refresh token 검증 및 재발급

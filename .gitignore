@@ -133,5 +133,6 @@ node_modules/
 dist/
 npm-debug.log
 yarn-error.log
+chatting_file.txt
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Vue,Node,Vuejs
