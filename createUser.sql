@@ -26,7 +26,7 @@ CREATE TABLE Chat (
     roomId          INT             NOT NULL,
     nickname        VARCHAR(20)     NOT NULL,
     content         VARCHAR(200),
-    imagePath       VARCHAR(50),    
+    imagePath       VARCHAR(300),    
     createdAt       TIMESTAMP       NOT NULL    DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(chatId),
     FOREIGN KEY(roomId) references Room(roomId),
