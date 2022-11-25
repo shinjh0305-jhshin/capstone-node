@@ -68,7 +68,7 @@ export const enterRoom = async (req, res) => {
   }
   try {
     const [result] = await db.query(
-      `SELECT COUNT(*) as CNT FROM MEMBER WHERE roomId = ${roomId} and nickname = '${nickname}';`
+      `SELECT COUNT(*) as CNT FROM Member WHERE roomId = ${roomId} and nickname = '${nickname}';`
     );
     const memCnt = result[0]["CNT"];
     //console.log("memCnt:", memCnt);
@@ -90,7 +90,7 @@ export const checkUserInRoom = async (req, res) => {
   //console.log(roomId, nickname);
   try {
     const [result] = await db.query(
-      `SELECT COUNT(*) as CNT FROM MEMBER WHERE roomId = ${roomId} and nickname = '${nickname}';`
+      `SELECT COUNT(*) as CNT FROM Member WHERE roomId = ${roomId} and nickname = '${nickname}';`
     );
     const memCnt = result[0]["CNT"];
     //console.log("memcnt:", memCnt);
@@ -119,7 +119,7 @@ export const getChat = async (req, res) => {
   if (roomId === "0") return res.status(200).json({ ok: true, msgList: [] });
   try {
     const [result] = await db.query(
-      `SELECT nickname, content, createdAt, roomId, imagePath FROM CHAT WHERE roomId = '${roomId}';`
+      `SELECT nickname, content, createdAt, roomId, imagePath FROM Chat WHERE roomId = '${roomId}';`
     );
     //console.log(result);
     return res.status(200).json({ ok: true, msgList: result });
@@ -134,7 +134,7 @@ export const postChat = async (req, res) => {
   const replacedContent = content.replace(/'/g, "''");
   try {
     await db.query(
-      `INSERT INTO CHAT(roomId,nickname,content,imagePath) VALUES('${roomId}','${sender}','${replacedContent}','${imgPath}');`
+      `INSERT INTO Chat(roomId,nickname,content,imagePath) VALUES('${roomId}','${sender}','${replacedContent}','${imgPath}');`
     );
     return res.status(200).json({ ok: true });
   } catch (err) {
