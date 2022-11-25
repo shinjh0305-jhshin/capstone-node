@@ -63,6 +63,7 @@ import useAxios from "../modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
 import { reactive } from "vue";
 import router from "../routers";
+import dealList from "../views/dealList.vue";
 
 const { axiosGet, axiosPost } = useAxios();
 
@@ -80,7 +81,7 @@ const onLoginSuccess = (respData) => {
   userStore.setInfo(respData.data.userID, respData.data.userNick, true);
   console.log("✅ userStore", userStore.getInfo);
   if (userStore.loggedIn) {
-    router.push({ name: "landingPage" });
+    router.push(dealList);
   }
 };
 
