@@ -82,12 +82,13 @@ const router = createRouter({
 
 const checkValidRoomMember = async (currentUser, curRoomId) => {
   //console.log(currentUser, curRoomId);
+  const { VITE_BASE_URL } = import.meta.env;
   const result = await axios.get(
-    `http://localhost:8080/api/rooms/${curRoomId}/nickname/${currentUser}`
+    VITE_BASE_URL + `/rooms/${curRoomId}/nickname/${currentUser}`
   );
   //console.log(result.data, result.status);
   if (result.data.ok === true) {
-    console.log("IS MEMBER!!");
+    console.log("✅ IS MEMBER!!");
     return true;
   } else {
     return false;

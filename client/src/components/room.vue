@@ -89,6 +89,7 @@ import useAxios from "../modules/axios";
 import { reactive } from "vue";
 import message from "./message.vue";
 import FormData from "form-data";
+const { VITE_SOCKET_URL } = import.meta.env;
 const { axiosGet, axiosPost } = useAxios();
 export default {
   name: "room",
@@ -99,7 +100,7 @@ export default {
     return {
       myRoomList: [],
       curRoomName: "",
-      socket: io("http://localhost:8080"),
+      socket: io(VITE_SOCKET_URL),
       messageObj: {
         sender: "",
         content: "",
