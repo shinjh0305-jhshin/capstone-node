@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import landingPage from "../components/landingPage.vue";
 import loginPrompt from "../components/loginPrompt.vue";
-import product from "../components/product.vue";
 import join from "../components/join.vue";
 import allRoom from "../components/allRoom.vue";
 import room from "../components/room.vue";
@@ -57,12 +56,6 @@ const routes = [
     meta: { authRequired: false },
   },
   {
-    path: "/product",
-    name: "product",
-    component: product,
-    meta: { authRequired: true },
-  },
-  {
     path: "/allRoom",
     name: "allRoom",
     component: allRoom,
@@ -109,10 +102,14 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = store.loggedIn;
   const currentUser = store.userNick;
 
-  const curRoomId = to.params.roomId;
+  const curRoomId = Number(to.params.roomId);
 
   if (isLoggedIn && currentUser) {
-    if (curRoomId > 0) {
+    //console.log("currentUser:", currentUser);
+    if (to.meta.authRequired === false) {
+      console.log("❗️ NOT allowed");
+      next({ name: "Home" });
+    } else if (curRoomId > 0) {
       if ((await checkValidRoomMember(currentUser, curRoomId)) === true) {
         next();
       } else {
@@ -122,9 +119,6 @@ router.beforeEach(async (to, from, next) => {
     } else {
       next();
     }
-  } else if (isLoggedIn && to.meta.authRequired === false) {
-    console.log("❗️ NOT allowed");
-    next({ name: "Home" });
   } else if (isLoggedIn === false && to.meta.authRequired) {
     console.log("❗️ NOT allowed");
     next("login");
