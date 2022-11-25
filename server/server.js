@@ -26,10 +26,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/product", productRouter);
-app.use("/image", imageRouter);
-app.use("/users", userRouter);
-app.use("/rooms", chatRouter);
+app.use("/api/product", productRouter);
+app.use("/api/image", imageRouter);
+app.use("/api/users", userRouter);
+app.use("/api/rooms", chatRouter);
 
 /*
 const rdsTestRouter = express.Router();

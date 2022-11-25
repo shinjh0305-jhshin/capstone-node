@@ -1,7 +1,7 @@
 import { axios } from "@bundled-es-modules/axios";
 
 export default function () {
-  const BASE_URL = "http://localhost:8080";
+  const BASE_URL = "http://localhost:8080/api";
   const axiosGet = (URL, onSuccess = null, onFailed = null) => {
     const final_URL = URL.startsWith("http") ? URL : BASE_URL + URL;
     console.log("axiosGet", final_URL);

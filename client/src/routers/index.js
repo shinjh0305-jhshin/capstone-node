@@ -83,7 +83,7 @@ const router = createRouter({
 const checkValidRoomMember = async (currentUser, curRoomId) => {
   //console.log(currentUser, curRoomId);
   const result = await axios.get(
-    `http://localhost:8080/rooms/${curRoomId}/nickname/${currentUser}`
+    `http://localhost:8080/api/rooms/${curRoomId}/nickname/${currentUser}`
   );
   //console.log(result.data, result.status);
   if (result.data.ok === true) {

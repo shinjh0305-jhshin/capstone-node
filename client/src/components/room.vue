@@ -232,7 +232,7 @@ export default {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        url: "//54.180.125.158:9090/upload",
+        url: "http://54.180.125.158:9090/upload",
         data: data,
       };
       axios(imgConfig)
