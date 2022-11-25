@@ -165,8 +165,8 @@ export default {
     updatePage(prevRoomId, curRoomId) {
       //console.log("✅ prev -- UPDATE PAGE:", prevRoomId, curRoomId);
       //console.log("TYPE OF ROOMID:", typeof prevRoomId);
-      this.socket.emit("leaveRoom", { roomId: prevRoomId });
-      this.socket.emit("joinRoom", { roomId: curRoomId });
+      this.socket.emit("leaveRoom", { roomId: String(prevRoomId) });
+      this.socket.emit("joinRoom", { roomId: String(curRoomId) });
     },
     isDiffOther(idx) {
       if (idx === 0) return false;
@@ -238,7 +238,7 @@ export default {
       axios(imgConfig)
         .then((resp) => {
           console.log(resp);
-          this.newMessageObj.roomId = this.$route.params.roomId;
+          this.newMessageObj.roomId = String(this.$route.params.roomId);
           this.newMessageObj.time = new Date(Date.now());
           this.newMessageObj.sender = store.userNick;
           this.newMessageObj.content = "";
@@ -256,7 +256,7 @@ export default {
       };
       if (this.newMessageObj.content.length > 0) {
         const store = useUserInfoStore();
-        this.newMessageObj.roomId = this.$route.params.roomId;
+        this.newMessageObj.roomId = String(this.$route.params.roomId);
         this.newMessageObj.time = new Date(Date.now());
         this.newMessageObj.sender = store.userNick;
         this.newMessageObj.content.trim();
@@ -278,13 +278,13 @@ export default {
               content: msg.content,
               sender: msg.nickname,
               time: new Date(msg.createdAt),
-              roomId: msg.roomId,
+              roomId: String(msg.roomId),
               imgPath: msg.imagePath,
             });
           }
         };
         axiosGet(`/rooms/getChat/${id}`, getMsgSucceed);
-        this.socket.emit("joinRoom", { roomId: id });
+        this.socket.emit("joinRoom", { roomId: String(id) });
       }
     },
   },
