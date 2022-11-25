@@ -11,10 +11,7 @@
               picked: String(myRoom.roomId) === String($route.params.roomId),
             }"
           >
-            <router-link
-              :to="{ name: 'room', params: { roomId: myRoom.roomId } }"
-              @click="changeRoom(myRoom.roomId)"
-            >
+            <router-link :to="{ name: 'room', params: { roomId: myRoom.roomId } }" @click="changeRoom(myRoom.roomId)">
               <div class="room-name">
                 <span>{{ myRoom.roomName }}</span>
               </div>
@@ -48,14 +45,7 @@
         <div class="send-container">
           <div class="send-body">
             <div class="input-container">
-              <input
-                type="text"
-                class="form-control"
-                v-model="newMessageObj.content"
-                id="message"
-                placeholder="send message"
-                @keyup.enter="sendMessage()"
-              />
+              <input type="text" class="form-control" v-model="newMessageObj.content" id="message" placeholder="send message" @keyup.enter="sendMessage()" />
             </div>
             <div class="click-container">
               <div class="send-click" @click="sendMessage()">
@@ -65,13 +55,7 @@
             <div class="image-click-container">
               <div class="image-click">
                 <label for="chat-img-upload">+</label>
-                <input
-                  type="file"
-                  @change="sendImage()"
-                  id="chat-img-upload"
-                  ref="chatImage"
-                  name="chatImg"
-                />
+                <input type="file" @change="sendImage()" id="chat-img-upload" ref="chatImage" name="chatImg" />
               </div>
             </div>
           </div>
@@ -181,9 +165,7 @@ export default {
     isDisplayTime(idx) {
       if (idx + 1 === this.messageObjList.length) return true;
       const curMinute = new Date(this.messageObjList[idx].time).getMinutes();
-      const nextMinute = new Date(
-        this.messageObjList[idx + 1].time
-      ).getMinutes();
+      const nextMinute = new Date(this.messageObjList[idx + 1].time).getMinutes();
       const curUser = this.messageObjList[idx].sender;
       const nextUser = this.messageObjList[idx + 1].sender;
       if (curUser != nextUser) return true;
@@ -200,9 +182,7 @@ export default {
     getDividerDate(idx) {
       const week = ["일", "월", "화", "수", "목", "금", "토"];
       const today = new Date(this.messageObjList[idx].time);
-      return `${today.getFullYear()}년 ${
-        today.getMonth() + 1
-      }월 ${today.getDate()}일 ${week[today.getDay()]}요일`;
+      return `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 ${week[today.getDay()]}요일`;
     },
     setRoomName(id) {
       for (const myRoom of this.myRoomList) {

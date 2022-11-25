@@ -19,31 +19,31 @@ const routes = [
     path: "/",
     name: "Home",
     component: dealList,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/create",
     name: "Create",
     component: dealCreate,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/detail",
     name: "Detail",
     component: dealDetail,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/raised",
     name: "Raised",
     component: dealRaised,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/update",
     name: "Update",
     component: dealUpdate,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/login",
@@ -96,9 +96,7 @@ const router = createRouter({
 
 const checkValidRoomMember = async (currentUser, curRoomId) => {
   console.log(currentUser, curRoomId);
-  const result = await axios.get(
-    `http://localhost:8080/rooms/${curRoomId}/nickname/${currentUser}`
-  );
+  const result = await axios.get(`http://localhost:8080/rooms/${curRoomId}/nickname/${currentUser}`);
   console.log(result.data, result.status);
   if (result.data.ok === true) {
     console.log("IS MEMBER!!");
