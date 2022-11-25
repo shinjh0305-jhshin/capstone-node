@@ -140,11 +140,17 @@ export default {
     },
   },
   mounted() {
+    this.socket.on("joined", (fromServer) => {
+      console.log("✅ Joined Room:", fromServer);
+    });
+    this.socket.on("leaving", (fromServer) => {
+      console.log("✅ Left Room:", fromServer);
+    });
     this.socket.on("connect", () => {
       console.log("✅ connected");
     });
     this.socket.on("messageReceived", (msgObjFromServer) => {
-      console.log("✅ Received data:", msgObjFromServer);
+      console.log("✅ Received Message:", msgObjFromServer);
       this.messageObjList.push(msgObjFromServer);
     });
     this.changeRoom(this.$route.params.roomId); // 현재 페이지 새로고침하는 경우
@@ -158,6 +164,7 @@ export default {
   methods: {
     updatePage(prevRoomId, curRoomId) {
       //console.log("✅ prev -- UPDATE PAGE:", prevRoomId, curRoomId);
+      //console.log("TYPE OF ROOMID:", typeof prevRoomId);
       this.socket.emit("leaveRoom", { roomId: prevRoomId });
       this.socket.emit("joinRoom", { roomId: curRoomId });
     },
@@ -260,22 +267,25 @@ export default {
       }
     },
     changeRoom(id) {
-      console.log("⭐️ CHANGE ROOM...", id);
-      this.messageObjList = [];
-      const getMsgSucceed = async (resp) => {
-        const { msgList } = resp;
-        //console.log("✅ Get Msg", msgList);
-        for (const msg of msgList) {
-          this.messageObjList.push({
-            content: msg.content,
-            sender: msg.nickname,
-            time: new Date(msg.createdAt),
-            roomId: msg.roomId,
-            imgPath: msg.imagePath,
-          });
-        }
-      };
-      axiosGet(`/rooms/getChat/${id}`, getMsgSucceed);
+      if (Number(id) > 0) {
+        console.log("⭐️ CHANGE ROOM...", id);
+        this.messageObjList = [];
+        const getMsgSucceed = async (resp) => {
+          const { msgList } = resp;
+          //console.log("✅ Get Msg", msgList);
+          for (const msg of msgList) {
+            this.messageObjList.push({
+              content: msg.content,
+              sender: msg.nickname,
+              time: new Date(msg.createdAt),
+              roomId: msg.roomId,
+              imgPath: msg.imagePath,
+            });
+          }
+        };
+        axiosGet(`/rooms/getChat/${id}`, getMsgSucceed);
+        this.socket.emit("joinRoom", { roomId: id });
+      }
     },
   },
 };

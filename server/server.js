@@ -74,26 +74,25 @@ io.on("connection", (socket) => {
     io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
   });
   socket.on("leaveRoom", (roomInfo) => {
-    console.log("LEAVE ROOM", roomInfo);
-    socket.leave(roomInfo.roomId);
+    try {
+      socket.leave(roomInfo.roomId);
+      io.to(roomInfo.roomId).emit("leaving", { joinedRoom: roomInfo.roomId });
+      console.log("LEAVE ROOM", roomInfo);
+    } catch (err) {
+      console.log("[Error]", "leave room :", err);
+    }
   });
   socket.on("joinRoom", (roomInfo) => {
-    console.log("JOIN ROOM", roomInfo);
-    socket.join(roomInfo.roomId);
+    try {
+      socket.join(roomInfo.roomId);
+      io.to(roomInfo.roomId).emit("joined", { joinedRoom: roomInfo.roomId });
+      console.log("JOIN ROOM", roomInfo);
+    } catch (err) {
+      console.log("[Error]", "join room :", err);
+    }
   });
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
     //socket.leave(roomInfo.roomId);
   });
 });
-
-/*
-
-// Amazon Cognito 인증 공급자를 초기화합니다
-CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-    getApplicationContext(),
-    "ap-northeast-2:66deae64-0df4-4de4-9be2-10ef9113937b", // 자격 증명 풀 ID
-    Regions.AP_NORTHEAST_2 // 리전
-);
-
- */
