@@ -13,7 +13,7 @@
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarNav" :key="reRender">
+      <div class="collapse navbar-collapse" id="navbarNav">
         <ul
           :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
           v-for="menu in menus_category"
@@ -66,7 +66,6 @@ import { useUserInfoStore } from "/@stores/userInfo";
 const userStore = useUserInfoStore();
 
 const menu = ref("home");
-const reRender = ref(0);
 const tempMenus = [
   { key: "home", value: "홈", URL: "/", position: "left" },
   {
