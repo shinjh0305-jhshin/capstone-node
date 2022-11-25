@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import landingPage from "../components/landingPage.vue";
-import login from "../components/loginPrompt.vue";
+import loginPrompt from "../components/loginPrompt.vue";
 import product from "../components/product.vue";
 import join from "../components/join.vue";
 import allRoom from "../components/allRoom.vue";
@@ -19,36 +19,36 @@ const routes = [
     path: "/",
     name: "Home",
     component: dealList,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/create",
     name: "Create",
     component: dealCreate,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/detail",
     name: "Detail",
     component: dealDetail,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/raised",
     name: "Raised",
     component: dealRaised,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/update",
     name: "Update",
     component: dealUpdate,
-    meta: { authRequired: false },
+    meta: { authRequired: true },
   },
   {
     path: "/login",
     name: "login",
-    component: login,
+    component: loginPrompt,
     meta: { authRequired: false },
   },
   {
