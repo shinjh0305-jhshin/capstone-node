@@ -57,21 +57,15 @@ const io = socket(server, {
 });
 
 io.on("connection", (socket) => {
-  /*
-  socket.on("registerAll", (rooms) => {
-    rooms.forEach((room) => {
-      socket.join(room.roomId);
-    });
-  });
-  socket.on("register", (room) => {
-    socket.join(room.roomId);
-  });
-  */
   socket.on("messageSent", (roomInfo) => {
     //console.log("socket On:", roomInfo);
     //roomInfo.time = new Date(roomInfo.time);
-    console.log("SEND FROM SERVER - roomInfo:", roomInfo);
-    io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
+    try {
+      console.log("SEND FROM SERVER - roomInfo:", roomInfo);
+      io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
+    } catch (err) {
+      console.log("[Error]", "message Send :", err);
+    }
   });
   socket.on("leaveRoom", (roomInfo) => {
     try {
@@ -93,6 +87,5 @@ io.on("connection", (socket) => {
   });
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
-    //socket.leave(roomInfo.roomId);
   });
 });
