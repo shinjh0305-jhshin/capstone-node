@@ -116,6 +116,7 @@ export const getChat = async (req, res) => {
   if (roomId === undefined) {
     return res.status(401).json({ ok: false });
   }
+  if (roomId === "0") return res.status(200).json({ ok: true, msgList: [] });
   try {
     const [result] = await db.query(
       `SELECT nickname, content, createdAt, roomId, imagePath FROM CHAT WHERE roomId = '${roomId}';`
