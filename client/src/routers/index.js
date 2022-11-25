@@ -4,7 +4,6 @@ import loginPrompt from "../components/loginPrompt.vue";
 import product from "../components/product.vue";
 import join from "../components/join.vue";
 import allRoom from "../components/allRoom.vue";
-import myRoom from "../components/myRoom.vue";
 import room from "../components/room.vue";
 import dealCreate from "../views/dealCreate.vue";
 import dealDetail from "../views/dealDetail.vue";
@@ -70,12 +69,6 @@ const routes = [
     meta: { authRequired: true },
   },
   {
-    path: "/:userNick/room",
-    name: "roomList",
-    component: myRoom,
-    meta: { authRequired: true },
-  },
-  {
     path: "/room/:roomId",
     name: "room",
     component: room,
@@ -96,7 +89,9 @@ const router = createRouter({
 
 const checkValidRoomMember = async (currentUser, curRoomId) => {
   console.log(currentUser, curRoomId);
-  const result = await axios.get(`http://localhost:8080/rooms/${curRoomId}/nickname/${currentUser}`);
+  const result = await axios.get(
+    `http://localhost:8080/rooms/${curRoomId}/nickname/${currentUser}`
+  );
   console.log(result.data, result.status);
   if (result.data.ok === true) {
     console.log("IS MEMBER!!");
@@ -129,7 +124,7 @@ router.beforeEach(async (to, from, next) => {
     }
   } else if (isLoggedIn && to.meta.authRequired === false) {
     console.log("❗️ NOT allowed");
-    next({ name: "landingPage" });
+    next({ name: "Home" });
   } else if (isLoggedIn === false && to.meta.authRequired) {
     console.log("❗️ NOT allowed");
     next("login");
