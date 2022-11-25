@@ -7,9 +7,9 @@ FLUSH PRIVILEGES;
 USE frontdb;
 
 CREATE TABLE User (
-	  nickname		  VARCHAR(20) 	NOT NULL	PRIMARY KEY,
+    nickname		VARCHAR(20) 	NOT NULL	PRIMARY KEY,
     email       	VARCHAR(20)		NOT NULL,
-    password		  VARCHAR(20)		NOT NULL,
+    password		VARCHAR(20)		NOT NULL
 );
 
 CREATE TABLE Room (
