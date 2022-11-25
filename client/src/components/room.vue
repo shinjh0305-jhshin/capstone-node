@@ -226,13 +226,14 @@ export default {
       let data = new FormData();
       const imgObj = this.$refs.chatImage.files[0];
       const store = useUserInfoStore();
+      const { VITE_IMAGE_SERVER_URL } = import.meta.env;
       data.append("chatImg", imgObj);
       const imgConfig = {
         method: "post",
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        url: "http://54.180.125.158:9090/upload",
+        url: VITE_IMAGE_SERVER_URL,
         data: data,
       };
       axios(imgConfig)
