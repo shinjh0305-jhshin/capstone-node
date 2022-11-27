@@ -26,10 +26,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/api/product", productRouter);
-app.use("/api/image", imageRouter);
-app.use("/api/users", userRouter);
-app.use("/api/rooms", chatRouter);
+app.use("/product", productRouter);
+app.use("/image", imageRouter);
+app.use("/users", userRouter);
+app.use("/rooms", chatRouter);
 
 /*
 const rdsTestRouter = express.Router();
@@ -89,3 +89,5 @@ io.on("connection", (socket) => {
     console.log("User disconnected", socket.id);
   });
 });
+
+export default io;

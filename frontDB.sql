@@ -25,6 +25,7 @@ CREATE TABLE Chat (
     chatId          INT             NOT NULL    AUTO_INCREMENT,
     roomId          INT             NOT NULL,
     nickname        VARCHAR(20)     NOT NULL,
+    chatType        VARCHAR(20)     NOT NULL,
     content         VARCHAR(200),
     imagePath       VARCHAR(300),    
     createdAt       TIMESTAMP       NOT NULL    DEFAULT CURRENT_TIMESTAMP,

@@ -106,8 +106,10 @@ export default {
         content: "",
         time: "",
         imgPath: "",
+        chatType: "",
       },
       newMessageObj: {
+        chatType: "",
         content: "",
         time: "",
         sender: "",
@@ -154,6 +156,10 @@ export default {
       console.log("✅ Received Message:", msgObjFromServer);
       this.messageObjList.push(msgObjFromServer);
     });
+    this.socket.on("notify", (resp) => {
+      console.log("✅ Notification", resp.msg);
+      this.messageObjList.push(resp.msg);
+    });
     this.changeRoom(this.$route.params.roomId); // 현재 페이지 새로고침하는 경우
     this.setRoomName(this.$route.params.roomId);
   },
@@ -173,8 +179,8 @@ export default {
       if (idx === 0) return false;
       const prevUser = this.messageObjList[idx - 1].sender;
       const curUser = this.messageObjList[idx].sender;
-      if (prevUser != this.currentUser && prevUser != curUser) return true;
-      return false;
+      if (prevUser != this.currentUser && prevUser != curUser) return false;
+      return true;
     },
     isDisplaySender(idx) {
       if (idx === 0) return true;
@@ -182,6 +188,9 @@ export default {
       const curUser = this.messageObjList[idx].sender;
       const prev = new Date(this.messageObjList[idx].time).getDate();
       const today = new Date(this.messageObjList[idx - 1].time).getDate();
+      const prevType = this.messageObjList[idx - 1].chatType;
+      const curType = this.messageObjList[idx].chatType;
+      if (prevType != curType) return true;
       if (prev != today) return true;
       if (prevUser === curUser) return false;
       return true;
@@ -240,6 +249,7 @@ export default {
       axios(imgConfig)
         .then((resp) => {
           console.log(resp);
+          this.newMessageObj.chatType = "message";
           this.newMessageObj.roomId = String(this.$route.params.roomId);
           this.newMessageObj.time = new Date(Date.now());
           this.newMessageObj.sender = store.userNick;
@@ -258,6 +268,7 @@ export default {
       };
       if (this.newMessageObj.content.length > 0) {
         const store = useUserInfoStore();
+        this.newMessageObj.chatType = "message";
         this.newMessageObj.roomId = String(this.$route.params.roomId);
         this.newMessageObj.time = new Date(Date.now());
         this.newMessageObj.sender = store.userNick;
@@ -282,6 +293,7 @@ export default {
               time: new Date(msg.createdAt),
               roomId: String(msg.roomId),
               imgPath: msg.imagePath,
+              chatType: msg.chatType,
             });
           }
         };

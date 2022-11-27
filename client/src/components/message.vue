@@ -7,7 +7,11 @@
       keepOn: sameTime,
     }"
   >
-    <div class="message-model" :class="{ viewer: yours, speaking: sameUser }">
+    <div
+      v-if="isMessage(message)"
+      class="message-model"
+      :class="{ viewer: yours, speaking: sameUser }"
+    >
       <div
         class="message-head"
         v-if="!yours && sameUser"
@@ -36,6 +40,13 @@
         </div>
       </div>
     </div>
+    <div v-else class="notification">
+      <div></div>
+      <div class="notification-box">
+        <p>{{ message.content }}</p>
+      </div>
+      <div></div>
+    </div>
   </div>
 </template>
 
@@ -63,6 +74,9 @@ export default {
       else if (hour == 0) hour = 12;
       let minute = Number(date.getMinutes());
       return `${mm} ${padZero(hour)}:${padZero(minute)}`;
+    },
+    isMessage(msg) {
+      return msg.chatType == "message";
     },
   },
 };
@@ -94,6 +108,7 @@ div.message-head p.sender {
   font-size: 1rem;
   font-weight: 600;
 }
+
 div.content-body,
 div.content-body-image {
   display: flex;
@@ -133,5 +148,30 @@ img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+div.notification {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+div.divider div {
+  height: 1px;
+  width: 100%;
+  background: #7e71bb;
+}
+div.notification-box {
+  background-color: dimgrey;
+  padding: 3px;
+  border-radius: 5px;
+}
+div.notification p {
+  margin: 0 0.3rem;
+  font-size: 0.85rem;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  color: white;
 }
 </style>
