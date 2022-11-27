@@ -1,7 +1,9 @@
 <template>
   <nav class="navbar navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
-      <a href="#" class="navbar-brand text-white">우리동네 공유마켓</a>
+      <router-link to="/" class="navbar-brand text-white"
+        >우리동네 공유마켓</router-link
+      >
       <button
         class="navbar-toggler"
         type="button"
@@ -11,7 +13,7 @@
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarNav" :key="reRender">
+      <div class="collapse navbar-collapse" id="navbarNav">
         <ul
           :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
           v-for="menu in menus_category"
@@ -64,7 +66,6 @@ import { useUserInfoStore } from "/@stores/userInfo";
 const userStore = useUserInfoStore();
 
 const menu = ref("home");
-const reRender = ref(0);
 const tempMenus = [
   { key: "home", value: "홈", URL: "/", position: "left" },
   {
@@ -82,7 +83,7 @@ const tempMenus = [
 ];
 
 const menus = [
-  { key: "home", value: "홈", URL: "/", position: "left" },
+  //{ key: "home", value: "홈", URL: "/", position: "left" },
   {
     key: "chat",
     value: "전체 채팅",

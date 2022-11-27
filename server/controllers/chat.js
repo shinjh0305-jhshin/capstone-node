@@ -1,5 +1,6 @@
 const db = require("../tools/authdb");
 // db is a pool
+import io from "../server";
 
 export const createRoom = async (req, res) => {
   const { roomName } = req.body;
@@ -119,7 +120,7 @@ export const getChat = async (req, res) => {
   if (roomId === "0") return res.status(200).json({ ok: true, msgList: [] });
   try {
     const [result] = await db.query(
-      `SELECT nickname, content, createdAt, roomId, imagePath FROM Chat WHERE roomId = '${roomId}';`
+      `SELECT nickname, content, chatType, createdAt, roomId, imagePath FROM Chat WHERE roomId = '${roomId}';`
     );
     //console.log(result);
     return res.status(200).json({ ok: true, msgList: result });
@@ -130,15 +131,39 @@ export const getChat = async (req, res) => {
 
 export const postChat = async (req, res) => {
   //console.log(req.body);
-  const { content, sender, imgPath, roomId } = req.body;
+  const { content, sender, imgPath, roomId, chatType } = req.body;
   const replacedContent = content.replace(/'/g, "''");
   try {
     await db.query(
-      `INSERT INTO Chat(roomId,nickname,content,imagePath) VALUES('${roomId}','${sender}','${replacedContent}','${imgPath}');`
+      `INSERT INTO Chat(roomId,nickname,chatType,content,imagePath) VALUES('${roomId}','${sender}','${chatType}','${replacedContent}','${imgPath}');`
     );
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.log(err);
     return res.status(401).json({ ok: false });
+  }
+};
+
+export const postSendNotification = async (req, res) => {
+  try {
+    const { roomId, nickname, inOut } = req.body;
+    const msgObj = new Object();
+    msgObj.chatType = "notification";
+    msgObj.time = new Date(Date.now());
+    msgObj.sender = nickname;
+    msgObj.roomId = String(roomId);
+    msgObj.imgPath = "";
+    if (inOut === true) msgObj.content = `${nickname}님이 들어왔습니다.`;
+    else msgObj.content = `${nickname}님이 나갔습니다.`;
+    io.to(String(roomId)).emit("notify", { msg: msgObj });
+
+    await db.query(
+      `INSERT INTO Chat(roomId,nickname,chatType,content,imagePath) VALUES('${roomId}','${nickname}','${msgObj.chatType}','${msgObj.content}','${msgObj.imgPath}');`
+    );
+
+    return res.status(200).json({ ok: true, msg: msgObj });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ ok: false });
   }
 };
