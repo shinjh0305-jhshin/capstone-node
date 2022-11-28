@@ -4,115 +4,58 @@
       <h2 class="text-center">공구 등록</h2>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 제목</label>
-        <div class="col-md-9">
-          <el-input v-model="deal.name" disabled />
-        </div>
+        <div class="col-md-9">{{ deal.name }}</div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">모을 금액</label>
         <div class="col-md-9">
-          <div class="input-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              v-model="deal.goal"
-              @keyup="calculatePrice()"
-              disabled
-              readonly
-            />
-            <span class="input-group-text">원</span>
-          </div>
+          <div class="col-md-9">{{ new Intl.NumberFormat("ko").format(deal.goal) }}원</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">모일 인원</label>
         <div class="col-md-9">
-          <div class="input-group mb-3">
-            <input
-              id="numPeople"
-              type="text"
-              class="form-control"
-              v-model="deal.people"
-              @keyup="calculatePrice()"
-              disabled
-              readonly
-            />
-            <span class="input-group-text">명</span>
-          </div>
+          <div class="col-md-9">{{ new Intl.NumberFormat("ko").format(deal.people) }}명</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">1인당 공구가격</label>
         <div class="col-md-9">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" v-model="deal.price" disabled readonly />
-            <span class="input-group-text">원</span>
-          </div>
+          <div class="col-md-9">{{ new Intl.NumberFormat("ko").format(deal.price) }}원</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">구매 사이트</label>
         <div class="col-md-9">
-          <div class="input-group mb-3">
-            <el-input
-              v-model="deal.url"
-              placeholder="물품을 구매한 사이트를 적어주세요"
-              disabled
-              readonly
-            />
-          </div>
+          <div class="col-md-9">{{ deal.url }}</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 단위</label>
-        <div class="col-auto">
-          <div class="input-group mb-3">
-            <span class="input-group-text">1인당</span>
-            <input type="text" class="form-control" v-model="deal.portion" disabled readonly />
-            <select class="form-select" v-model="deal.unit" disabled>
-              <option v-for="(name, i) in units" :key="i" v-text="name" :value="name"></option>
-            </select>
-          </div>
+        <div class="col-md-9">
+          <div class="col-md-9">1인당 {{ deal.portion }}{{ deal.unit }}</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">카테고리</label>
-        <div class="col-auto">
-          <select class="form-select" v-model="deal.category" disabled>
-            <option v-for="(name, i) in categories" :key="i" v-text="name" :value="i"></option>
-          </select>
+        <div class="col-md-9">
+          <div class="col-md-9">{{ categories[deal.category] }}</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">태그</label>
         <div class="col-md-9">
-          <el-tag
-            v-for="tag in deal.tags"
-            :key="tag"
-            :type="'success'"
-            class="mr-1"
-            closable
-            :disable-transitions="false"
-            size="large"
-            @close="handleClose(tag)"
-          >
+          <el-tag v-for="tag in deal.tags" :key="tag" :type="'success'" class="mr-1" closable :disable-transitions="false" size="large" @close="handleClose(tag)">
             {{ tag }}
           </el-tag>
-          <el-input
-            v-if="inputVisible"
-            ref="InputRef"
-            v-model="inputValue"
-            class="col-auto"
-            @keyup.enter="handleInputConfirm"
-            @blur="handleInputConfirm"
-          />
+          <el-input v-if="inputVisible" ref="InputRef" v-model="inputValue" class="col-auto" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
           <el-button v-else class="button-new-tag mr-1" @click="showInput"> + New Tag </el-button>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 마감일</label>
         <div class="col-md-9">
-          <el-date-picker v-model="deal.ends" type="date" placeholder="Pick a day" disabled />
+          <div class="col-md-9">{{ deal.ends }}</div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -144,12 +87,7 @@
         <label class="col-md-3 col-form-label">상품 설명</label>
         <div class="col-md-9">
           <div class="mb-3">
-            <textarea
-              class="form-control"
-              id="exampleFormControlTextarea1"
-              rows="3"
-              v-model="deal.content"
-            ></textarea>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="deal.content"></textarea>
           </div>
         </div>
       </div>
@@ -172,6 +110,7 @@ import { reactive, nextTick, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { UploadFilled } from "@element-plus/icons-vue";
 import * as _ from "lodash";
+import * as moment from "moment";
 import useAxios from "@/modules/axios";
 import { categories, units } from "@/modules/selectData";
 const { axiosPost, axiosGet } = useAxios();
@@ -272,7 +211,7 @@ function saveDetail(resp) {
   newDeal.unit = resp[0].unit;
   newDeal.category = resp[0].category;
   newDeal.tags = JSON.parse(resp[0].tags);
-  newDeal.ends = resp[0].ends;
+  newDeal.ends = moment(resp[0].ends).format("YYYY-MM-DD");
   newDeal.content = resp[0].content;
 
   resp[0].fileList.forEach((x) => {

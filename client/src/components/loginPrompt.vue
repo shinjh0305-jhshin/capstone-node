@@ -10,7 +10,21 @@
                 <h3 class="mb-4">Sign In</h3>
               </div>
             </div>
-            <div class="form-group mb-3">
+            <form>
+              <div class="mb-3">
+                <label class="label" for="name">ID</label>
+                <input type="text" class="form-control" placeholder="ID" v-model="userInfo.userID" required />
+              </div>
+              <div class="mb-3">
+                <label class="label" for="password">Password</label>
+                <input type="password" class="form-control" placeholder="Password" v-model="userInfo.userPWD" required />
+              </div>
+              <div>
+                <button type="submit" class="form-control btn btn-primary rounded submit px-3" @click="loginSubmit">Sign In</button>
+              </div>
+            </form>
+
+            <!-- <div class="form-group mb-3">
               <label class="label" for="name">ID</label>
               <input type="text" class="form-control" placeholder="ID" v-model="userInfo.userID" required />
             </div>
@@ -20,7 +34,7 @@
             </div>
             <div class="form-group">
               <button type="submit" class="form-control btn btn-primary rounded submit px-3" @click="loginSubmit">Sign In</button>
-            </div>
+            </div> -->
             <div class="form-group d-md-flex">
               <div class="w-50 text-left" />
               <div class="w-50 text-md-right">
@@ -34,12 +48,6 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "LoginPrompt",
-};
-</script>
 
 <script setup>
 import useAxios from "../modules/axios";
@@ -68,7 +76,12 @@ const onLoginSuccess = (respData) => {
 };
 
 const onLoginFail = (respData = null) => {
-  console.log("❌ FAILED");
+  console.log(`❌ ${respData}`);
+  if (respData === "user does not exist") {
+    alert("아이디를 다시 확인하세요");
+  } else {
+    alert("패스워드를 다시 확인하세요");
+  }
 };
 
 const loginSubmit = () => {

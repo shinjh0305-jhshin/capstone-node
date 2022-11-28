@@ -46,7 +46,7 @@ CREATE TABLE product (
     `id`            INT             NOT NULL    AUTO_INCREMENT,
     `name`          VARCHAR(100)    NOT NULL,
     `goal`          INT             NOT NULL,
-    `ordered`       INT             NOT NULL,
+    `ordered`       INT             NOT NULL    DEFAULT 1,
     `people`        INT             NOT NULL    DEFAULT 1,
     `price`         INT             NOT NULL    DEFAULT 0,
     `url`           VARCHAR(200)    NOT NULL,
