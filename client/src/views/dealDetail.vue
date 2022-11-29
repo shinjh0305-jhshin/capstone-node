@@ -49,11 +49,12 @@
                       size="large"
                       @change="calculatePrice"
                       :min="productDetail.portion"
-                      :max="productDetail.people - productDetail.ordered"
+                      :max="productDetail.portion * (productDetail.people - productDetail.ordered)"
                       :step="productDetail.portion"
                       id="userPrice"
                       :key="totalUpdated"
                     />
+                    {{ productDetail.unit }}
                   </div>
                 </div>
               </div>
@@ -67,7 +68,9 @@
               </div>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="col-12 d-grid p-1">
-                  <button type="button" class="btn btn-lg btn-danger">공구 참여</button>
+                  <button type="button" class="btn btn-lg btn-danger" @click="enrollDeal" v-if="isLeft && !productDetail.deleted">공구 참여</button>
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="!isLeft && isStillOpened">공구가 정원에 도달하였습니다</button>
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="!isStillOpened || productDetail.deleted">공구가 마감되었습니다</button>
                 </div>
               </div>
             </div>
@@ -80,13 +83,16 @@
 
 <script setup>
 import useAxios from "@/modules/axios";
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted, onBeforeMount } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import * as moment from "moment";
 import { categories, units } from "@/modules/selectData";
 const { axiosGet, axiosPost } = useAxios();
+import { useUserInfoStore } from "/@stores/userInfo";
 
+const userStore = useUserInfoStore();
 const route = useRoute();
+const router = useRouter();
 let productId = route.query.product_id;
 
 let productDetail = ref({}); //현재 조회중인 제품에 대한 정보
@@ -94,6 +100,9 @@ let productImage = ref([]); //현재 조회중인 제품의 이미지 명(XXX.PN
 let total = ref(0); //사용자가 구매하고자 하는 물건의 개수
 let totalPrice = ref(0); //사용자의 총 구매 금액
 let totalUpdated = ref(0); //사용자의 키보드 숫자 입력에 의해 구매 수량이 변했는지
+let isLeft = ref(true); //공구에 참여할 수 있는 수량이 남아있는지
+let isStillOpened = ref(true); //공구에 참여할 수 있는 기간인지
+let isGuest = ref(false); //공구를 개시한 사람이 아닌 사용자가 공구 페이지로 들어갔는지
 
 //사용자가 물건 개수를 입력하지 않았을 때, 1로 바꾸고 가격도 다시 계산
 onMounted(() => {
@@ -115,8 +124,11 @@ function leftDays(ends) {
   const leftDay = endDate.diff(now, "days");
   if (leftDay >= 1) {
     return leftDay + "일 뒤 마감";
-  } else {
+  } else if (leftDay == 0) {
     return "오늘 마감";
+  } else {
+    isStillOpened.value = false;
+    return "마감된 공구";
   }
 }
 
@@ -133,7 +145,7 @@ function calculatePrice() {
     total.value = productDetail.value.portion;
     totalUpdated.value++;
   }
-  totalPrice.value = productDetail.value.price * total.value;
+  totalPrice.value = (productDetail.value.price * total.value) / productDetail.value.portion;
 }
 
 //제품 상세 쿼리에 대한 콜백함수
@@ -142,6 +154,8 @@ const saveDetail = function (respData) {
   productDetail.value = respData[0];
   total.value = productDetail.value.portion;
   totalPrice.value = productDetail.value.price;
+  isLeft.value = productDetail.value.people - productDetail.value.ordered > 0 ? true : false;
+  console.log(`left = ${isLeft.value}`);
 };
 
 //제품 이미지 쿼리에 대한 콜백함수
@@ -164,6 +178,19 @@ function getProductImage() {
 const getImageUrl = (name) => {
   return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${name}`;
 };
+
+//공구에 참여한다
+function enrollDeal() {
+  const payload = {
+    quantity: total.value / productDetail.value.portion,
+    user_nick: userStore.userNick,
+  };
+  axiosPost(`/product/${productId}/enrollment`, payload, onDealEnrollSuccess);
+}
+
+function onDealEnrollSuccess(resp) {
+  router.push("/");
+}
 
 //onCreated
 getProductDetail();
