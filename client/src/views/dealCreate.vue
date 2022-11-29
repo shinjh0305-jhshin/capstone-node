@@ -140,7 +140,9 @@ import { UploadFilled } from "@element-plus/icons-vue";
 import * as moment from "moment";
 import useAxios from "@/modules/axios";
 import { categories, units } from "@/modules/selectData";
+import { useUserInfoStore } from "/@stores/userInfo";
 
+const userStore = useUserInfoStore();
 const { axiosPost } = useAxios();
 const router = useRouter();
 
@@ -159,7 +161,7 @@ const newDeal = {
   ends: "",
   fileList: [],
   content: "",
-  createdby: "JaeHyun Shin",
+  createdby: userStore.userNick,
 };
 
 function checkGoal(e) {

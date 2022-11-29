@@ -1,30 +1,25 @@
 <template>
   <nav class="navbar navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
-      <router-link to="/" class="navbar-brand text-white"
-        >우리동네 공유마켓</router-link
-      >
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
+      <a href="#" class="navbar-brand text-white">우리동네 공유마켓</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul
-          :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
-          v-for="menu in menus_category"
-          :key="menu.id"
-        >
-          <li
-            class="nav-item"
-            v-for="menu_object in menu.value"
-            :key="menu_object.key"
-          >
+        <ul :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }" v-for="menu in menus_category" :key="menu.id">
+          <li class="nav-item" v-for="menu_object in menu.value" :key="menu_object.key">
             <router-link
+              :class="{
+                'nav-link': true,
+                active: menu == menu_object.key,
+                'text-white': true,
+              }"
+              @click="onMovePage($event, menu_object)"
+              :to="menu_object.URL"
+              >{{ menu_object.value }}
+            </router-link>
+            <!-- <router-link
               v-if="menu_object.key == 'nick'"
               :class="{
                 'nav-link': true,
@@ -45,7 +40,7 @@
               @click="onMovePage($event, menu_object)"
               :to="menu_object.URL"
               >{{ menu_object.value }}
-            </router-link>
+            </router-link> -->
           </li>
         </ul>
       </div>
@@ -60,30 +55,15 @@ export default {
 </script>
 
 <script setup>
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, onBeforeMount } from "vue";
 import { useUserInfoStore } from "/@stores/userInfo";
 
 const userStore = useUserInfoStore();
 
 const menu = ref("home");
-const tempMenus = [
-  { key: "home", value: "홈", URL: "/", position: "left" },
-  {
-    key: "chat",
-    value: "채팅",
-    URL: "/room",
-    position: "left",
-  },
-  {
-    key: "login",
-    value: "로그인",
-    URL: "/login",
-    position: "right",
-  },
-];
 
 const menus = [
-  //{ key: "home", value: "홈", URL: "/", position: "left" },
+  { key: "home", value: "홈", URL: "/", position: "left" },
   {
     key: "chat",
     value: "전체 채팅",
@@ -105,7 +85,8 @@ const menus = [
   {
     key: "nick",
     URL: "/profile",
-    value: userStore.userNick,
+    value: "",
+    // value: userStore.userNick,
     position: "right",
   },
   {
@@ -122,6 +103,7 @@ const right_menus = computed(() => menus.filter((i) => i.position == "right"));
 const onMovePage = (evt, menu_object) => {
   if (menu_object.key === "logout") {
     userStore.setInfo("", "", false);
+    menus[4].value = ""; ///NEW
   }
   console.log(menu_object);
   if (evt) {
@@ -135,10 +117,7 @@ const menus_category = [
   { id: 2, me_auto: false, value: right_menus.value },
 ];
 
-const menu_category = [
-  { id: 1, me_auto: true, value: left_menus.value },
-  { id: 2, me_auto: false, value: right_menus.value },
-];
+menus[4].value = userStore.userNick;
 </script>
 
 <style>

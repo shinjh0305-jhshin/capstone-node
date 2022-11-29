@@ -3,21 +3,7 @@ const db = require("../tools/authdb");
 
 router.post("/create", async (req, res) => {
   console.log(req.body);
-  const {
-    name,
-    goal,
-    people,
-    price,
-    url,
-    category,
-    portion,
-    unit,
-    ends,
-    createdby,
-    content,
-    tags,
-    fileList,
-  } = req.body;
+  const { name, goal, people, price, url, category, portion, unit, ends, createdby, content, tags, fileList } = req.body;
   console.log(fileList);
   try {
     const [result] = await db.query(
@@ -28,17 +14,11 @@ router.post("/create", async (req, res) => {
 
     //사진 쿼리
 
-    await db.query(
-      `INSERT INTO contents(product_id, content) values (${productId}, '${content}')`
-    );
+    await db.query(`INSERT INTO contents(product_id, content) values (${productId}, '${content}')`);
 
-    await db.query(
-      `INSERT INTO image(product_id, type, path) values (${productId}, 1, '${fileList[0]}')`
-    );
+    await db.query(`INSERT INTO image(product_id, type, path) values (${productId}, 1, '${fileList[0]}')`);
     fileList.slice(1).forEach((x) => {
-      db.query(
-        `INSERT INTO image(product_id, type, path) values (${productId}, 2, '${x}')`
-      );
+      db.query(`INSERT INTO image(product_id, type, path) values (${productId}, 2, '${x}')`);
     });
 
     res.json({
@@ -57,22 +37,14 @@ router.post("/update/:id", async (req, res) => {
     const product_id = req.params.id;
     console.log(req.body);
 
-    await db.query(
-      `UPDATE contents SET content = '${req.body.content}' WHERE product_id = ${product_id}`
-    );
-    await db.query(
-      `UPDATE product SET tags = '${req.body.tags}' WHERE id = ${product_id}`
-    );
+    await db.query(`UPDATE contents SET content = '${req.body.content}' WHERE product_id = ${product_id}`);
+    await db.query(`UPDATE product SET tags = '${req.body.tags}' WHERE id = ${product_id}`);
 
     await db.query(`DELETE from image WHERE product_id = ${product_id}`);
 
-    await db.query(
-      `INSERT INTO image(product_id, type, path) values (${product_id}, 1, '${req.body.fileList[0]}')`
-    );
+    await db.query(`INSERT INTO image(product_id, type, path) values (${product_id}, 1, '${req.body.fileList[0]}')`);
     req.body.fileList.slice(1).forEach((x) => {
-      db.query(
-        `INSERT INTO image(product_id, type, path) values (${product_id}, 2, '${x}')`
-      );
+      db.query(`INSERT INTO image(product_id, type, path) values (${product_id}, 2, '${x}')`);
     });
 
     res.status(200).json({
@@ -88,13 +60,9 @@ router.post("/delete/:id", async (req, res) => {
   try {
     const product_id = req.params.id;
     await db.query(`UPDATE product SET deleted = 1 WHERE id = ${product_id}`);
-    await db.query(
-      `UPDATE image SET type = 2 WHERE product_id = ${product_id} AND type = 1`
-    );
+    await db.query(`UPDATE image SET type = 2 WHERE product_id = ${product_id} AND type = 1`);
 
-    await db.query(
-      `INSERT INTO image(product_id, type, path) VALUES (${product_id}, 1, 'deleted.jpg')`
-    );
+    await db.query(`INSERT INTO image(product_id, type, path) VALUES (${product_id}, 1, 'deleted.jpg')`);
 
     res.status(200).json({
       status: 0,
@@ -121,6 +89,7 @@ router.get("/list", async (req, res) => {
     });
   }
 });
+
 router.get("/:id", async (req, res) => {
   try {
     const product_id = req.params.id;
@@ -144,6 +113,32 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({
       message: "something went wrong",
     });
+  }
+});
+
+//상엽 API와 동일
+router.post("/:id/enrollment", async (req, res) => {
+  try {
+    const product_id = req.params.id;
+    const { quantity, user_nick } = req.body;
+
+    await db.query(
+      `UPDATE product
+      SET ordered = ordered + ${quantity}
+      WHERE id = ${product_id}`
+    );
+
+    await db.query(
+      `INSERT INTO enrolled(product_id, nickname, quantity)
+      VALUES (${product_id}, '${user_nick}', ${quantity})
+      `
+    );
+
+    res.status(200).json({
+      message: `${user_nick} joined to deal number ${product_id} with quantity ${quantity}.`,
+    });
+  } catch (error) {
+    res.send(error);
   }
 });
 
