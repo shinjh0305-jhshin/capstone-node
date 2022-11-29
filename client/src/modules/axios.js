@@ -16,17 +16,16 @@ export default function () {
   const axiosPost = (URL, Data, onSuccess = null, onFailed = null) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
     console.log("axiosPost", final_URL, Data);
-    try {
       axios.post(final_URL, Data).then((resp) => {
         if (resp.status === 200 || resp.data.ok === true) {
           if (onSuccess) onSuccess(resp.data);
         } else {
           if (onFailed) onFailed(resp.data);
         }
+      })
+      .catch((err) => {
+        onFailed(err.response.data.message); //for loginprompt
       });
-    } catch (err) {
-      console.log(err);
-    }
   };
   return { axiosGet, axiosPost };
 }

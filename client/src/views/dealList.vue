@@ -16,18 +16,16 @@
               <h5 class="card-title">{{ deal.name }}</h5>
               <p class="card-text">
                 <span class="badge bg-dark me-1">{{ categories[deal.category] }}</span>
-                <span class="badge bg-red me-1">{{ deal.ordered }}/{{ deal.people }}명</span>
-                <span class="badge bg-blue me-1">{{ leftDays(deal.ends) }}일뒤 마감</span>
+                <span class="badge bg-danger me-1">{{ deal.ordered }}/{{ deal.people }}명</span>
+                <span class="badge bg-warning me-1">{{ leftDays(deal.ends) }}</span>
               </p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group" role="group" aria-label="Basic example">
                   <router-link :to="{ name: 'Detail', query: { product_id: deal.id } }">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">
-                      공구 참여
-                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">공구 참여</button>
                   </router-link>
                 </div>
-                <small class="text-dark">1인당 {{ deal.price }}원</small>
+                <small class="text-dark">1인당 {{ new Intl.NumberFormat("ko").format(deal.price) }}원</small>
               </div>
             </div>
           </div>
@@ -65,7 +63,15 @@ const getImageUrl = (name) => {
 function leftDays(ends) {
   const endDate = moment(ends);
   const now = moment();
-  return endDate.diff(now, "days");
+
+  const leftDay = endDate.diff(now, "days");
+  if (leftDay >= 1) {
+    return leftDay + "일 뒤 마감";
+  } else if (leftDay == 0) {
+    return "오늘 마감";
+  } else {
+    return "마감된 공구";
+  }
 }
 </script>
 

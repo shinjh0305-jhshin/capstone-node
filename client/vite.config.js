@@ -21,6 +21,7 @@ export default defineConfig({
       "/@components": path.resolve(__dirname, "./src/components"),
       "/@app_modules": path.resolve(__dirname, "./src/modules"),
       "/@stores": path.resolve(__dirname, "./src/stores"),
+      "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
     },
   },
 });

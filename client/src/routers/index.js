@@ -106,7 +106,6 @@ router.beforeEach(async (to, from, next) => {
   const curRoomId = Number(to.params.roomId);
 
   if (isLoggedIn && currentUser) {
-    //console.log("currentUser:", currentUser);
     if (to.meta.authRequired === false) {
       console.log("❗️ NOT allowed");
       next({ name: "Home" });
