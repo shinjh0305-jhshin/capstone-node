@@ -11,7 +11,10 @@
               picked: String(myRoom.roomId) === String($route.params.roomId),
             }"
           >
-            <router-link :to="{ name: 'room', params: { roomId: myRoom.roomId } }" @click="changeRoom(myRoom.roomId)">
+            <router-link
+              :to="{ name: 'room', params: { roomId: myRoom.roomId } }"
+              @click="changeRoom(myRoom.roomId)"
+            >
               <div class="room-name">
                 <span>{{ myRoom.roomName }}</span>
               </div>
@@ -45,7 +48,14 @@
         <div class="send-container">
           <div class="send-body">
             <div class="input-container">
-              <input type="text" class="form-control" v-model="newMessageObj.content" id="message" placeholder="send message" @keyup.enter="sendMessage()" />
+              <input
+                type="text"
+                class="form-control"
+                v-model="newMessageObj.content"
+                id="message"
+                placeholder="send message"
+                @keyup.enter="sendMessage()"
+              />
             </div>
             <div class="click-container">
               <div class="send-click" @click="sendMessage()">
@@ -55,7 +65,13 @@
             <div class="image-click-container">
               <div class="image-click">
                 <label for="chat-img-upload">+</label>
-                <input type="file" @change="sendImage()" id="chat-img-upload" ref="chatImage" name="chatImg" />
+                <input
+                  type="file"
+                  @change="sendImage()"
+                  id="chat-img-upload"
+                  ref="chatImage"
+                  name="chatImg"
+                />
               </div>
             </div>
           </div>
@@ -73,6 +89,7 @@ import useAxios from "../modules/axios";
 import { reactive } from "vue";
 import message from "./message.vue";
 import FormData from "form-data";
+const { VITE_SOCKET_URL } = import.meta.env;
 const { axiosGet, axiosPost } = useAxios();
 export default {
   name: "room",
@@ -83,14 +100,16 @@ export default {
     return {
       myRoomList: [],
       curRoomName: "",
-      socket: io("http://localhost:8080"),
+      socket: io(VITE_SOCKET_URL),
       messageObj: {
         sender: "",
         content: "",
         time: "",
         imgPath: "",
+        chatType: "",
       },
       newMessageObj: {
+        chatType: "",
         content: "",
         time: "",
         sender: "",
@@ -124,12 +143,22 @@ export default {
     },
   },
   mounted() {
+    this.socket.on("joined", (fromServer) => {
+      console.log("✅ Joined Room:", fromServer);
+    });
+    this.socket.on("leaving", (fromServer) => {
+      console.log("✅ Left Room:", fromServer);
+    });
     this.socket.on("connect", () => {
       console.log("✅ connected");
     });
     this.socket.on("messageReceived", (msgObjFromServer) => {
-      console.log("✅ Received data:", msgObjFromServer);
+      console.log("✅ Received Message:", msgObjFromServer);
       this.messageObjList.push(msgObjFromServer);
+    });
+    this.socket.on("notify", (resp) => {
+      console.log("✅ Notification", resp.msg);
+      this.messageObjList.push(resp.msg);
     });
     this.changeRoom(this.$route.params.roomId); // 현재 페이지 새로고침하는 경우
     this.setRoomName(this.$route.params.roomId);
@@ -142,15 +171,16 @@ export default {
   methods: {
     updatePage(prevRoomId, curRoomId) {
       //console.log("✅ prev -- UPDATE PAGE:", prevRoomId, curRoomId);
-      this.socket.emit("leaveRoom", { roomId: prevRoomId });
-      this.socket.emit("joinRoom", { roomId: curRoomId });
+      //console.log("TYPE OF ROOMID:", typeof prevRoomId);
+      this.socket.emit("leaveRoom", { roomId: String(prevRoomId) });
+      this.socket.emit("joinRoom", { roomId: String(curRoomId) });
     },
     isDiffOther(idx) {
       if (idx === 0) return false;
       const prevUser = this.messageObjList[idx - 1].sender;
       const curUser = this.messageObjList[idx].sender;
-      if (prevUser != this.currentUser && prevUser != curUser) return true;
-      return false;
+      if (prevUser != this.currentUser && prevUser != curUser) return false;
+      return true;
     },
     isDisplaySender(idx) {
       if (idx === 0) return true;
@@ -158,6 +188,9 @@ export default {
       const curUser = this.messageObjList[idx].sender;
       const prev = new Date(this.messageObjList[idx].time).getDate();
       const today = new Date(this.messageObjList[idx - 1].time).getDate();
+      const prevType = this.messageObjList[idx - 1].chatType;
+      const curType = this.messageObjList[idx].chatType;
+      if (prevType != curType) return true;
       if (prev != today) return true;
       if (prevUser === curUser) return false;
       return true;
@@ -165,7 +198,9 @@ export default {
     isDisplayTime(idx) {
       if (idx + 1 === this.messageObjList.length) return true;
       const curMinute = new Date(this.messageObjList[idx].time).getMinutes();
-      const nextMinute = new Date(this.messageObjList[idx + 1].time).getMinutes();
+      const nextMinute = new Date(
+        this.messageObjList[idx + 1].time
+      ).getMinutes();
       const curUser = this.messageObjList[idx].sender;
       const nextUser = this.messageObjList[idx + 1].sender;
       if (curUser != nextUser) return true;
@@ -182,7 +217,9 @@ export default {
     getDividerDate(idx) {
       const week = ["일", "월", "화", "수", "목", "금", "토"];
       const today = new Date(this.messageObjList[idx].time);
-      return `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 ${week[today.getDay()]}요일`;
+      return `${today.getFullYear()}년 ${
+        today.getMonth() + 1
+      }월 ${today.getDate()}일 ${week[today.getDay()]}요일`;
     },
     setRoomName(id) {
       for (const myRoom of this.myRoomList) {
@@ -199,19 +236,21 @@ export default {
       let data = new FormData();
       const imgObj = this.$refs.chatImage.files[0];
       const store = useUserInfoStore();
+      const { VITE_IMAGE_SERVER_URL } = import.meta.env;
       data.append("chatImg", imgObj);
       const imgConfig = {
         method: "post",
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        url: "//54.180.125.158:9090/upload",
+        url: VITE_IMAGE_SERVER_URL,
         data: data,
       };
       axios(imgConfig)
         .then((resp) => {
           console.log(resp);
-          this.newMessageObj.roomId = this.$route.params.roomId;
+          this.newMessageObj.chatType = "message";
+          this.newMessageObj.roomId = String(this.$route.params.roomId);
           this.newMessageObj.time = new Date(Date.now());
           this.newMessageObj.sender = store.userNick;
           this.newMessageObj.content = "";
@@ -229,7 +268,8 @@ export default {
       };
       if (this.newMessageObj.content.length > 0) {
         const store = useUserInfoStore();
-        this.newMessageObj.roomId = this.$route.params.roomId;
+        this.newMessageObj.chatType = "message";
+        this.newMessageObj.roomId = String(this.$route.params.roomId);
         this.newMessageObj.time = new Date(Date.now());
         this.newMessageObj.sender = store.userNick;
         this.newMessageObj.content.trim();
@@ -240,22 +280,26 @@ export default {
       }
     },
     changeRoom(id) {
-      console.log("⭐️ CHANGE ROOM...", id);
-      this.messageObjList = [];
-      const getMsgSucceed = async (resp) => {
-        const { msgList } = resp;
-        //console.log("✅ Get Msg", msgList);
-        for (const msg of msgList) {
-          this.messageObjList.push({
-            content: msg.content,
-            sender: msg.nickname,
-            time: new Date(msg.createdAt),
-            roomId: msg.roomId,
-            imgPath: msg.imagePath,
-          });
-        }
-      };
-      axiosGet(`/rooms/getChat/${id}`, getMsgSucceed);
+      if (Number(id) > 0) {
+        console.log("⭐️ CHANGE ROOM...", id);
+        this.messageObjList = [];
+        const getMsgSucceed = async (resp) => {
+          const { msgList } = resp;
+          //console.log("✅ Get Msg", msgList);
+          for (const msg of msgList) {
+            this.messageObjList.push({
+              content: msg.content,
+              sender: msg.nickname,
+              time: new Date(msg.createdAt),
+              roomId: String(msg.roomId),
+              imgPath: msg.imagePath,
+              chatType: msg.chatType,
+            });
+          }
+        };
+        axiosGet(`/rooms/getChat/${id}`, getMsgSucceed);
+        this.socket.emit("joinRoom", { roomId: String(id) });
+      }
     },
   },
 };

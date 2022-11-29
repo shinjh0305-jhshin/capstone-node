@@ -7,7 +7,9 @@ const login = async (req, res) => {
 
   const nickname = req.body.userID;
   const password = req.body.userPWD;
-  const [result] = await db.query(`SELECT * FROM User WHERE nickname = '${nickname}'`);
+  const [result] = await db.query(
+    `SELECT * FROM User WHERE nickname = '${nickname}'`
+  );
 
   const user = result[0];
 

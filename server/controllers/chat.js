@@ -1,5 +1,6 @@
 const db = require("../tools/authdb");
 // db is a pool
+import io from "../server";
 
 export const createRoom = async (req, res) => {
   const { roomName } = req.body;
@@ -13,10 +14,14 @@ export const createRoom = async (req, res) => {
     });
   }
   try {
-    const result = await db.query(`INSERT INTO Room(nickname, roomName) VALUES('${nickname}','${roomName}');`);
+    const result = await db.query(
+      `INSERT INTO Room(nickname, roomName) VALUES('${nickname}','${roomName}');`
+    );
     //console.log(result);
     const newId = result[0].insertId;
-    await db.query(`INSERT INTO Member(roomId,nickname) VALUES('${newId}','${nickname}');`);
+    await db.query(
+      `INSERT INTO Member(roomId,nickname) VALUES('${newId}','${nickname}');`
+    );
     return res.status(200).json({
       ok: true,
     });
@@ -44,7 +49,9 @@ export const getAttachedRooms = async (req, res) => {
     return res.status(401).json({ rooms: [] });
   }
   try {
-    const myRooms = await db.query(`SELECT A.roomId, A.roomName FROM Room as A JOIN Member as B WHERE B.nickname = '${nickname}' and A.roomId = B.roomId GROUP By A.roomId`);
+    const myRooms = await db.query(
+      `SELECT A.roomId, A.roomName FROM Room as A JOIN Member as B WHERE B.nickname = '${nickname}' and A.roomId = B.roomId GROUP By A.roomId`
+    );
     return res.status(200).json({ ok: true, rooms: myRooms[0] });
   } catch (err) {
     return res.status(401).json({ ok: false, rooms: [] });
@@ -61,13 +68,17 @@ export const enterRoom = async (req, res) => {
     return res.status(401).json({ ok: false, errorMessage: "Failed..." });
   }
   try {
-    const [result] = await db.query(`SELECT COUNT(*) as CNT FROM Member WHERE roomId = ${roomId} and nickname = '${nickname}';`);
+    const [result] = await db.query(
+      `SELECT COUNT(*) as CNT FROM Member WHERE roomId = ${roomId} and nickname = '${nickname}';`
+    );
     const memCnt = result[0]["CNT"];
     //console.log("memCnt:", memCnt);
     if (memCnt) {
       return res.status(200).json({ ok: false });
     }
-    await db.query(`INSERT INTO Member(roomId,nickname) VALUES('${roomId}','${nickname}');`);
+    await db.query(
+      `INSERT INTO Member(roomId,nickname) VALUES('${roomId}','${nickname}');`
+    );
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.log("❌ Error", err);
@@ -79,7 +90,9 @@ export const checkUserInRoom = async (req, res) => {
   const { roomId, nickname } = req.params;
   //console.log(roomId, nickname);
   try {
-    const [result] = await db.query(`SELECT COUNT(*) as CNT FROM Member WHERE roomId = ${roomId} and nickname = '${nickname}';`);
+    const [result] = await db.query(
+      `SELECT COUNT(*) as CNT FROM Member WHERE roomId = ${roomId} and nickname = '${nickname}';`
+    );
     const memCnt = result[0]["CNT"];
     //console.log("memcnt:", memCnt);
     if (memCnt > 0) {
@@ -104,10 +117,11 @@ export const getChat = async (req, res) => {
   if (roomId === undefined) {
     return res.status(401).json({ ok: false });
   }
-
-  if (roomId === "0") return res.status(200).json({ ok: false, msgList: [] });
+  if (roomId === "0") return res.status(200).json({ ok: true, msgList: [] });
   try {
-    const [result] = await db.query(`SELECT nickname, content, createdAt, roomId, imagePath FROM Chat WHERE roomId = '${roomId}';`);
+    const [result] = await db.query(
+      `SELECT nickname, content, chatType, createdAt, roomId, imagePath FROM Chat WHERE roomId = '${roomId}';`
+    );
     //console.log(result);
     return res.status(200).json({ ok: true, msgList: result });
   } catch (err) {
@@ -117,13 +131,39 @@ export const getChat = async (req, res) => {
 
 export const postChat = async (req, res) => {
   //console.log(req.body);
-  const { content, sender, imgPath, roomId } = req.body;
+  const { content, sender, imgPath, roomId, chatType } = req.body;
   const replacedContent = content.replace(/'/g, "''");
   try {
-    await db.query(`INSERT INTO Chat(roomId,nickname,content,imagePath) VALUES('${roomId}','${sender}','${replacedContent}','${imgPath}');`);
+    await db.query(
+      `INSERT INTO Chat(roomId,nickname,chatType,content,imagePath) VALUES('${roomId}','${sender}','${chatType}','${replacedContent}','${imgPath}');`
+    );
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.log(err);
     return res.status(401).json({ ok: false });
+  }
+};
+
+export const postSendNotification = async (req, res) => {
+  try {
+    const { roomId, nickname, inOut } = req.body;
+    const msgObj = new Object();
+    msgObj.chatType = "notification";
+    msgObj.time = new Date(Date.now());
+    msgObj.sender = nickname;
+    msgObj.roomId = String(roomId);
+    msgObj.imgPath = "";
+    if (inOut === true) msgObj.content = `${nickname}님이 들어왔습니다.`;
+    else msgObj.content = `${nickname}님이 나갔습니다.`;
+    io.to(String(roomId)).emit("notify", { msg: msgObj });
+
+    await db.query(
+      `INSERT INTO Chat(roomId,nickname,chatType,content,imagePath) VALUES('${roomId}','${nickname}','${msgObj.chatType}','${msgObj.content}','${msgObj.imgPath}');`
+    );
+
+    return res.status(200).json({ ok: true, msg: msgObj });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ ok: false });
   }
 };

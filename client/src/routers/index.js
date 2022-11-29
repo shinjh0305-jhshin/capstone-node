@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import landingPage from "../components/landingPage.vue";
-import login from "../components/loginPrompt.vue";
-import product from "../components/product.vue";
+import loginPrompt from "../components/loginPrompt.vue";
 import join from "../components/join.vue";
 import allRoom from "../components/allRoom.vue";
 import room from "../components/room.vue";
@@ -47,7 +46,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: login,
+    component: loginPrompt,
     meta: { authRequired: false },
   },
   {
@@ -55,12 +54,6 @@ const routes = [
     name: "join",
     component: join,
     meta: { authRequired: false },
-  },
-  {
-    path: "/product",
-    name: "product",
-    component: product,
-    meta: { authRequired: true },
   },
   {
     path: "/allRoom",
@@ -88,11 +81,14 @@ const router = createRouter({
 });
 
 const checkValidRoomMember = async (currentUser, curRoomId) => {
-  console.log(currentUser, curRoomId);
-  const result = await axios.get(`http://localhost:8080/rooms/${curRoomId}/nickname/${currentUser}`);
-  console.log(result.data, result.status);
+  //console.log(currentUser, curRoomId);
+  const { VITE_BASE_URL } = import.meta.env;
+  const result = await axios.get(
+    VITE_BASE_URL + `/rooms/${curRoomId}/nickname/${currentUser}`
+  );
+  //console.log(result.data, result.status);
   if (result.data.ok === true) {
-    console.log("IS MEMBER!!");
+    console.log("✅ IS MEMBER!!");
     return true;
   } else {
     return false;
