@@ -88,6 +88,16 @@ CREATE TABLE enrolled (
     PRIMARY KEY (`id`)
 );
 
+CREATE TABLE device (
+    `id`            INT             NOT NULL    AUTO_INCREMENT,
+    `nickname`      VARCHAR(100)    NOT NULL,
+    `endpoint`      VARCHAR(300)    NOT NULL,
+    `auth`          VARCHAR(50)     NOT NULL,
+    `p256dh`        VARCHAR(150)    NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+
 INSERT INTO User VALUES('admin', 'asdf1234', 'admin@gmail.com');
 INSERT INTO User VALUES('john', 'asdf1234', 'john@gmail.com');
 INSERT INTO User VALUES('jake', 'asdf1234', 'jake@gmail.com');

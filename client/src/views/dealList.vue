@@ -40,7 +40,10 @@ import useAxios from "@/modules/axios";
 import { onBeforeMount, ref } from "vue";
 import { categories, units } from "@/modules/selectData";
 import * as moment from "moment";
+import { useUserInfoStore } from "/@stores/userInfo";
+import { checkIfSubscribed } from "@/modules/pushRegister";
 
+const userStore = useUserInfoStore();
 const { axiosGet, axiosPost } = useAxios();
 
 const dealList = ref([]);
@@ -72,6 +75,23 @@ function leftDays(ends) {
   } else {
     return "마감된 공구";
   }
+}
+
+if ("serviceWorker" in navigator) {
+  console.log("😊 Service Worker in navigator");
+}
+
+if (Notification.permission !== "granted") {
+  console.log("😢 Push service not yet granted");
+  Notification.requestPermission((result) => {
+    if (result !== "granted") {
+      console.log("🤢 User deined push service");
+    } else {
+      console.log("👏👏 Push service granted by user");
+    }
+  });
+} else {
+  checkIfSubscribed(userStore.userNick);
 }
 </script>
 

@@ -182,4 +182,20 @@ router.get("/enrollment/:id", async (req, res) => {
   }
 });
 
+///push 구현을 위한 임시 router
+router.post("/device/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const body = { ...req.body };
+
+    await db.query(`INSERT INTO device(nickname, endpoint, auth, p256dh) VALUES ('${userId}', '${body.endpoint}', '${body.keys.auth}', '${body.keys.p256dh}')`);
+
+    res.status(200).send("Ok");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "something went wrong",
+    });
+  }
+});
 module.exports = router;
