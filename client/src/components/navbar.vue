@@ -45,10 +45,12 @@ export default {
 </script>
 
 <script setup>
+import useAxios from "@/modules/axios";
 import { ref, computed, watch } from "vue";
 import { useUserInfoStore } from "/@stores/userInfo";
 
 const userStore = useUserInfoStore();
+const { axiosGet, axiosPost } = useAxios();
 
 const menu = ref("home");
 const reload = ref(userStore.userNick);
@@ -92,8 +94,8 @@ const right_menus = computed(() => menus.filter((i) => i.position == "right"));
 
 const onMovePage = (evt, menu_object) => {
   if (menu_object.key === "logout") {
-    userStore.setInfo("", "", false);
     unsubscribe();
+    userStore.setInfo("", "", false);
   }
   console.log(menu_object);
   if (evt) {
@@ -113,7 +115,11 @@ function unsubscribe() {
       return swreg.pushManager.getSubscription();
     })
     .then((oldsub) => {
+      const body = {
+        endpoint: oldsub.endpoint,
+      };
       oldsub.unsubscribe();
+      axiosPost("/push/unregister", body);
     })
     .then((res) => {
       console.log("😁 Push service unsubscribed");

@@ -7,6 +7,7 @@ import userRouter from "./routes/userRouter";
 import chatRouter from "./routes/chatRouter";
 const productRouter = require("./routes/productRouter");
 const imageRouter = require("./routes/imageRouter");
+const pushServiceRouter = require("./routes/pushServiceRouter");
 // const db = require("./tools/authdb");
 
 const app = express();
@@ -18,10 +19,7 @@ app.use(morgan("dev"));
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   // update to match the domain you will make the request from
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Max-Age", 600);
   next();
 });
@@ -30,6 +28,7 @@ app.use("/product", productRouter);
 app.use("/image", imageRouter);
 app.use("/users", userRouter);
 app.use("/rooms", chatRouter);
+app.use("/push", pushServiceRouter);
 
 /*
 const rdsTestRouter = express.Router();

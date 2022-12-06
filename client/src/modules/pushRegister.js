@@ -16,7 +16,7 @@ function newSubscription(userNick) {
         const filteredSub = JSON.parse(JSON.stringify(newsub));
 
         console.log(filteredSub);
-        axiosPost(`/product/device/${userNick}`, filteredSub, onSuccess, onFail);
+        axiosPost(`/push/register/${userNick}`, filteredSub, onSuccess, onFail);
       });
   });
 }

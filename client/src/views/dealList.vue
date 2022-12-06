@@ -88,6 +88,7 @@ if (Notification.permission !== "granted") {
       console.log("🤢 User deined push service");
     } else {
       console.log("👏👏 Push service granted by user");
+      checkIfSubscribed(userStore.userNick);
     }
   });
 } else {
