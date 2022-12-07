@@ -109,7 +109,7 @@ import { useUserInfoStore } from "/@stores/userInfo";
 const userStore = useUserInfoStore();
 const route = useRoute();
 const router = useRouter();
-let productId = route.query.product_id;
+let dealId = route.query.id;
 
 let productDetail = ref({}); //현재 조회중인 제품에 대한 정보
 let productImage = ref([]); //현재 조회중인 제품의 이미지 명(XXX.PNG)
@@ -119,18 +119,6 @@ let totalUpdated = ref(0); //사용자의 키보드 숫자 입력에 의해 구�
 let isLeft = ref(true); //공구에 참여할 수 있는 수량이 남아있는지
 let isStillOpened = ref(true); //공구에 참여할 수 있는 기간인지
 let isGuest = ref(false); //공구를 개시한 사람이 아닌 사용자가 공구 페이지로 들어갔는지
-
-//사용자가 물건 개수를 입력하지 않았을 때, 1로 바꾸고 가격도 다시 계산
-onMounted(() => {
-  // const userPrice = document.getElementById("userPrice");
-  // userPrice.addEventListener("focusout", checkData);
-  // function checkData(event) {
-  //   if (total.value < 1) {
-  //     total.value = 1;
-  //     totalPrice.value = productDetail.value.price;
-  //   }
-  // }
-});
 
 //남은 날짜 계산
 function leftDays(ends) {
@@ -166,7 +154,8 @@ function calculatePrice() {
 
 //제품 상세 쿼리에 대한 콜백함수
 const saveDetail = function (respData) {
-  console.log(productDetail);
+  console.log(respData);
+  //console.log(productDetail);
   productDetail.value = respData[0];
   total.value = productDetail.value.portion;
   totalPrice.value = productDetail.value.price;
@@ -174,15 +163,17 @@ const saveDetail = function (respData) {
   console.log(`left = ${isLeft.value}`);
 };
 
-//제품 이미지 쿼리에 대한 콜백함수
-const saveImage = function (respData) {
-  productImage.value = respData.result.map((x) => x.path);
-  console.log(productImage.value);
-};
+// //제품 이미지 쿼리에 대한 콜백함수
+// const saveImage = function (respData) {
+//   productImage.value = respData.result.map((x) => x.path);
+//   console.log(productImage.value);
+// };
 
 //제품 상세 쿼리
 function getProductDetail() {
-  axiosGet(`/product/${productId}`, saveDetail);
+  console.log(userStore.JWT);
+  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${dealId}`, userStore.JWT, null, saveDetail);
+  productImage.value = productDetail.value.images.map((x) => x.fileName);
 }
 
 //제품 이미지 쿼리
@@ -210,5 +201,4 @@ function onDealEnrollSuccess(resp) {
 
 //onCreated
 getProductDetail();
-getProductImage();
 </script>

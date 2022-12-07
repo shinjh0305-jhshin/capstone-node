@@ -181,4 +181,9 @@ router.get("/enrollment/:id", async (req, res) => {
     });
   }
 });
+
+router.post("/nickChange", (req, res) => {
+  const { keyword } = req.body;
+  console.log(keyword);
+});
 module.exports = router;

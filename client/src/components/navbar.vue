@@ -53,7 +53,6 @@ const userStore = useUserInfoStore();
 const { axiosGet, axiosPost } = useAxios();
 
 const menu = ref("home");
-const reload = ref(userStore.userNick);
 
 const menus = [
   { key: "home", value: "홈", URL: "/", position: "left" },

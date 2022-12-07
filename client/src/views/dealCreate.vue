@@ -5,35 +5,35 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 제목<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
-          <input type="text" class="form-control form-control-sm" v-model="deal.name" placeholder="공구 제목을 입력해 주세요" />
-          <small id="nameError"></small>
+          <input type="text" class="form-control form-control-sm" v-model="deal.title" placeholder="공구 제목을 입력해 주세요" />
+          <small id="titleError"></small>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">모을 금액<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
           <div class="input-group input-group-sm">
-            <input type="text" class="form-control" @input="checkGoal" @keyup="calculatePrice" />
+            <input type="text" class="form-control" @input="checkPrice" @keyup="calculatePrice" />
             <span class="input-group-text">원</span>
           </div>
-          <small id="goalError"></small>
+          <small id="priceError"></small>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">모일 인원<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
           <div class="input-group input-group-sm">
-            <input id="numPeople" type="text" class="form-control" @input="checkPeople" v-model="deal.people" @keyup="calculatePrice" />
+            <input id="numPeople" type="text" class="form-control" @input="checkPeople" v-model="deal.totalCount" @keyup="calculatePrice" />
             <span class="input-group-text">명</span>
           </div>
-          <small id="peopleError"></small>
+          <small id="totalCountError"></small>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">1인당 공구가격</label>
         <div class="col-md-9">
           <div class="input-group input-group-sm mb-3">
-            <input type="text" class="form-control" v-model="deal.price" disabled readonly />
+            <input type="text" class="form-control" v-model="deal.unitprice" disabled readonly />
             <span class="input-group-text">원</span>
           </div>
         </div>
@@ -50,27 +50,27 @@
         <div class="col-auto">
           <div class="input-group input-group-sm">
             <span class="input-group-text">1인당</span>
-            <input type="text" class="form-control" v-model="deal.portion" />
+            <input type="text" class="form-control" v-model="deal.unitQuantity" />
             <select class="form-select from-select-sm" v-model="deal.unit">
               <option v-for="(name, i) in units" :key="i" v-text="name" :value="name"></option>
             </select>
           </div>
-          <small id="portionError"></small>
+          <small id="unitQuantityError"></small>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">카테고리<sup class="requiredInput">*</sup></label>
         <div class="col-auto">
-          <select class="form-select form-select-sm" v-model="deal.category">
+          <select class="form-select form-select-sm" v-model="deal.categoryId">
             <option v-for="(name, i) in categories" :key="i" v-text="name" :value="i"></option>
           </select>
-          <small id="categoryError"></small>
+          <small id="categoryIdError"></small>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">태그</label>
         <div class="col-md-9">
-          <el-tag v-for="tag in deal.tags" :key="tag" :type="'success'" class="mr-1" closable :disable-transitions="false" size="large" @close="handleClose(tag)">
+          <el-tag v-for="tag in deal.keywords" :key="tag" :type="'success'" class="mr-1" closable :disable-transitions="false" size="large" @close="handleClose(tag)">
             {{ tag }}
           </el-tag>
           <el-input v-if="inputVisible" ref="InputRef" v-model="inputValue" class="col-auto" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
@@ -80,8 +80,8 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 마감일<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
-          <el-date-picker v-model="deal.ends" type="date" placeholder="Pick a day" :disabled-date="disabledDate" />
-          <small id="endsError"></small>
+          <el-date-picker v-model="deal.expireTime" type="date" placeholder="Pick a day" :disabled-date="disabledDate" />
+          <small id="expireTimeError"></small>
         </div>
       </div>
       <div class="mb-3 row">
@@ -107,7 +107,7 @@
               </div>
             </template>
           </el-upload>
-          <small id="fileListError"></small>
+          <small id="imagesError"></small>
         </div>
       </div>
       <div class="mb-3 row">
@@ -149,28 +149,29 @@ const router = useRouter();
 const labelPosition = ref("top");
 
 const newDeal = {
-  name: "",
-  goal: "",
-  people: 2,
-  price: 0,
+  title: "",
+  price: "",
+  totalCount: 2,
+  unitprice: 0,
+  nowCount: 1,
   url: "",
-  portion: "",
+  unitQuantity: "",
   unit: "개",
-  category: "",
-  tags: [],
-  ends: "",
-  fileList: [],
+  categoryId: "",
+  keywords: [],
+  expireTime: "",
+  images: [],
   content: "",
   createdby: userStore.userNick,
 };
 
-function checkGoal(e) {
+function checkPrice(e) {
   e.target.value = e.target.value.replace(/[^0-9]/g, "");
-  deal.goal = e.target.value;
+  deal.price = e.target.value;
 }
 function checkPeople(e) {
   e.target.value = e.target.value.replace(/[^0-9]/g, "");
-  deal.people = e.target.value;
+  deal.totalCount = e.target.value;
 }
 
 onMounted(() => {
@@ -178,9 +179,9 @@ onMounted(() => {
   numPeople.addEventListener("focusout", checkData);
 
   function checkData(event) {
-    if (deal.people < 2) {
-      deal.people = 2;
-      deal.price = Math.floor(deal.goal / deal.people);
+    if (deal.totalCount < 2) {
+      deal.totalCount = 2;
+      deal.unitprice = Math.floor(deal.price / deal.totalCount);
     }
   }
 });
@@ -205,7 +206,7 @@ const disabledDate = (time) => {
 };
 
 const handleClose = (tag) => {
-  deal.tags.splice(deal.tags.indexOf(tag), 1);
+  deal.keywords.splice(deal.keywords.indexOf(tag), 1);
 };
 
 const showInput = () => {
@@ -217,7 +218,7 @@ const showInput = () => {
 
 const handleInputConfirm = () => {
   if (inputValue.value) {
-    deal.tags.push(inputValue.value);
+    deal.keywords.push(inputValue.value);
   }
   inputVisible.value = false;
   inputValue.value = "";
@@ -244,7 +245,7 @@ function beforeImageUpload(img) {
 }
 
 const calculatePrice = (event) => {
-  deal.price = Math.floor(deal.goal / deal.people);
+  deal.unitprice = Math.floor(deal.price / deal.totalCount);
 };
 
 function showError(fieldName, message) {
@@ -258,7 +259,7 @@ function showSuccess(fieldName) {
 
 function validateData() {
   console.log(newDeal);
-  const toSkip = ["price", "unit", "tags", "createdby", "fileList"];
+  const toSkip = ["unitprice", "unit", "tags", "createdby", "images"];
 
   Object.keys(newDeal).forEach((fieldName) => {
     if (toSkip.includes(fieldName)) return;
@@ -276,10 +277,10 @@ function validateData() {
     showSuccess("url");
   }
 
-  if (newDeal.fileList.length === 0) {
-    showError("fileList", "필수 항목입니다");
+  if (newDeal.images.length === 0) {
+    showError("images", "필수 항목입니다");
   } else {
-    showSuccess("fileList");
+    showSuccess("images");
   }
 }
 
@@ -288,21 +289,22 @@ function onSuccess(resp) {
 }
 
 async function submitDeal() {
-  const dealServer = "http://localhost:8080/product/create";
-  newDeal.fileList = []; //fileList 포맷 변경
+  const dealServer = "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal";
+  newDeal.images = []; //images 포맷 변경
   for (var i = 0; i < uploadedFile.value.length; i++) {
-    newDeal.fileList.push(uploadedFile.value[i].response.fileName);
+    newDeal.images.push(uploadedFile.value[i].response.fileName);
   }
 
   allIsWell = true;
-  validateData();
+  //validateData();
 
   if (!allIsWell) {
     console.log("😢Data validation failed");
   } else {
-    newDeal.tags = JSON.stringify(newDeal.tags); //newDeal stringify
-    newDeal.ends = moment(newDeal.ends).format("YYYY-MM-DD"); //endDate 포맷 변경
-    await axiosPost(dealServer, newDeal, onSuccess);
+    //newDeal.keywords = JSON.stringify(newDeal.keywords); //newDeal stringify
+    //newDeal.expireTime = moment(newDeal.expireTime).format("YYYY-MM-DD"); //endDate 포맷 변경
+    console.log(newDeal);
+    await axiosPost(dealServer, userStore.JWT, newDeal, onSuccess);
   }
 }
 </script>

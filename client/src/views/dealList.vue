@@ -11,21 +11,21 @@
       <div class="row g-3">
         <div class="col-xl-3 col-lg-4 col-md-6" :key="i" v-for="(deal, i) in dealList">
           <div class="card" style="width: 18rem">
-            <img :src="getImageUrl(deal.path)" class="card-img-top" alt="..." />
+            <img :src="getImageUrl(deal.image.fileName)" class="card-img-top" alt="..." />
             <div class="card-body">
-              <h5 class="card-title">{{ deal.name }}</h5>
+              <h5 class="card-title">{{ deal.title }}</h5>
               <p class="card-text">
-                <span class="badge bg-dark me-1">{{ categories[deal.category] }}</span>
-                <span class="badge bg-danger me-1">{{ deal.ordered }}/{{ deal.people }}명</span>
-                <span class="badge bg-warning me-1">{{ leftDays(deal.ends) }}</span>
+                <span class="badge bg-dark me-1">{{ deal.category }}</span>
+                <span class="badge bg-danger me-1">{{ deal.nowCount }}/{{ deal.totalCount }}명</span>
+                <span class="badge bg-warning me-1">{{ leftDays(deal.remainDate) }}</span>
               </p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                  <router-link :to="{ name: 'Detail', query: { product_id: deal.id } }">
+                  <router-link :to="{ name: 'Detail', query: { id: deal.id } }">
                     <button type="button" class="btn btn-sm btn-outline-secondary">공구 참여</button>
                   </router-link>
                 </div>
-                <small class="text-dark">1인당 {{ new Intl.NumberFormat("ko").format(deal.price) }}원</small>
+                <small class="text-dark">1인당 {{ new Intl.NumberFormat("ko").format(deal.unitPrice) }}원</small>
               </div>
             </div>
           </div>
@@ -39,7 +39,6 @@
 import useAxios from "@/modules/axios";
 import { onBeforeMount, ref } from "vue";
 import { categories, units } from "@/modules/selectData";
-import * as moment from "moment";
 import { useUserInfoStore } from "/@stores/userInfo";
 import { checkIfSubscribed } from "@/modules/pushRegister";
 
@@ -51,26 +50,22 @@ const categorySelected = ref(-1);
 
 const saveResult = function (respData) {
   dealList.value = respData;
+  console.log(dealList.value);
   console.log("Get success");
 };
 
 onBeforeMount(async () => {
-  await axiosGet("/product/list", saveResult);
-  console.log(dealList);
+  await axiosGet("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal", userStore.JWT, null, saveResult);
 });
 
 const getImageUrl = (name) => {
   return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${name}`;
 };
 
-function leftDays(ends) {
-  const endDate = moment(ends);
-  const now = moment();
-
-  const leftDay = endDate.diff(now, "days");
-  if (leftDay >= 1) {
-    return leftDay + "일 뒤 마감";
-  } else if (leftDay == 0) {
+function leftDays(remainDate) {
+  if (remainDate >= 1) {
+    return remainDate + "일 뒤 마감";
+  } else if (remainDate == 0) {
     return "오늘 마감";
   } else {
     return "마감된 공구";
