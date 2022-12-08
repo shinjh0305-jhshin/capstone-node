@@ -91,7 +91,7 @@ CREATE TABLE enrolled (
 CREATE TABLE device (
     `id`            INT             NOT NULL    AUTO_INCREMENT,
     `nickname`      VARCHAR(100)    NOT NULL,
-    `endpoint`      VARCHAR(300)    NOT NULL,
+    `endpoint`      VARCHAR(500)    NOT NULL,
     `auth`          VARCHAR(50)     NOT NULL,
     `p256dh`        VARCHAR(150)    NOT NULL,
     PRIMARY KEY (`id`)

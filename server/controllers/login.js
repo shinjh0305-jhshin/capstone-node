@@ -1,6 +1,6 @@
 const { client } = require("../tools/jwt");
 const { redisCli, get, set } = require("../tools/cache");
-const db = require("../tools/authdb");
+const db = require("../tools/db");
 
 const login = async (req, res) => {
   //const { username, password } = req.body;

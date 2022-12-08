@@ -1,15 +1,21 @@
 const router = require("express").Router();
-const db = require("../tools/authdb");
+const db = require("../tools/db");
 const webpush = require("web-push");
 
-webpush.setVapidDetails("mailto:2022capstone16.5@gmail.com", process.env.VAPID_PUBLIC, process.env.VAPID_PRIVATE);
+webpush.setVapidDetails(
+  "mailto:2022capstone16.5@gmail.com",
+  process.env.VAPID_PUBLIC,
+  process.env.VAPID_PRIVATE
+);
 
 router.post("/register/:id", async (req, res) => {
   try {
     const userId = req.params.id;
     const body = { ...req.body };
 
-    await db.query(`INSERT INTO device(nickname, endpoint, auth, p256dh) VALUES ('${userId}', '${body.endpoint}', '${body.keys.auth}', '${body.keys.p256dh}')`);
+    await db.query(
+      `INSERT INTO device(nickname, endpoint, auth, p256dh) VALUES ('${userId}', '${body.endpoint}', '${body.keys.auth}', '${body.keys.p256dh}')`
+    );
 
     res.status(200).send("Ok");
   } catch (error) {
@@ -23,7 +29,9 @@ router.post("/register/:id", async (req, res) => {
 router.post("/unregister", async (req, res) => {
   try {
     const { endpoint } = req.body;
-    const [result] = await db.query(`DELETE FROM device WHERE endpoint = "${endpoint}"`);
+    const [result] = await db.query(
+      `DELETE FROM device WHERE endpoint = "${endpoint}"`
+    );
     console.log(result);
     res.status(200).send("Ok");
   } catch (error) {
@@ -35,7 +43,9 @@ router.post("/unregister", async (req, res) => {
 router.post("/send", async (req, res) => {
   try {
     const { sendTo } = req.body;
-    const [result] = await db.query(`SELECT * FROM device WHERE nickname="${sendTo}"`);
+    const [result] = await db.query(
+      `SELECT * FROM device WHERE nickname="${sendTo}"`
+    );
     result.forEach((device) => {
       let pushConfig = {
         endpoint: device.endpoint,

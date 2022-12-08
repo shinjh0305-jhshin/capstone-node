@@ -8,7 +8,7 @@ import chatRouter from "./routes/chatRouter";
 const productRouter = require("./routes/productRouter");
 const imageRouter = require("./routes/imageRouter");
 const pushServiceRouter = require("./routes/pushServiceRouter");
-// const db = require("./tools/authdb");
+// const db = require("./tools/db");
 
 const app = express();
 

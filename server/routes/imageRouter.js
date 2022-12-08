@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const db = require("../tools/authdb");
+const db = require("../tools/db");
 
 router.post("/save", async (req, res) => {
   try {

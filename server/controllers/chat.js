@@ -1,4 +1,4 @@
-const db = require("../tools/authdb");
+const db = require("../tools/db");
 // db is a pool
 import io from "../server";
 
