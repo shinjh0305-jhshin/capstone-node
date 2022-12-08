@@ -23,3 +23,6 @@ PWA 알림 적용
 - Member register : ID uniqueness check
 - (If possible) Chatting : # of messages not read
 - (Waiting for BE) JWT Refresh token(Cookie)
+
+보강구현
+-Deal Create data validation
