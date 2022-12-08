@@ -18,27 +18,6 @@
               <span class="visually-hidden">Next</span>
             </button>
           </div>
-
-          <!-- <div id="carouselExampleIndicators" class="carousel slide carousel-dark" data-bs-ride="true">
-            <div class="carousel-indicators">
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner">
-              <div :class="`carousel-item ${i == 0 ? 'active' : ''}`" :key="i" v-for="(productImg, i) in productImage">
-                <img :src="getImageUrl(productImg)" class="d-block w-100" alt="..." />
-              </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div> -->
         </div>
         <div class="col-md-7">
           <div class="card shadow-sm">
@@ -154,12 +133,15 @@ function calculatePrice() {
 
 //제품 상세 쿼리에 대한 콜백함수
 const saveDetail = function (respData) {
-  console.log(respData);
   //console.log(productDetail);
   productDetail.value = respData[0];
   total.value = productDetail.value.portion;
   totalPrice.value = productDetail.value.price;
   isLeft.value = productDetail.value.people - productDetail.value.ordered > 0 ? true : false;
+  productImage.value = productDetail.value.images.map((x) => {
+    console.log(x.fileName);
+    return x.fileName;
+  });
   console.log(`left = ${isLeft.value}`);
 };
 
@@ -170,10 +152,8 @@ const saveDetail = function (respData) {
 // };
 
 //제품 상세 쿼리
-function getProductDetail() {
-  console.log(userStore.JWT);
+async function getProductDetail() {
   axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${dealId}`, userStore.JWT, null, saveDetail);
-  productImage.value = productDetail.value.images.map((x) => x.fileName);
 }
 
 //제품 이미지 쿼리

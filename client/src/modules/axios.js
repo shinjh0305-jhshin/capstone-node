@@ -39,7 +39,6 @@ export default function () {
   ) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
     console.log("axiosPost", final_URL, Data);
-    console.log(`JWT : ${JWT}`);
     axios
       .post(final_URL, JSON.stringify(Data), {
         headers: {

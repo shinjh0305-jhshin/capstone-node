@@ -50,7 +50,6 @@ const categorySelected = ref(-1);
 
 const saveResult = function (respData) {
   dealList.value = respData;
-  console.log(dealList.value);
   console.log("Get success");
 };
 

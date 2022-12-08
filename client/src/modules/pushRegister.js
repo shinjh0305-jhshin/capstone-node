@@ -6,7 +6,6 @@ const { axiosGet, axiosPost } = useAxios();
 function newSubscription(userNick) {
   navigator.serviceWorker.ready.then((swreg) => {
     const vapid_public = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC);
-    //console.log(vapid_public);
     return swreg.pushManager
       .subscribe({
         userVisibleOnly: true,
@@ -16,7 +15,7 @@ function newSubscription(userNick) {
         const filteredSub = JSON.parse(JSON.stringify(newsub));
 
         console.log(filteredSub);
-        axiosPost(`/push/register/${userNick}`, filteredSub, onSuccess, onFail);
+        axiosPost(`/push/register/${userNick}`, null, filteredSub, onSuccess, onFail);
       });
   });
 }
@@ -32,7 +31,6 @@ export function checkIfSubscribed(userNick) {
     .then((sub) => {
       if (sub == null) {
         console.log("🤔 Not subscribed yet");
-        console.log(import.meta.env);
         newSubscription(userNick);
       } else {
         console.log("🤔 Subscription exists");
