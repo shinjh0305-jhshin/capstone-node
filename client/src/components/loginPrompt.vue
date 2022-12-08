@@ -3,7 +3,12 @@
     <div class="row justify-content-center">
       <div class="col-md-12 col-lg-10">
         <div class="wrap d-md-flex">
-          <div class="img" style="background-image: url('https://gongu-image.s3.ap-northeast-2.amazonaws.com/soganguniv.jpg')"></div>
+          <div
+            class="img"
+            style="
+              background-image: url('https://gongu-image.s3.ap-northeast-2.amazonaws.com/soganguniv.jpg');
+            "
+          ></div>
           <div class="login-wrap p-4 p-md-5">
             <div class="d-flex">
               <div class="w-100">
@@ -12,14 +17,32 @@
             </div>
             <div class="mb-3">
               <label class="label" for="name">ID</label>
-              <input type="text" class="form-control" placeholder="ID" v-model="userInfo.id" required />
+              <input
+                type="text"
+                class="form-control"
+                placeholder="ID"
+                v-model="userInfo.id"
+                required
+              />
             </div>
             <div class="mb-3">
               <label class="label" for="password">Password</label>
-              <input type="password" class="form-control" placeholder="Password" v-model="userInfo.password" required />
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Password"
+                v-model="userInfo.password"
+                required
+              />
             </div>
             <div>
-              <button type="submit" class="form-control btn btn-primary rounded submit px-3" @click="loginSubmit">Sign In</button>
+              <button
+                type="submit"
+                class="form-control btn btn-primary rounded submit px-3"
+                @click="loginSubmit"
+              >
+                Sign In
+              </button>
             </div>
             <div class="form-group d-md-flex">
               <div class="w-50 text-left" />
@@ -27,7 +50,9 @@
                 <a href="#">Forgot Password</a>
               </div>
             </div>
-            <p class="text-center">Not a member? <span @click="goToJoin">Sign Up</span></p>
+            <p class="text-center">
+              Not a member? <span @click="goToJoin">Sign Up</span>
+            </p>
           </div>
         </div>
       </div>
@@ -72,7 +97,13 @@ const onLoginFail = (respData = null) => {
 };
 
 const loginSubmit = () => {
-  axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/login", "", userInfo, onLoginSuccess, onLoginFail);
+  axiosPost(
+    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/login",
+    "",
+    userInfo,
+    onLoginSuccess,
+    onLoginFail
+  );
 };
 </script>
 
