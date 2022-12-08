@@ -142,4 +142,48 @@ router.post("/:id/enrollment", async (req, res) => {
   }
 });
 
+router.delete("/:id/enrollment", async (req, res) => {});
+
+router.get("/sale/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const [result] = await db.query(
+      `SELECT product.*, image.type, image.path
+            FROM product JOIN image
+            ON product.id = image.product_id
+            WHERE image.type = 1 AND product.createdby = '${userId}';`
+    );
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "something went wrong",
+    });
+  }
+});
+
+router.get("/enrollment/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const [result] = await db.query(
+      `SELECT product.*, image.type, image.path, enrolled.quantity FROM product 
+            JOIN image
+            ON product.id = image.product_id
+            JOIN enrolled 
+            ON product.id = enrolled.product_id AND enrolled.nickname = '${userId}'
+            WHERE image.type = 1;`
+    );
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "something went wrong",
+    });
+  }
+});
+
+router.post("/nickChange", (req, res) => {
+  const { keyword } = req.body;
+  console.log(keyword);
+});
 module.exports = router;

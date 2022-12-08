@@ -10,16 +10,6 @@
         <ul :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }" v-for="menu in menus_category" :key="menu.id">
           <li class="nav-item" v-for="menu_object in menu.value" :key="menu_object.key">
             <router-link
-              :class="{
-                'nav-link': true,
-                active: menu == menu_object.key,
-                'text-white': true,
-              }"
-              @click="onMovePage($event, menu_object)"
-              :to="menu_object.URL"
-              >{{ menu_object.value }}
-            </router-link>
-            <!-- <router-link
               v-if="menu_object.key == 'nick'"
               :class="{
                 'nav-link': true,
@@ -40,7 +30,7 @@
               @click="onMovePage($event, menu_object)"
               :to="menu_object.URL"
               >{{ menu_object.value }}
-            </router-link> -->
+            </router-link>
           </li>
         </ul>
       </div>
@@ -55,10 +45,12 @@ export default {
 </script>
 
 <script setup>
-import { ref, computed, reactive, onBeforeMount } from "vue";
+import useAxios from "@/modules/axios";
+import { ref, computed, watch } from "vue";
 import { useUserInfoStore } from "/@stores/userInfo";
 
 const userStore = useUserInfoStore();
+const { axiosGet, axiosPost } = useAxios();
 
 const menu = ref("home");
 
@@ -86,7 +78,6 @@ const menus = [
     key: "nick",
     URL: "/profile",
     value: "",
-    // value: userStore.userNick,
     position: "right",
   },
   {
@@ -102,8 +93,8 @@ const right_menus = computed(() => menus.filter((i) => i.position == "right"));
 
 const onMovePage = (evt, menu_object) => {
   if (menu_object.key === "logout") {
+    unsubscribe();
     userStore.setInfo("", "", false);
-    menus[4].value = ""; ///NEW
   }
   console.log(menu_object);
   if (evt) {
@@ -117,7 +108,26 @@ const menus_category = [
   { id: 2, me_auto: false, value: right_menus.value },
 ];
 
-menus[4].value = userStore.userNick;
+function unsubscribe() {
+  navigator.serviceWorker.ready
+    .then((swreg) => {
+      return swreg.pushManager.getSubscription();
+    })
+    .then((oldsub) => {
+      const body = {
+        endpoint: oldsub.endpoint,
+      };
+      oldsub.unsubscribe();
+      axiosPost("/push/unregister", body);
+    })
+    .then((res) => {
+      console.log("😁 Push service unsubscribed");
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+console.log(menus_category);
 </script>
 
 <style>
