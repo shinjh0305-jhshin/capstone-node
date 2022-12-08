@@ -33,7 +33,7 @@ export default {
     const getRoomFail = (respData) => {
       console.log("❌ Get Rooms - Fail");
     };
-    axiosGet(`/rooms`, getRoomSuccess, getRoomFail);
+    axiosGet(`/room`, null, null, getRoomSuccess, getRoomFail);
   },
 };
 </script>

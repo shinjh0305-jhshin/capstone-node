@@ -8,15 +8,15 @@
             class="room"
             v-for="myRoom in myRoomList"
             :class="{
-              picked: String(myRoom.roomId) === String($route.params.roomId),
+              picked: String(myRoom.deal_id) === String($route.params.deal_id),
             }"
           >
             <router-link
-              :to="{ name: 'room', params: { roomId: myRoom.roomId } }"
-              @click="changeRoom(myRoom.roomId)"
+              :to="{ name: 'room', params: { roomId: myRoom.deal_id } }"
+              @click="changeRoom(myRoom.deal_id)"
             >
               <div class="room-name">
-                <span>{{ myRoom.roomName }}</span>
+                <span>{{ myRoom.title }}</span>
               </div>
             </router-link>
           </div>
@@ -91,6 +91,7 @@ import message from "./message.vue";
 import FormData from "form-data";
 const { VITE_SOCKET_URL } = import.meta.env;
 const { axiosGet, axiosPost } = useAxios();
+
 export default {
   name: "room",
   components: {
@@ -133,7 +134,7 @@ export default {
     const store = useUserInfoStore();
     const nickname = store.userNick;
     this.currentUser = store.userNick;
-    axiosGet(`/users/${nickname}/room`, getMyRoomSuccess, getMyRoomFail);
+    axiosGet(`/room/${nickname}`, null, null, getMyRoomSuccess, getMyRoomFail);
   },
   watch: {
     $route(to, from) {
@@ -256,7 +257,7 @@ export default {
           this.newMessageObj.content = "";
           this.newMessageObj.imgPath = resp.data.imgPath;
           this.socket.emit("messageSent", this.newMessageObj);
-          axiosPost("/rooms/saveChat", this.newMessageObj, onSaveSuccess);
+          axiosPost("/room/chat", this.newMessageObj, onSaveSuccess);
         })
         .catch((err) => {
           console.log(err);
@@ -268,14 +269,15 @@ export default {
       };
       if (this.newMessageObj.content.length > 0) {
         const store = useUserInfoStore();
-        this.newMessageObj.chatType = "message";
-        this.newMessageObj.roomId = String(this.$route.params.roomId);
-        this.newMessageObj.time = new Date(Date.now());
-        this.newMessageObj.sender = store.userNick;
-        this.newMessageObj.content.trim();
-        this.newMessageObj.imgPath = "";
-        this.socket.emit("messageSent", this.newMessageObj);
-        axiosPost("/rooms/saveChat", this.newMessageObj, onSaveSuccess);
+        const sendObj = new Object();
+        sendObj.chatType = "message";
+        sendObj.roomId = String(this.$route.params.roomId);
+        sendObj.time = new Date(Date.now());
+        sendObj.sender = store.userNick;
+        sendObj.content = this.newMessageObj.content;
+        sendObj.imgPath = "";
+        this.socket.emit("messageSent", sendObj);
+        axiosPost("/room/chat", sendObj, onSaveSuccess);
         this.newMessageObj.content = "";
       }
     },
@@ -287,17 +289,18 @@ export default {
           const { msgList } = resp;
           //console.log("✅ Get Msg", msgList);
           for (const msg of msgList) {
+            const date = new Date(msg.created_at);
             this.messageObjList.push({
               content: msg.content,
               sender: msg.nickname,
-              time: new Date(msg.createdAt),
-              roomId: String(msg.roomId),
-              imgPath: msg.imagePath,
-              chatType: msg.chatType,
+              time: new Date(date.toISOString().slice(0, -1)),
+              roomId: String(msg.deal_id),
+              imgPath: msg.image_path,
+              chatType: msg.chat_type,
             });
           }
         };
-        axiosGet(`/rooms/getChat/${id}`, getMsgSucceed);
+        axiosGet(`/room/${id}/chat/`, null, null, getMsgSucceed);
         this.socket.emit("joinRoom", { roomId: String(id) });
       }
     },
