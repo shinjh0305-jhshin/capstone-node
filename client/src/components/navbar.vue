@@ -118,7 +118,7 @@ function unsubscribe() {
         endpoint: oldsub.endpoint,
       };
       oldsub.unsubscribe();
-      axiosPost("/push/unregister", body);
+      axiosPost("/push/unregister", null, body);
     })
     .then((res) => {
       console.log("😁 Push service unsubscribed");

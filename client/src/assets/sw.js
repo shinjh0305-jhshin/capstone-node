@@ -12,15 +12,12 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: data.pMsg,
-    tag: "Hello world",
   };
   try {
-    self.registration.showNotification(data.pTitle, options);
+    event.waitUntil(self.registration.showNotification(data.pTitle, options));
     console.log("done");
   } catch (error) {
     console.log(error);
   }
-
-  //   event.waitUntil(self.registration.showNotification(data.pTitle, options));
 });
 //precacheAndRoute(self.__WB_MANIFEST);
