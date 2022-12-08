@@ -1,0 +1,115 @@
+<template>
+  <h1>{{ nickname }}</h1>
+  <h2>{{ email }}</h2>
+  <main class="mt-3">
+    <div class="container">
+      <h2 class="text-center my-4">키워드 수정</h2>
+      <div class="mb-3 row">
+        <label class="col-md-3 col-form-label">태그</label>
+        <div class="col-md-9">
+          <el-tag
+            v-for="tag in keywordRef"
+            :key="tag"
+            :type="'success'"
+            class="mr-1"
+            closable
+            :disable-transitions="false"
+            size="large"
+            @close="handleClose(tag)"
+          >
+            {{ tag }}
+          </el-tag>
+          <el-input
+            v-if="inputVisible"
+            ref="InputRef"
+            v-model="inputValue"
+            class="col-auto"
+            @keyup.enter="handleInputConfirm"
+            @blur="handleInputConfirm"
+          />
+          <el-button v-else class="button-new-tag mr-1" @click="showInput">
+            + New Tag
+          </el-button>
+        </div>
+      </div>
+      <div class="col-6 d-grid p-1">
+        <button
+          type="button"
+          @click="submitChange()"
+          class="btn btn-lg btn-danger"
+        >
+          저장하기
+        </button>
+      </div>
+    </div>
+  </main>
+</template>
+
+<script setup>
+import useAxios from "@/modules/axios";
+import { useUserInfoStore } from "/@stores/userInfo";
+import { ref, onBeforeMount, reactive, onMounted, nextTick } from "vue";
+
+const userStore = useUserInfoStore();
+const { axiosGet, axiosPost } = useAxios();
+
+const nickname = ref("");
+const email = ref("");
+const keyword = [];
+const inputValue = ref("");
+const inputVisible = ref(false);
+const InputRef = ref({});
+const keywordRef = ref(keyword);
+
+const getUserSuccess = (resp) => {
+  console.log("✅ Get User Success", resp);
+  nickname.value = resp.id;
+  email.value = resp.email;
+  keywordRef.value = resp.keyword;
+};
+
+onBeforeMount(async () => {
+  await axiosPost(
+    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/user/mypage",
+    userStore.JWT,
+    null,
+    getUserSuccess
+  );
+});
+const handleClose = (tag) => {
+  keywordRef.value.splice(keywordRef.value.indexOf(tag), 1);
+};
+
+const showInput = () => {
+  inputVisible.value = true;
+  nextTick(() => {
+    InputRef.value.input.focus();
+  });
+};
+
+const handleInputConfirm = () => {
+  if (inputValue.value) {
+    keywordRef.value.push(inputValue.value);
+  }
+  inputVisible.value = false;
+  inputValue.value = "";
+};
+
+function onSuccess(resp) {
+  console.log(resp);
+}
+
+function onFail(resp) {
+  console.log(resp);
+}
+
+async function submitChange() {
+  const dealServer =
+    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/user/updatekeyword";
+  console.log(keywordRef.value);
+  const changeKeyword = { keyword: keyword };
+  console.log(changeKeyword);
+  console.log(userStore.JWT);
+  await axiosPost(dealServer, userStore.JWT, changeKeyword, onSuccess, onFail);
+}
+</script>

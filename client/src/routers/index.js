@@ -10,6 +10,7 @@ import dealList from "../views/dealList.vue";
 import dealRaised from "../views/dealRaised.vue";
 import dealUpdate from "../views/dealUpdate.vue";
 import changeKeyword from "../views/changeKeyword.vue";
+import profile from "../components/profile.vue";
 import { useUserInfoStore } from "/@stores/userInfo";
 import axios from "axios";
 
@@ -55,6 +56,12 @@ const routes = [
     name: "join",
     component: join,
     meta: { authRequired: false },
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: profile,
+    meta: { authRequired: true },
   },
   {
     path: "/allRoom",
