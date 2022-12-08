@@ -41,7 +41,7 @@ const saveJoinedResult = function (respData) {
 };
 
 function getProductList() {
-  axiosGet(`/product/sale/${userStore.userNick}`, saveCreatedResult);
+  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/sale/${userStore.userNick}`, null, null, saveCreatedResult);
   axiosGet(`/product/enrollment/${userStore.userNick}`, saveJoinedResult);
 }
 

@@ -6,21 +6,22 @@
         <th>공구명</th>
         <th>공구가격</th>
         <th>모집현황</th>
-        <th>마감일자</th>
+        <th>잔여일</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(product, i) in productList" :key="i">
-        <td style="width: 100px"><img :src="getImageUrl(product.path)" style="height: 50px; width: auto" /></td>
+        <td style="width: 100px"><img :src="getImageUrl(product.image.fileName)" style="height: 50px; width: auto" /></td>
         <td style="width: 300px">
-          <router-link :to="{ name: 'Detail', query: { product_id: product.id } }">
-            {{ product.name }}
+          <router-link :to="{ name: 'Detail', query: { id: product.id } }">
+            {{ product.title }}
           </router-link>
         </td>
-        <td>{{ new Intl.NumberFormat("ko").format(product.price) }}원</td>
-        <td>{{ product.ordered }} / {{ product.people }}</td>
-        <td>{{ formatTime(product.ends) }}</td>
+        <td>{{ new Intl.NumberFormat("ko").format(product.unitPrice * product.totalCount) }}원</td>
+        <td>{{ product.nowCount }} / {{ product.totalCount }}</td>
+        <td>{{ product.remainDate > 0 ? `${product.remainDate}일` : product.remainDate === 0 ? "오늘 마감" : "마감" }}</td>
+        <!-- <td>{{ formatTime(product.ends) }}</td> -->
         <td>
           <router-link :to="{ name: 'Update', query: { deal_id: product.id } }" v-if="!product.deleted" class="me-3" style="text-decoration: none; color: inherit">
             <el-button type="warning" plain>수정하기</el-button>

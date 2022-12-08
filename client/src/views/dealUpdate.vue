@@ -4,7 +4,7 @@
       <h2 class="text-center">공구 등록</h2>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 제목</label>
-        <div class="col-md-9">{{ deal.name }}</div>
+        <div class="col-md-9">{{ deal.title }}</div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">모을 금액</label>
@@ -15,13 +15,13 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">모일 인원</label>
         <div class="col-md-9">
-          <div class="col-md-9">{{ new Intl.NumberFormat("ko").format(deal.people) }}명</div>
+          <div class="col-md-9">{{ new Intl.NumberFormat("ko").format(deal.totalCount) }}명</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">1인당 공구가격</label>
         <div class="col-md-9">
-          <div class="col-md-9">{{ new Intl.NumberFormat("ko").format(deal.price) }}원</div>
+          <div class="col-md-9">{{ new Intl.NumberFormat("ko").format(deal.unitPrice) }}원</div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -33,19 +33,19 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 단위</label>
         <div class="col-md-9">
-          <div class="col-md-9">1인당 {{ deal.portion }}{{ deal.unit }}</div>
+          <div class="col-md-9">1인당 {{ deal.unitQuantity }}{{ deal.unit }}</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">카테고리</label>
         <div class="col-md-9">
-          <div class="col-md-9">{{ categories[deal.category] }}</div>
+          <div class="col-md-9">{{ deal.category }}</div>
         </div>
       </div>
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">태그</label>
         <div class="col-md-9">
-          <el-tag v-for="tag in deal.tags" :key="tag" :type="'success'" class="mr-1" closable :disable-transitions="false" size="large" @close="handleClose(tag)">
+          <el-tag v-for="tag in deal.keywords" :key="tag" :type="'success'" class="mr-1" closable :disable-transitions="false" size="large" @close="handleClose(tag)">
             {{ tag }}
           </el-tag>
           <el-input v-if="inputVisible" ref="InputRef" v-model="inputValue" class="col-auto" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
@@ -55,7 +55,7 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 마감일</label>
         <div class="col-md-9">
-          <div class="col-md-9">{{ deal.ends }}</div>
+          <div class="col-md-9">{{ deal.expireTime }}</div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -116,7 +116,9 @@ import { categories, units } from "@/modules/selectData";
 const { axiosPost, axiosGet } = useAxios();
 const router = useRouter();
 const route = useRoute();
+import { useUserInfoStore } from "/@stores/userInfo";
 
+const userStore = useUserInfoStore();
 const productId = route.query.deal_id;
 let newDeal = {};
 
@@ -130,7 +132,7 @@ let reRenderOnChange = ref(0);
 
 //tag 수정 부분
 const handleClose = (tag) => {
-  deal.tags.splice(deal.tags.indexOf(tag), 1);
+  deal.keywords.splice(deal.keywords.indexOf(tag), 1);
 };
 
 const showInput = () => {
@@ -142,7 +144,7 @@ const showInput = () => {
 
 const handleInputConfirm = () => {
   if (inputValue.value) {
-    deal.tags.push(inputValue.value);
+    deal.keywords.push(inputValue.value);
   }
   inputVisible.value = false;
   inputValue.value = "";
@@ -180,44 +182,44 @@ function onSuccess(resp) {
 
 async function submitDeal() {
   console.log(newDeal);
-  const dealServer = `http://localhost:8080/product/update/${newDeal.id}`;
-  newDeal.fileList = []; //fileList 포맷 변경
+  const updateURL = `http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/${newDeal.id}`;
+  newDeal.images = []; //images 포맷 변경
 
   for (var i = 0; i < uploadedFile.value.length; i++) {
-    console.log(uploadedFile.value[i].url);
     if (uploadedFile.value[i].response) {
       //새로 업로드 되는 이미지일 경우
-      newDeal.fileList.push(uploadedFile.value[i].response.fileName);
+      newDeal.images.push(uploadedFile.value[i].response.fileName);
     } else {
       //이미 업로드 된 이미지로, url이 존재 할 경우
-      newDeal.fileList.push(uploadedFile.value[i].name);
+      newDeal.images.push(uploadedFile.value[i].name);
     }
   }
 
-  const modifiedData = _.pick(newDeal, ["tags", "fileList", "content"]);
-  modifiedData.tags = JSON.stringify(modifiedData.tags);
-
+  const modifiedData = _.pick(newDeal, ["keywords", "images", "content"]);
+  console.log(modifiedData);
   await axiosPost(dealServer, modifiedData, onSuccess);
 }
 
 function saveDetail(resp) {
-  newDeal.id = resp[0].id;
-  newDeal.name = resp[0].name;
-  newDeal.goal = resp[0].goal;
-  newDeal.people = resp[0].people;
-  newDeal.price = resp[0].price;
-  newDeal.url = resp[0].url;
-  newDeal.portion = resp[0].portion;
-  newDeal.unit = resp[0].unit;
-  newDeal.category = resp[0].category;
-  newDeal.tags = JSON.parse(resp[0].tags);
-  newDeal.ends = moment(resp[0].ends).format("YYYY-MM-DD");
-  newDeal.content = resp[0].content;
+  newDeal.id = resp.id;
+  newDeal.title = resp.title;
+  newDeal.goal = resp.unitPrice * resp.totalCount;
+  newDeal.totalCount = resp.totalCount;
+  newDeal.unitPrice = resp.unitPrice;
+  newDeal.url = resp.url;
+  newDeal.unitQuantity = resp.unitQuantity;
+  newDeal.unit = resp.unit;
+  newDeal.category = resp.category.name;
+  // newDeal.keywords = JSON.parse(resp.keywords);
+  newDeal.keywords = [];
+  // newDeal.ends = moment(resp.ends).format("YYYY-MM-DD");
+  newDeal.expireTime = "9999-99-99";
+  newDeal.content = resp.content;
 
-  resp[0].fileList.forEach((x) => {
+  resp.images.forEach((x) => {
     const temp = {};
-    temp.name = x;
-    temp.url = `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${x}`;
+    temp.name = x.fileName;
+    temp.url = `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${x.fileName}`;
     uploadedFile.value.push(temp);
   });
 
@@ -227,7 +229,7 @@ function saveDetail(resp) {
 }
 
 onMounted(async () => {
-  await axiosGet(`/product/${productId}`, saveDetail);
+  await axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${productId}`, userStore.JWT, null, saveDetail);
 });
 </script>
 

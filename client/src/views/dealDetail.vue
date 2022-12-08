@@ -22,16 +22,16 @@
         <div class="col-md-7">
           <div class="card shadow-sm">
             <div class="card-body">
-              <h5 class="card-title col-auto">{{ productDetail.name }}</h5>
+              <h5 class="card-title col-auto">{{ productDetail.title }}</h5>
               <h5 class="card-title pt-3 pb-3 border-top">
-                단가 : {{ new Intl.NumberFormat("ko").format(productDetail.price) }}원 | 구매 단위 : {{ new Intl.NumberFormat("ko").format(productDetail.portion) }}{{ productDetail.unit }}
+                단가 : {{ new Intl.NumberFormat("ko").format(productDetail.unitPrice) }}원 | 구매 단위 : {{ new Intl.NumberFormat("ko").format(productDetail.unitQuantity) }}{{ productDetail.unit }}
               </h5>
               <p class="card-text border-top pt-3">
-                <span class="badge bg-dark me-1">{{ categories[productDetail.category] }}</span>
-                <span class="badge bg-danger me-1">{{ productDetail.ordered }}/{{ productDetail.people }}명</span>
-                <span class="badge bg-warning me-1">{{ leftDays(productDetail.ends) }}</span>
+                <span class="badge bg-dark me-1">{{ productDetail.category.name }}</span>
+                <span class="badge bg-danger me-1">{{ productDetail.nowCount }}/{{ productDetail.totalCount }}명</span>
+                <span class="badge bg-warning me-1">{{ leftDays(productDetail.remainDate) }}</span>
               </p>
-              <p class="card-text pb-3" style="font-weight: bolder; font-size: 1.2em">{{ productDetail.createdby }} <span style="font-weight: normal; font-size: 0.7em">(마포구 상암동)</span></p>
+              <p class="card-text pb-3" style="font-weight: bolder; font-size: 1.2em">{{ productDetail.user }} <span style="font-weight: normal; font-size: 0.7em">(마포구 상암동)</span></p>
               <p class="card-text pb-3">{{ productDetail.content }}</p>
               <div class="card-text border-top border-bottom py-3">
                 <div class="row">
@@ -43,9 +43,9 @@
                       v-model="total"
                       size="large"
                       @change="calculatePrice"
-                      :min="productDetail.portion"
-                      :max="productDetail.portion * (productDetail.people - productDetail.ordered)"
-                      :step="productDetail.portion"
+                      :min="productDetail.unitQuantity"
+                      :max="productDetail.unitQuantity * (productDetail.totalCount - productDetail.nowCount)"
+                      :step="productDetail.unitQuantity"
                       id="userPrice"
                       :key="totalUpdated"
                     />
@@ -100,17 +100,12 @@ let isStillOpened = ref(true); //공구에 참여할 수 있는 기간인지
 let isGuest = ref(false); //공구를 개시한 사람이 아닌 사용자가 공구 페이지로 들어갔는지
 
 //남은 날짜 계산
-function leftDays(ends) {
-  const endDate = moment(ends);
-  const now = moment();
-
-  const leftDay = endDate.diff(now, "days");
-  if (leftDay >= 1) {
-    return leftDay + "일 뒤 마감";
-  } else if (leftDay == 0) {
+function leftDays(remainDate) {
+  if (remainDate >= 1) {
+    return remainDate + "일 뒤 마감";
+  } else if (remainDate == 0) {
     return "오늘 마감";
   } else {
-    isStillOpened.value = false;
     return "마감된 공구";
   }
 }
@@ -124,20 +119,20 @@ function changeCount(cnt = "") {
 
 //totalPrice 계산
 function calculatePrice() {
-  if (total.value % productDetail.value.portion) {
-    total.value = productDetail.value.portion;
+  if (total.value % productDetail.value.unitQuantity) {
+    total.value = productDetail.value.unitQuantity;
     totalUpdated.value++;
   }
-  totalPrice.value = (productDetail.value.price * total.value) / productDetail.value.portion;
+  totalPrice.value = (productDetail.value.unitPrice * total.value) / productDetail.value.unitQuantity;
 }
 
 //제품 상세 쿼리에 대한 콜백함수
 const saveDetail = function (respData) {
   //console.log(productDetail);
-  productDetail.value = respData[0];
-  total.value = productDetail.value.portion;
-  totalPrice.value = productDetail.value.price;
-  isLeft.value = productDetail.value.people - productDetail.value.ordered > 0 ? true : false;
+  productDetail.value = respData;
+  total.value = productDetail.value.unitQuantity;
+  totalPrice.value = productDetail.value.unitPrice;
+  isLeft.value = productDetail.value.totalCount - productDetail.value.nowCount > 0 ? true : false;
   productImage.value = productDetail.value.images.map((x) => {
     console.log(x.fileName);
     return x.fileName;
