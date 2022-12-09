@@ -113,7 +113,7 @@ import * as _ from "lodash";
 import * as moment from "moment";
 import useAxios from "@/modules/axios";
 import { categories, units } from "@/modules/selectData";
-const { axiosPost, axiosGet } = useAxios();
+const { axiosPost, axiosGet, axiosPatch } = useAxios();
 const router = useRouter();
 const route = useRoute();
 import { useUserInfoStore } from "/@stores/userInfo";
@@ -177,12 +177,16 @@ function beforeImageUpload(img) {
 
 function onSuccess(resp) {
   console.log(resp);
-  router.push({ name: "Detail", query: { product_id: productId } });
+  router.push({ name: "Detail", query: { id: productId } });
+}
+
+function onFail(resp) {
+  console.log("error", resp);
 }
 
 async function submitDeal() {
   console.log(newDeal);
-  const updateURL = `http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/${newDeal.id}`;
+  const updateURL = `http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${newDeal.id}`;
   newDeal.images = []; //images 포맷 변경
 
   for (var i = 0; i < uploadedFile.value.length; i++) {
@@ -197,7 +201,7 @@ async function submitDeal() {
 
   const modifiedData = _.pick(newDeal, ["keywords", "images", "content"]);
   console.log(modifiedData);
-  await axiosPost(dealServer, modifiedData, onSuccess);
+  await axiosPatch(updateURL, userStore.JWT, modifiedData, onSuccess, onFail);
 }
 
 function saveDetail(resp) {
