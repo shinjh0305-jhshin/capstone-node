@@ -1,45 +1,64 @@
 <template>
-  <h1>{{ nickname }}</h1>
-  <h2>{{ email }}</h2>
   <main class="mt-3">
-    <div class="container">
-      <h2 class="text-center my-4">키워드 수정</h2>
-      <div class="mb-3 row">
-        <label class="col-md-3 col-form-label">태그</label>
-        <div class="col-md-9">
-          <el-tag
-            v-for="tag in keywordRef"
-            :key="tag"
-            :type="'success'"
-            class="mr-1"
-            closable
-            :disable-transitions="false"
-            size="large"
-            @close="handleClose(tag)"
-          >
-            {{ tag }}
-          </el-tag>
-          <el-input
-            v-if="inputVisible"
-            ref="InputRef"
-            v-model="inputValue"
-            class="col-auto"
-            @keyup.enter="handleInputConfirm"
-            @blur="handleInputConfirm"
-          />
-          <el-button v-else class="button-new-tag mr-1" @click="showInput">
-            + New Tag
-          </el-button>
-        </div>
+    <div class="container" id="outer">
+      <div class="info-title">
+        <h1>니 정보</h1>
       </div>
-      <div class="col-6 d-grid p-1">
-        <button
-          type="button"
-          @click="submitChange()"
-          class="btn btn-lg btn-danger"
-        >
-          저장하기
-        </button>
+      <div class="row justify-content-center">
+        <div class="basic-info">
+          <div class="basic-info-each">
+            <label class="basic-info-label">ID</label>
+            <input class="basic-info-input" disabled :value="nickname" />
+          </div>
+          <div class="basic-info-each">
+            <label class="basic-info-label">Email</label>
+            <input class="basic-info-input" disabled :value="email" />
+          </div>
+        </div>
+        <div class="line-between"></div>
+        <div class="keyword-info">
+          <div class="info-title">
+            <h1>키워드 수정</h1>
+          </div>
+          <div class="basic-info-each">
+            <label class="basic-info-label">Tags</label>
+            <div class="basic-info-input">
+              <el-tag
+                v-for="tag in keywordRef"
+                :key="tag"
+                :type="'success'"
+                class="mr-1"
+                closable
+                :disable-transitions="false"
+                size="large"
+                @close="handleClose(tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <el-input
+                v-if="inputVisible"
+                ref="InputRef"
+                v-model="inputValue"
+                class="col-auto"
+                @keyup.enter="handleInputConfirm"
+                @blur="handleInputConfirm"
+              />
+              <el-button v-else class="button-new-tag mr-1" @click="showInput">
+                + New Tag
+              </el-button>
+            </div>
+          </div>
+
+          <div class="button-box">
+            <button
+              type="button"
+              @click="submitChange()"
+              class="btn btn-lg btn-danger"
+            >
+              수정하기
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -121,3 +140,68 @@ async function submitChange() {
   );
 }
 </script>
+
+<style scoped>
+#outer {
+  margin-top: 50px;
+  background-color: rgb(228, 225, 225);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0px;
+  border-radius: 10px;
+  width: 70%;
+}
+.info-title {
+  margin: 30px 0px;
+}
+.basic-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  width: 100%;
+}
+.basic-info-each {
+  display: flex;
+  justify-content: space-evenly;
+  width: 90%;
+  margin-bottom: 20px;
+}
+.basic-info-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+}
+.basic-info-input {
+  width: 60%;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid darkgray;
+}
+.line-between {
+  height: 1px;
+  width: 80%;
+  background-color: darkgrey;
+  margin: 30px 0px;
+}
+.keyword-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  width: 100%;
+  font-size: 18px;
+}
+.button-box {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+</style>

@@ -9,7 +9,7 @@ const db = mysql2
     host: process.env.RDS_DB_HOST,
     user: process.env.RDS_DB_USER,
     password: process.env.RDS_DB_PASSWORD,
-    database: process.env.RDS_DATABASE,
+    database: process.env.RDS_DB_DATABASE,
   })
   .promise();
 
