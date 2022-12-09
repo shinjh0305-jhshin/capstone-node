@@ -64,10 +64,9 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="col-12 d-grid p-1">
                   <button type="button" class="btn btn-lg btn-secondary" disabled v-if="outdated || deleted">공구가 마감되었습니다</button>
-                  <button type="button" class="btn btn-lg btn-secondary" disabled v-else-if="reached">공구가 마감되었습니다</button>
-                  <!-- <button type="button" class="btn btn-lg btn-danger" @click="enrollDeal" v-if="!(deleted || reached || outdated)">공구 참여</button>
-                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="!deleted && reached && !outdated">공구가 정원에 도달하였습니다</button>
-                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="outdated || deleted">공구가 마감되었습니다</button> -->
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-else-if="reached">공구가 정원에 도달하였습니다</button>
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-else-if="productDetail.user === userStore.userNick">자신의 공구에 참여할 수 없습니다</button>
+                  <button type="button" class="btn btn-lg btn-danger" @click="enrollDeal" v-else>공구 참여</button>
                 </div>
               </div>
             </div>
@@ -169,10 +168,9 @@ const getImageUrl = (name) => {
 //공구에 참여한다
 function enrollDeal() {
   const payload = {
-    quantity: total.value / productDetail.value.portion,
-    user_nick: userStore.userNick,
+    quantity: total.value / productDetail.value.unitQuantity,
   };
-  axiosPost(`/product/${productId}/enrollment`, payload, onDealEnrollSuccess);
+  axiosPost(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${dealId}/enrollment`, userStore.JWT, payload, onDealEnrollSuccess);
 }
 
 function onDealEnrollSuccess(resp) {

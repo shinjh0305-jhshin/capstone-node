@@ -12,18 +12,21 @@
     </thead>
     <tbody>
       <tr v-for="(product, i) in productList" :key="i">
-        <td style="width: 100px"><img :src="getImageUrl(product.path)" style="height: 50px; width: auto" /></td>
+        <td style="width: 100px"><img :src="getImageUrl(product)" style="height: 50px; width: auto" /></td>
         <td>
-          <router-link :to="{ name: 'Detail', query: { product_id: product.id } }">
-            {{ product.name }}
+          <router-link :to="{ name: 'Detail', query: { id: product.id } }">
+            {{ product.title }}
           </router-link>
         </td>
-        <td>{{ new Intl.NumberFormat("ko").format(product.price * product.quantity) }}원</td>
-        <td>{{ product.portion * product.quantity }}{{ product.unit }}</td>
-        <td>{{ formatTime(product.ends) }}</td>
-        <td style="width: 300px">
+        <!-- <td>{{ new Intl.NumberFormat("ko").format(product.price * product.quantity) }}원</td> -->
+        <td>{{ new Intl.NumberFormat("ko").format(0) }}원</td>
+        <!-- <td>{{ product.portion * product.quantity }}{{ product.unit }}</td> -->
+        <td>0개</td>
+        <!-- <td>{{ formatTime(product.ends) }}</td> -->
+        <td>9999-99-99</td>
+        <td style="width: 300px" v-if="!product.deleted">
           <el-button type="success" plain @click="confirmClose(product.id)" v-if="!product.deleted">송금하기</el-button>
-          <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.deleted">공구취소</el-button>
+          <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.expired">공구취소</el-button>
         </td>
       </tr>
     </tbody>
@@ -34,7 +37,13 @@ const props = defineProps({
   productList: Array,
 });
 const getImageUrl = (name) => {
-  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${name}`;
+  let fileName;
+  if (name.deleted) {
+    fileName = "deleted.jpg";
+  } else {
+    fileName = name.image.fileName;
+  }
+  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${fileName}`;
 };
 function formatTime(value) {
   var temp = value.split("T");

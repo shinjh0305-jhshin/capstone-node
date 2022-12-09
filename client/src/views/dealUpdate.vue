@@ -55,7 +55,7 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 마감일</label>
         <div class="col-md-9">
-          <div class="col-md-9">{{ deal.expireTime }}</div>
+          <div class="col-md-9">{{ deal.ends }}</div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -205,6 +205,7 @@ async function submitDeal() {
 }
 
 function saveDetail(resp) {
+  console.log(resp);
   newDeal.id = resp.id;
   newDeal.title = resp.title;
   newDeal.goal = resp.unitPrice * resp.totalCount;
@@ -214,10 +215,8 @@ function saveDetail(resp) {
   newDeal.unitQuantity = resp.unitQuantity;
   newDeal.unit = resp.unit;
   newDeal.category = resp.category.name;
-  // newDeal.keywords = JSON.parse(resp.keywords);
-  newDeal.keywords = [];
-  // newDeal.ends = moment(resp.ends).format("YYYY-MM-DD");
-  newDeal.expireTime = "9999-99-99";
+  newDeal.keywords = resp.keywords;
+  newDeal.ends = moment(resp.expiredDate).format("YYYY-MM-DD");
   newDeal.content = resp.content;
 
   resp.images.forEach((x) => {
@@ -226,9 +225,6 @@ function saveDetail(resp) {
     temp.url = `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${x.fileName}`;
     uploadedFile.value.push(temp);
   });
-
-  console.log(resp[0]);
-  console.log(newDeal);
   reRenderOnChange.value++;
 }
 
