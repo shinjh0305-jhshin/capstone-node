@@ -3,7 +3,13 @@ import { axios } from "@bundled-es-modules/axios";
 export default function () {
   const { VITE_BASE_URL } = import.meta.env;
 
-  const axiosGet = (URL, JWT = null, params = null, onSuccess = null, onFailed = null) => {
+  const axiosGet = (
+    URL,
+    JWT = null,
+    params = null,
+    onSuccess = null,
+    onFailed = null
+  ) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
     console.log("axiosGet", final_URL, params);
     axios
@@ -24,7 +30,13 @@ export default function () {
       });
   };
 
-  const axiosPost = (URL, JWT = null, Data, onSuccess = null, onFailed = null) => {
+  const axiosPost = (
+    URL,
+    JWT = null,
+    Data,
+    onSuccess = null,
+    onFailed = null
+  ) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
     console.log("axiosPost", final_URL, Data);
     axios
@@ -46,7 +58,13 @@ export default function () {
       });
   };
 
-  const axiosPatch = (URL, JWT = null, Data, onSuccess = null, onFailed = null) => {
+  const axiosPatch = (
+    URL,
+    JWT = null,
+    Data,
+    onSuccess = null,
+    onFailed = null
+  ) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
     console.log("axiosPatch", final_URL, Data);
     axios
@@ -84,6 +102,5 @@ export default function () {
         }
       });
   };
-
   return { axiosGet, axiosPost, axiosPatch, axiosDelete };
 }

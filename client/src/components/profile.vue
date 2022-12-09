@@ -107,9 +107,17 @@ async function submitChange() {
   const dealServer =
     "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/user/updatekeyword";
   console.log(keywordRef.value);
+  const sendKey = [];
+  for (const obj of keywordRef.value) sendKey.push(obj);
   const changeKeyword = { keyword: keyword };
-  console.log(changeKeyword);
+  console.log("✅ keyword:", changeKeyword);
   console.log(userStore.JWT);
-  await axiosPost(dealServer, userStore.JWT, changeKeyword, onSuccess, onFail);
+  await axiosPost(
+    dealServer,
+    userStore.JWT,
+    { keyword: sendKey },
+    onSuccess,
+    onFail
+  );
 }
 </script>
