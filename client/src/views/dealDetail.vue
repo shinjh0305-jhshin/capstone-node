@@ -27,7 +27,7 @@
                 단가 : {{ new Intl.NumberFormat("ko").format(productDetail.unitPrice) }}원 | 구매 단위 : {{ new Intl.NumberFormat("ko").format(productDetail.unitQuantity) }}{{ productDetail.unit }}
               </h5>
               <p class="card-text border-top pt-3">
-                <span class="badge bg-dark me-1">{{ productDetail.category.name }}</span>
+                <span class="badge bg-dark me-1">{{ productDetail.category }}</span>
                 <span class="badge bg-danger me-1">{{ productDetail.nowCount }}/{{ productDetail.totalCount }}명</span>
                 <span class="badge bg-warning me-1">{{ leftDays(productDetail.remainDate) }}</span>
               </p>
@@ -63,9 +63,11 @@
               </div>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="col-12 d-grid p-1">
-                  <button type="button" class="btn btn-lg btn-danger" @click="enrollDeal" v-if="isLeft && !productDetail.deleted">공구 참여</button>
-                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="!isLeft && isStillOpened">공구가 정원에 도달하였습니다</button>
-                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="!isStillOpened || productDetail.deleted">공구가 마감되었습니다</button>
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="outdated || deleted">공구가 마감되었습니다</button>
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-else-if="reached">공구가 마감되었습니다</button>
+                  <!-- <button type="button" class="btn btn-lg btn-danger" @click="enrollDeal" v-if="!(deleted || reached || outdated)">공구 참여</button>
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="!deleted && reached && !outdated">공구가 정원에 도달하였습니다</button>
+                  <button type="button" class="btn btn-lg btn-secondary" disabled v-if="outdated || deleted">공구가 마감되었습니다</button> -->
                 </div>
               </div>
             </div>
@@ -78,7 +80,7 @@
 
 <script setup>
 import useAxios from "@/modules/axios";
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted, onBeforeMount, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import * as moment from "moment";
 import { categories, units } from "@/modules/selectData";
@@ -95,17 +97,21 @@ let productImage = ref([]); //현재 조회중인 제품의 이미지 명(XXX.PN
 let total = ref(0); //사용자가 구매하고자 하는 물건의 개수
 let totalPrice = ref(0); //사용자의 총 구매 금액
 let totalUpdated = ref(0); //사용자의 키보드 숫자 입력에 의해 구매 수량이 변했는지
-let isLeft = ref(true); //공구에 참여할 수 있는 수량이 남아있는지
-let isStillOpened = ref(true); //공구에 참여할 수 있는 기간인지
+let reached = ref(true); //공구 정원에 도달했는지
+let deleted = ref(false); //삭제된 공구인지
+let outdated = ref(false); //공구 참여 기간이 종료되었는지
 let isGuest = ref(false); //공구를 개시한 사람이 아닌 사용자가 공구 페이지로 들어갔는지
 
 //남은 날짜 계산
 function leftDays(remainDate) {
+  if (remainDate === undefined) return;
+
   if (remainDate >= 1) {
     return remainDate + "일 뒤 마감";
   } else if (remainDate == 0) {
     return "오늘 마감";
   } else {
+    outdated.value = true;
     return "마감된 공구";
   }
 }
@@ -128,16 +134,15 @@ function calculatePrice() {
 
 //제품 상세 쿼리에 대한 콜백함수
 const saveDetail = function (respData) {
-  //console.log(productDetail);
   productDetail.value = respData;
   total.value = productDetail.value.unitQuantity;
   totalPrice.value = productDetail.value.unitPrice;
-  isLeft.value = productDetail.value.totalCount - productDetail.value.nowCount > 0 ? true : false;
+  productDetail.value.category = productDetail.value.category.name;
+  reached.value = productDetail.value.totalCount - productDetail.value.nowCount <= 0 ? true : false;
+  deleted.value = productDetail.value.deleted;
   productImage.value = productDetail.value.images.map((x) => {
-    console.log(x.fileName);
     return x.fileName;
   });
-  console.log(`left = ${isLeft.value}`);
 };
 
 // //제품 이미지 쿼리에 대한 콜백함수

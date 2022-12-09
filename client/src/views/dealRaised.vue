@@ -25,7 +25,7 @@ import { useRouter } from "vue-router";
 import { useUserInfoStore } from "/@stores/userInfo";
 
 const userStore = useUserInfoStore();
-const { axiosGet, axiosPost } = useAxios();
+const { axiosGet, axiosPost, axiosDelete } = useAxios();
 const router = useRouter();
 
 const myCreatedDealList = ref([]);

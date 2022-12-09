@@ -12,7 +12,7 @@
     </thead>
     <tbody>
       <tr v-for="(product, i) in productList" :key="i">
-        <td style="width: 100px"><img :src="getImageUrl(product.image.fileName)" style="height: 50px; width: auto" /></td>
+        <td style="width: 100px"><img :src="getImageUrl(product)" style="height: 50px; width: auto" /></td>
         <td style="width: 300px">
           <router-link :to="{ name: 'Detail', query: { id: product.id } }">
             {{ product.title }}
@@ -27,18 +27,31 @@
             <el-button type="warning" plain>수정하기</el-button>
           </router-link>
           <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.deleted">삭제하기</el-button>
-          <el-button type="success" plain @click="confirmClose(product.id)" v-if="product.ordered === product.people">마감하기</el-button>
+          <el-button type="success" plain @click="confirmClose(product.id)" v-if="!product.deleted && product.nowCount === product.totalCount">마감하기</el-button>
         </td>
       </tr>
     </tbody>
   </table>
 </template>
 <script setup>
+import useAxios from "@/modules/axios";
+import { useUserInfoStore } from "/@stores/userInfo";
+import { useRouter } from "vue-router";
+
+const userStore = useUserInfoStore();
+const { axiosDelete } = useAxios();
+const router = useRouter();
 const props = defineProps({
   productList: Array,
 });
 const getImageUrl = (name) => {
-  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${name}`;
+  let fileName;
+  if (name.deleted) {
+    fileName = "deleted.jpg";
+  } else {
+    fileName = name.image.fileName;
+  }
+  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${fileName}`;
 };
 function formatTime(value) {
   var temp = value.split("T");
@@ -60,7 +73,7 @@ const confirmDelete = async (productId) => {
 
   if (doDelete) {
     try {
-      await axiosPost(`/product/delete/${productId}`, {}, onSuccess);
+      await axiosDelete(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${productId}`, userStore.JWT, onSuccess);
     } catch (error) {
       console.error(error);
     }
