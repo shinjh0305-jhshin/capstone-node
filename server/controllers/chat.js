@@ -52,7 +52,8 @@ export const getAttachedRooms = async (req, res) => {
   }
   try {
     const myRooms = await db.query(
-      `SELECT A.deal_id, B.title FROM deal_member as A JOIN deal as B where A.nickname = '${nickname}' AND A.deal_id = B.deal_id GROUP BY deal_id;`
+      `WITH TBL AS (SELECT DISTINCT deal.deal_id, entered_at, deal.title FROM deal_member JOIN deal WHERE deal_member.nickname = '${nickname}' and deal_member.deal_id = deal.deal_id)
+      SELECT TBL.deal_id, title, COUNT(chat_id) as notRead FROM TBL LEFT JOIN chat ON TBL.entered_at < chat.created_at and chat.deal_id = TBL.deal_id and chat.chat_type <> 'notification' GROUP BY deal_id;`
     );
     return res.status(200).json({ ok: true, rooms: myRooms[0] });
   } catch (err) {
@@ -121,6 +122,9 @@ export const getChat = async (req, res) => {
   }
   if (roomId === "0") return res.status(200).json({ ok: true, msgList: [] });
   try {
+    await db.query(
+      `UPDATE deal_member SET entered_at=now() WHERE deal_member.deal_id = ${roomId};`
+    );
     const [result] = await db.query(
       `SELECT nickname, content, chat_type, created_at, deal_id, image_path FROM chat WHERE deal_id = '${roomId}';`
     );

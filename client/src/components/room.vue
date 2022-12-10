@@ -15,7 +15,13 @@
               :to="{ name: 'room', params: { roomId: myRoom.deal_id } }"
               @click="changeRoom(myRoom.deal_id)"
             >
-              <div class="room-not-read" v-if="myRoom.notRead > 0">
+              <div
+                class="room-not-read"
+                v-if="
+                  myRoom.notRead > 0 &&
+                  String(myRoom.deal_id) != String($route.params.roomId)
+                "
+              >
                 <span>{{ myRoom.notRead }}</span>
               </div>
               <div class="room-name">
@@ -132,9 +138,6 @@ export default {
       console.log("✅ Get My Rooms - Success");
       console.log(respData);
       this.myRoomList = respData.rooms;
-      for (let i = 0; i < this.myRoomList.length; i++) {
-        this.myRoomList[i].notRead = 0;
-      }
       for (const myRoom of this.myRoomList) {
         this.socket.emit("joinRoom", { roomId: String(myRoom.deal_id) });
       }
@@ -347,6 +350,7 @@ export default {
         this.messageObjList = [];
         const getMsgSucceed = async (resp) => {
           const { msgList } = resp;
+          console.log(msgList.length);
           for (const msg of msgList) {
             const date = this.UTCDateToLocal(new Date(msg.created_at));
             this.messageObjList.push({
