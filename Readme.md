@@ -23,7 +23,7 @@ PWA 알림 적용
 - Filter & Sorting
 - Redirect to user's raised deal page from deal detail page when clicking the user's nickname
 - Member register : ID uniqueness check
-- (If possible) Chatting : # of messages not read
+- ~Chatting : # of messages not read~
 - (Waiting for BE) JWT Refresh token(Cookie)
 
 보강구현
