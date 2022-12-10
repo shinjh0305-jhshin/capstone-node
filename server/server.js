@@ -8,7 +8,11 @@ import chatRouter from "./routes/chatRouter";
 const productRouter = require("./routes/productRouter");
 const imageRouter = require("./routes/imageRouter");
 const pushServiceRouter = require("./routes/pushServiceRouter");
-// const db = require("./tools/db");
+const { createClient } = require("redis");
+const { createAdapter } = require("@socket.io/redis-adapter");
+const { Kafka, Partitioners } = require("kafkajs");
+import { chatKafka } from "./tools/kafka";
+const db = require("./tools/db");
 
 const app = express();
 
@@ -27,11 +31,11 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/product", productRouter);
-app.use("/image", imageRouter);
-app.use("/users", userRouter);
+//app.use("/product", productRouter);
+//app.use("/image", imageRouter);
+//app.use("/users", userRouter);
+//app.use("/push", pushServiceRouter);
 app.use("/room", chatRouter);
-app.use("/push", pushServiceRouter);
 
 /*
 const rdsTestRouter = express.Router();
@@ -58,13 +62,42 @@ const io = socket(server, {
   },
 });
 
+const kafka = new Kafka({
+  clientId: "kafka-my-app",
+  brokers: ["13.209.40.90:9092"],
+});
+
+const producer = kafka.producer({
+  createPartitioner: Partitioners.LegacyPartitioner,
+});
+
+const initKafka = async () => {
+  await producer.connect();
+};
+initKafka();
+
+const pubClient = createClient(process.env.REDIS_PORT, process.env.REDIS_HOST, {
+  auth_pass: process.env.REDIS_AUTH_PASS,
+  legacyMode: true,
+});
+const subClient = pubClient.duplicate();
+//pubClient.connect().then();
+//subClient.connect().then();
+Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+  io.adapter(createAdapter(pubClient, subClient));
+});
+
 io.on("connection", (socket) => {
-  socket.on("messageSent", (roomInfo) => {
+  socket.on("messageSent", async (roomInfo) => {
     //console.log("socket On:", roomInfo);
     //roomInfo.time = new Date(roomInfo.time);
     try {
       console.log("SEND FROM SERVER - roomInfo:", roomInfo);
       io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
+      await producer.send({
+        topic: "chatMessage",
+        messages: [{ value: JSON.stringify(roomInfo) }],
+      });
     } catch (err) {
       console.log("[Error]", "message Send :", err);
     }
@@ -91,5 +124,7 @@ io.on("connection", (socket) => {
     console.log("User disconnected", socket.id);
   });
 });
+
+chatKafka().catch(console.error);
 
 export default io;
