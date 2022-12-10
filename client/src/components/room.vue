@@ -245,6 +245,15 @@ export default {
       }
       return ret;
     },
+    UTCDateToLocal(date) {
+      let newDate = new Date(
+        date.getTime() + date.getTimezoneOffset() * 60 * 1000
+      );
+      const offset = date.getTimezoneOffset() / 60;
+      const hours = date.getHours();
+      newDate.setHours(hours - offset);
+      return newDate;
+    },
     sendImage() {
       const onSaveSuccess = (resp) => {
         console.log("✅ Msg Save Success");
@@ -303,9 +312,8 @@ export default {
         this.messageObjList = [];
         const getMsgSucceed = async (resp) => {
           const { msgList } = resp;
-          //console.log("✅ Get Msg", msgList);
           for (const msg of msgList) {
-            const date = new Date(msg.created_at);
+            const date = this.UTCDateToLocal(new Date(msg.created_at));
             this.messageObjList.push({
               content: msg.content,
               sender: msg.nickname,

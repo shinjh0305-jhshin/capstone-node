@@ -10,6 +10,7 @@ const db = mysql2
     user: process.env.RDS_DB_USER,
     password: process.env.RDS_DB_PASSWORD,
     database: process.env.RDS_DB_DATABASE,
+    timezone: "Asia/Seoul",
   })
   .promise();
 
