@@ -15,6 +15,9 @@
               :to="{ name: 'room', params: { roomId: myRoom.deal_id } }"
               @click="changeRoom(myRoom.deal_id)"
             >
+              <div class="room-not-read" v-if="myRoom.notRead > 0">
+                <span>{{ myRoom.notRead }}</span>
+              </div>
               <div class="room-name">
                 <span>{{ myRoom.title }}</span>
               </div>
@@ -101,6 +104,7 @@ export default {
     return {
       myRoomList: [],
       curRoomName: "",
+      curRoomId: "",
       socket: io(VITE_SOCKET_LOCAL_URL),
       messageObj: {
         sender: "",
@@ -128,6 +132,13 @@ export default {
       console.log("✅ Get My Rooms - Success");
       console.log(respData);
       this.myRoomList = respData.rooms;
+      for (let i = 0; i < this.myRoomList.length; i++) {
+        this.myRoomList[i].notRead = 0;
+      }
+      for (const myRoom of this.myRoomList) {
+        this.socket.emit("joinRoom", { roomId: String(myRoom.deal_id) });
+      }
+      console.log(this.myRoomList);
     };
     const getMyRoomFail = (respData) => {
       console.log("❌ Get My Rooms - Fail");
@@ -140,8 +151,11 @@ export default {
   watch: {
     $route(to, from) {
       console.log("✅ Watch");
-      this.updatePage(from.params.roomId, to.params.roomId);
+      //this.updatePage(from.params.roomId, to.params.roomId);
       this.setRoomName(to.params.roomId);
+      this.setCurRoomId(to.params.roomId);
+      //console.log("✅ curRoomId:", this.curRoomId);
+      //console.log("✅ curRoomName:", this.curRoomName);
     },
   },
   mounted() {
@@ -156,7 +170,20 @@ export default {
     });
     this.socket.on("messageReceived", (msgObjFromServer) => {
       console.log("✅ Received Message:", msgObjFromServer);
-      this.messageObjList.push(msgObjFromServer);
+      if (String(msgObjFromServer.roomId) === String(this.curRoomId)) {
+        this.messageObjList.push(msgObjFromServer);
+      } else {
+        for (let i = 0; i < this.myRoomList.length; i++) {
+          if (
+            String(this.myRoomList[i].deal_id) ===
+            String(msgObjFromServer.roomId)
+          ) {
+            this.myRoomList[i].notRead += 1;
+            console.log("⭐️ 더합니다.");
+          }
+        }
+      }
+      console.log(this.myRoomList);
     });
     this.socket.on("notify", (resp) => {
       console.log("✅ Notification", resp.msg);
@@ -245,6 +272,14 @@ export default {
       }
       return ret;
     },
+    setCurRoomId(id) {
+      for (const myRoom of this.myRoomList) {
+        if (String(myRoom.deal_id) === String(id)) {
+          this.curRoomId = String(myRoom.deal_id);
+          break;
+        }
+      }
+    },
     UTCDateToLocal(date) {
       let newDate = new Date(
         date.getTime() + date.getTimezoneOffset() * 60 * 1000
@@ -325,8 +360,17 @@ export default {
           }
         };
         axiosGet(`/room/${id}/chat/`, null, null, getMsgSucceed);
-        this.socket.emit("joinRoom", { roomId: String(id) });
+        //this.socket.emit("joinRoom", { roomId: String(id) });
         this.setRoomName(id);
+        console.log(this.myRoomList.length);
+        for (let i = 0; i < this.myRoomList.length; i++) {
+          console.log(String(this.myRoomList[i].deal_id), String(id));
+          if (String(this.myRoomList[i].deal_id) === String(id)) {
+            console.log("✅ 다시 0으로");
+            this.myRoomList[i].notRead = 0;
+            break;
+          }
+        }
       }
     },
   },
@@ -381,12 +425,13 @@ div.room-header {
   margin-bottom: 2rem;
 }
 div.room {
-  height: 60px;
+  height: 90px;
   width: 90%;
   margin: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 div.room :hover {
   color: white;
@@ -414,6 +459,24 @@ div.room-name {
   width: 90%;
   display: flex;
   justify-content: center;
+}
+div.room-name span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+div.room-not-read {
+  background-color: rgb(252, 0, 55);
+  margin-left: 20px;
+  color: white;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
 }
 a {
   text-decoration: none;
