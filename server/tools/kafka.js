@@ -1,5 +1,6 @@
 const { Kafka, Partitioners } = require("kafkajs");
 import io from "../server";
+const db = require("../tools/db");
 
 const kafka = new Kafka({
   clientId: "kafka-my-app",
@@ -47,8 +48,12 @@ export const chatKafka = async () => {
           topic === "chatJoin"
             ? `${info.nickName}님이 들어왔습니다.`
             : `${info.nickName}님이 나갔습니다.`;
+        // emit notification
         io.to(String(info.dealId)).emit("notify", { msg: msgObj });
         // db insert
+        await db.query(
+          `INSERT INTO chat(deal_id,nickname,chat_type,content,img_path) VALUES('${info.dealId}','${info.nickName}','${msgObj.chatType}','${msgObj.content}','${msgObj.imgPath}');`
+        );
       } else if (topic === "chatMessage") {
         // 푸시 알림 구현
       }
