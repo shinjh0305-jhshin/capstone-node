@@ -5,7 +5,9 @@ const { axiosGet, axiosPost } = useAxios();
 //push server subscription 진행
 function newSubscription(userNick) {
   navigator.serviceWorker.ready.then((swreg) => {
-    const vapid_public = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC);
+    const vapid_public = urlBase64ToUint8Array(
+      import.meta.env.VITE_VAPID_PUBLIC
+    );
     return swreg.pushManager
       .subscribe({
         userVisibleOnly: true,
@@ -15,7 +17,13 @@ function newSubscription(userNick) {
         const filteredSub = JSON.parse(JSON.stringify(newsub));
 
         console.log(filteredSub);
-        axiosPost(`/push/register/${userNick}`, null, filteredSub, onSuccess, onFail);
+        axiosPost(
+          `/push/register/${userNick}`,
+          null,
+          filteredSub,
+          onSuccess,
+          onFail
+        );
       });
   });
 }
