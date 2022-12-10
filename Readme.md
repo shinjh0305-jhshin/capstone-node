@@ -7,7 +7,7 @@
 12/08
 
 Migration
-- ~Deal detail, My deal,~ Joined deal
+- ~Deal detail, My deal, Joined deal~
 - Member register
 
 PWA 알림 적용
@@ -18,8 +18,10 @@ PWA 알림 적용
 
 ***
 신규구현
-- Mypage, User info change
+- ~Mypage, User info change~
+- ~Payment~
 - Filter & Sorting
+- Redirect to user's raised deal page from deal detail page when clicking the user's nickname
 - Member register : ID uniqueness check
 - (If possible) Chatting : # of messages not read
 - (Waiting for BE) JWT Refresh token(Cookie)
@@ -27,5 +29,6 @@ PWA 알림 적용
 보강구현
 - Deal Create data validation
 
-구현 중
-- Mypage, User info change 
+
+구현중
+- Payment : Withdraw & Deposit
