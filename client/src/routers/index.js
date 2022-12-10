@@ -11,6 +11,8 @@ import dealRaised from "../views/dealRaised.vue";
 import dealUpdate from "../views/dealUpdate.vue";
 import changeKeyword from "../views/changeKeyword.vue";
 import profile from "../components/profile.vue";
+import paymentCheck from "../views/paymentCheck.vue";
+import paymentMain from "../views/paymentMain.vue";
 import { useUserInfoStore } from "/@stores/userInfo";
 import axios from "axios";
 
@@ -87,6 +89,18 @@ const routes = [
     component: changeKeyword,
     meta: { authRequired: true },
   },
+  {
+    path: "/payment/check",
+    name: "paymentCheck",
+    component: paymentCheck,
+    meta: { authRequired: true },
+  },
+  {
+    path: "/payment",
+    name: "paymentMain",
+    component: paymentMain,
+    meta: { authRequired: true },
+  },
 ];
 
 const router = createRouter({
@@ -97,9 +111,7 @@ const router = createRouter({
 const checkValidRoomMember = async (currentUser, curRoomId) => {
   //console.log(currentUser, curRoomId);
   const { VITE_BASE_URL } = import.meta.env;
-  const result = await axios.get(
-    VITE_BASE_URL + `/room/${curRoomId}/nickname/${currentUser}`
-  );
+  const result = await axios.get(VITE_BASE_URL + `/room/${curRoomId}/nickname/${currentUser}`);
   //console.log(result.data, result.status);
   if (result.data.ok === true) {
     console.log("✅ IS MEMBER!!");
