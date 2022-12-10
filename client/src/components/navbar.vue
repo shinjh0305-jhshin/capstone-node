@@ -2,26 +2,13 @@
   <nav class="navbar navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
       <a href="#" class="navbar-brand text-white">우리동네 공유마켓</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul
-          :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
-          v-for="menu in menus_category"
-          :key="menu.id"
-        >
-          <li
-            class="nav-item"
-            v-for="menu_object in menu.value"
-            :key="menu_object.key"
-          >
+        <ul :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }" v-for="menu in menus_category" :key="menu.id">
+          <li class="nav-item" v-for="menu_object in menu.value" :key="menu_object.key">
             <router-link
               v-if="menu_object.key == 'nick'"
               :class="{
@@ -85,6 +72,12 @@ const menus = [
     key: "mychat",
     value: "공구 채팅",
     URL: `/room/0`,
+    position: "left",
+  },
+  {
+    key: "paymentCheck",
+    value: "공구 페이",
+    URL: "/payment/check",
     position: "left",
   },
   {

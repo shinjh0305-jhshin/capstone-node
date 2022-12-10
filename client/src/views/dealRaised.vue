@@ -37,12 +37,13 @@ const saveCreatedResult = function (respData) {
 };
 
 const saveJoinedResult = function (respData) {
+  console.log(respData);
   myJoinedDealList.value = respData;
 };
 
 function getProductList() {
-  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/sale/${userStore.userNick}`, null, null, saveCreatedResult);
-  axiosGet(`/product/enrollment/${userStore.userNick}`, saveJoinedResult);
+  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/sale/${userStore.userNick}`, userStore.JWT, null, saveCreatedResult);
+  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/enrollment/${userStore.userNick}`, userStore.JWT, null, saveJoinedResult);
 }
 
 const getImageUrl = (name) => {

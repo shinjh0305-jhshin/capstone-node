@@ -23,11 +23,12 @@
         <td>{{ product.remainDate > 0 ? `${product.remainDate}일` : product.remainDate === 0 ? "오늘 마감" : "마감" }}</td>
         <!-- <td>{{ formatTime(product.ends) }}</td> -->
         <td>
-          <router-link :to="{ name: 'Update', query: { deal_id: product.id } }" v-if="!product.deleted" class="me-3" style="text-decoration: none; color: inherit">
-            <el-button type="warning" plain>수정하기</el-button>
-          </router-link>
-          <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.deleted">삭제하기</el-button>
-          <el-button type="success" plain @click="confirmClose(product.id)" v-if="!product.deleted && product.nowCount === product.totalCount">마감하기</el-button>
+          <div v-if="!product.deleted">
+            <router-link :to="{ name: 'Update', query: { deal_id: product.id } }" v-if="!product.expired" class="me-3" style="text-decoration: none; color: inherit">
+              <el-button type="success" plain>수정하기</el-button>
+            </router-link>
+            <el-button type="danger" plain @click="confirmDelete(product.id)">삭제하기</el-button>
+          </div>
         </td>
       </tr>
     </tbody>
