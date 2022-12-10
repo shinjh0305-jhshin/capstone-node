@@ -28,6 +28,7 @@ PWA 알림 적용
 
 보강구현
 - Deal Create data validation
+- Redirect to /payment/check when user clicks 'transaction' button at 'my enrolled deal' list. Currently it redirect to /payment.
 
 
 구현중
