@@ -12,33 +12,66 @@
     </thead>
     <tbody>
       <tr v-for="(product, i) in productList" :key="i">
-        <td style="width: 100px"><img :src="getImageUrl(product.path)" style="height: 50px; width: auto" /></td>
+        <td style="width: 100px"><img :src="getImageUrl(product)" style="height: 50px; width: auto" /></td>
         <td>
-          <router-link :to="{ name: 'Detail', query: { product_id: product.id } }">
-            {{ product.name }}
+          <router-link :to="{ name: 'Detail', query: { id: product.id } }">
+            {{ product.title }}
           </router-link>
         </td>
-        <td>{{ new Intl.NumberFormat("ko").format(product.price * product.quantity) }}원</td>
-        <td>{{ product.portion * product.quantity }}{{ product.unit }}</td>
-        <td>{{ formatTime(product.ends) }}</td>
-        <td style="width: 300px">
-          <el-button type="success" plain @click="confirmClose(product.id)" v-if="!product.deleted">송금하기</el-button>
-          <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.deleted">공구취소</el-button>
+        <td>{{ new Intl.NumberFormat("ko").format(product.unitPrice * product.userCount) }}원</td>
+        <td>{{ (product.quantity / product.totalCount) * product.userCount }}{{ product.unit }}</td>
+        <td>{{ formatTime(product.expiredDate) }}</td>
+        <td style="width: 300px" v-if="!product.deleted">
+          <el-button type="success" plain @click="confirmTransaction(product)" v-if="!product.deleted">송금하기</el-button>
+          <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.expired">공구취소</el-button>
         </td>
       </tr>
     </tbody>
   </table>
 </template>
 <script setup>
+import useAxios from "@/modules/axios";
+import { useUserInfoStore } from "/@stores/userInfo";
+import { useRouter } from "vue-router";
+import * as moment from "moment";
+
+const userStore = useUserInfoStore();
+const { axiosGet } = useAxios();
+const router = useRouter();
 const props = defineProps({
   productList: Array,
 });
+
+let sendAmount; //송금을 할 때, 얼마를 줄 지 임시로 저장해놓는 변수
+
 const getImageUrl = (name) => {
-  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${name}`;
+  let fileName;
+  if (name.deleted) {
+    fileName = "deleted.jpg";
+  } else {
+    fileName = name.image.fileName;
+  }
+  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${fileName}`;
 };
 function formatTime(value) {
-  var temp = value.split("T");
-  return temp[0];
+  return moment(value).format("YYYY-MM-DD");
+}
+
+function onSuccess(resp) {
+  // console.log(resp.user);
+  // console.log(sendAmount);
+  router.push({ name: "paymentMain", query: { to: resp.user, amount: sendAmount } });
+}
+
+function onFail(resp) {
+  console.log("Transaction fail", resp);
+}
+
+function confirmTransaction(product) {
+  if (confirm("실물 거래 이전에 먼저 송금하는 것은 위험합니다.\n계속 진행하시겠습니까?")) {
+    sendAmount = product.unitPrice * product.userCount;
+    axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${product.id}`, userStore.JWT, null, onSuccess, onFail);
+  }
 }
 </script>
 <style scoped>

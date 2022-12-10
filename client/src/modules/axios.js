@@ -3,40 +3,28 @@ import { axios } from "@bundled-es-modules/axios";
 export default function () {
   const { VITE_BASE_URL } = import.meta.env;
 
-  const axiosGet = (
-    URL,
-    JWT = null,
-    params = null,
-    onSuccess = null,
-    onFailed = null
-  ) => {
+  const axiosGet = (URL, JWT = null, params = null, onSuccess = null, onFailed = null) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
-    console.log("axiosGet", final_URL, params);
+    console.log("axiosGet", final_URL, JWT);
     axios
-      .get(
-        final_URL,
-        { params },
-        {
-          headers: {
-            "X-AUTH-TOKEN": JWT,
-          },
-        }
-      )
+      .get(final_URL, {
+        params,
+        headers: {
+          "X-AUTH-TOKEN": JWT,
+        },
+      })
       .then((resp) => {
         if (resp.status === 200 || resp.data.ok === true) {
           if (onSuccess) onSuccess(resp.data);
           else if (onFailed) onFailed(resp.data);
         }
+      })
+      .catch((err) => {
+        if (onFailed) onFailed(err);
       });
   };
 
-  const axiosPost = (
-    URL,
-    JWT = null,
-    Data,
-    onSuccess = null,
-    onFailed = null
-  ) => {
+  const axiosPost = (URL, JWT = null, Data, onSuccess = null, onFailed = null) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
     console.log("axiosPost", final_URL, Data);
     axios
@@ -58,13 +46,7 @@ export default function () {
       });
   };
 
-  const axiosPatch = (
-    URL,
-    JWT = null,
-    Data,
-    onSuccess = null,
-    onFailed = null
-  ) => {
+  const axiosPatch = (URL, JWT = null, Data, onSuccess = null, onFailed = null) => {
     const final_URL = URL.startsWith("http") ? URL : VITE_BASE_URL + URL;
     console.log("axiosPatch", final_URL, Data);
     axios
