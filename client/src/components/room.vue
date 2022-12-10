@@ -8,7 +8,7 @@
             class="room"
             v-for="myRoom in myRoomList"
             :class="{
-              picked: String(myRoom.deal_id) === String($route.params.deal_id),
+              picked: String(myRoom.deal_id) === String($route.params.roomId),
             }"
           >
             <router-link
@@ -89,7 +89,7 @@ import useAxios from "../modules/axios";
 import { reactive } from "vue";
 import message from "./message.vue";
 import FormData from "form-data";
-const { VITE_SOCKET_URL } = import.meta.env;
+const { VITE_SOCKET_URL, VITE_SOCKET_LOCAL_URL } = import.meta.env;
 const { axiosGet, axiosPost } = useAxios();
 
 export default {
@@ -101,7 +101,7 @@ export default {
     return {
       myRoomList: [],
       curRoomName: "",
-      socket: io(VITE_SOCKET_URL),
+      socket: io(VITE_SOCKET_LOCAL_URL),
       messageObj: {
         sender: "",
         content: "",
@@ -110,6 +110,7 @@ export default {
         chatType: "",
       },
       newMessageObj: {
+        title: "",
         chatType: "",
         content: "",
         time: "",
@@ -173,8 +174,12 @@ export default {
     updatePage(prevRoomId, curRoomId) {
       //console.log("✅ prev -- UPDATE PAGE:", prevRoomId, curRoomId);
       //console.log("TYPE OF ROOMID:", typeof prevRoomId);
-      this.socket.emit("leaveRoom", { roomId: String(prevRoomId) });
-      this.socket.emit("joinRoom", { roomId: String(curRoomId) });
+      if (Number(prevRoomId) > 0) {
+        this.socket.emit("leaveRoom", { roomId: String(prevRoomId) });
+      }
+      if (Number(curRoomId)) {
+        this.socket.emit("joinRoom", { roomId: String(curRoomId) });
+      }
     },
     isDiffOther(idx) {
       if (idx === 0) return false;
@@ -224,11 +229,21 @@ export default {
     },
     setRoomName(id) {
       for (const myRoom of this.myRoomList) {
-        if (String(myRoom.roomId) === String(id)) {
-          this.curRoomName = myRoom.roomName;
+        if (String(myRoom.deal_id) === String(id)) {
+          this.curRoomName = myRoom.title;
           break;
         }
       }
+    },
+    getRoomName(id) {
+      let ret = "";
+      for (const myRoom of this.myRoomList) {
+        if (String(myRoom.deal_id) === String(id)) {
+          ret = myRoom.title;
+          break;
+        }
+      }
+      return ret;
     },
     sendImage() {
       const onSaveSuccess = (resp) => {
@@ -257,7 +272,7 @@ export default {
           this.newMessageObj.content = "";
           this.newMessageObj.imgPath = resp.data.imgPath;
           this.socket.emit("messageSent", this.newMessageObj);
-          axiosPost("/room/chat", this.newMessageObj, onSaveSuccess);
+          axiosPost("/room/chat", store.JWT, this.newMessageObj, onSaveSuccess);
         })
         .catch((err) => {
           console.log(err);
@@ -270,6 +285,7 @@ export default {
       if (this.newMessageObj.content.length > 0) {
         const store = useUserInfoStore();
         const sendObj = new Object();
+        sendObj.title = this.curRoomName;
         sendObj.chatType = "message";
         sendObj.roomId = String(this.$route.params.roomId);
         sendObj.time = new Date(Date.now());
@@ -277,7 +293,7 @@ export default {
         sendObj.content = this.newMessageObj.content;
         sendObj.imgPath = "";
         this.socket.emit("messageSent", sendObj);
-        axiosPost("/room/chat", sendObj, onSaveSuccess);
+        axiosPost("/room/chat", store.JWT, sendObj, onSaveSuccess);
         this.newMessageObj.content = "";
       }
     },
@@ -302,6 +318,7 @@ export default {
         };
         axiosGet(`/room/${id}/chat/`, null, null, getMsgSucceed);
         this.socket.emit("joinRoom", { roomId: String(id) });
+        this.setRoomName(id);
       }
     },
   },

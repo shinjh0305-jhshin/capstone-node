@@ -3,10 +3,10 @@
   <div>
     <ul v-for="room in roomList">
       <li>
-        <router-link :to="{ name: 'room', params: { roomId: room.roomId } }">{{
-          room.roomname
+        <router-link :to="{ name: 'room', params: { roomId: room.deal_id } }">{{
+          room.title
         }}</router-link>
-        <button type="button" @click="onEnterRoom(room.roomId)">
+        <button type="button" @click="onEnterRoom(room.deal_id)">
           Be a Member
         </button>
       </li>
