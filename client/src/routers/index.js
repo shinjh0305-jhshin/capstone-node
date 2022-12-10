@@ -123,7 +123,7 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta.authRequired === false) {
       console.log("❗️ NOT allowed");
       next({ name: "Home" });
-    } else if (curRoomId > 0) {
+    } else if (curRoomId && curRoomId > 0) {
       if ((await checkValidRoomMember(currentUser, curRoomId)) === true) {
         next();
       } else {
