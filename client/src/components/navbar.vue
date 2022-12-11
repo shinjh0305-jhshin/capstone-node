@@ -1,8 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg" v-if="userStore.loggedIn">
+  <nav class="navbar sticky-top navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
       <router-link to="/" class="navbar-brand text-white"> 우리동네 공구마켓 </router-link>
-      <!-- <div class="navbar-brand text-white">우리동네 공구마켓</div> -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
