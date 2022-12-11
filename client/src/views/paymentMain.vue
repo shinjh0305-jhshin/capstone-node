@@ -57,7 +57,7 @@ function onTransactionFail(resp) {
 }
 
 function getBalance() {
-  axiosGet("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/payment", userStore.JWT, null, onSuccess, onFail);
+  axiosGet("https://09market.site/payment", userStore.JWT, null, onSuccess, onFail);
 }
 
 function checkPrice(e) {
@@ -70,7 +70,7 @@ function doTransaction() {
       to: receiver.value,
       amount: amount.value,
     };
-    axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/payment/remit", userStore.JWT, payload, onTransactionSuccess, onTransactionFail);
+    axiosPost("https://09market.site/payment/remit", userStore.JWT, payload, onTransactionSuccess, onTransactionFail);
   }
 }
 

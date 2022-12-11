@@ -9,9 +9,6 @@ const { axiosGet, axiosPost } = useAxios();
 const router = useRouter();
 const route = useRoute();
 
-function onPayCreate(resp) {
-  router.push("/payment");
-}
 function onPayCreateFail(resp) {
   console.log("Pay create error", resp);
 }
@@ -25,9 +22,8 @@ function onSuccess(resp) {
 }
 
 function onFail(resp) {
-  console.log(resp);
   if (confirm("지갑 정보가 없습니다. 새로 생성하시겠습니까?")) {
-    axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/payment", userStore.JWT, null, onPayCreate, onPayCreateFail);
+    axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/payment", userStore.JWT, null, onSuccess, onPayCreateFail);
   } else {
     router.push("/");
   }

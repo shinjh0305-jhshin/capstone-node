@@ -152,12 +152,7 @@ const saveDetail = function (respData) {
 
 //제품 상세 쿼리
 async function getProductDetail() {
-  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${dealId}`, userStore.JWT, null, saveDetail);
-}
-
-//제품 이미지 쿼리
-function getProductImage() {
-  axiosGet(`/image/${productId}`, saveImage);
+  axiosGet(`https://09market.site/deal/${dealId}`, userStore.JWT, null, saveDetail);
 }
 
 //이미지를 실제 경로에서 가져온다.
@@ -170,7 +165,7 @@ function enrollDeal() {
   const payload = {
     quantity: total.value / productDetail.value.unitQuantity,
   };
-  axiosPost(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${dealId}/enrollment`, userStore.JWT, payload, onDealEnrollSuccess);
+  axiosPost(`https://09market.site/deal/${dealId}/enrollment`, userStore.JWT, payload, onDealEnrollSuccess);
 }
 
 function onDealEnrollSuccess(resp) {

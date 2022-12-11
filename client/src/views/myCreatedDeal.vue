@@ -74,29 +74,7 @@ const confirmDelete = async (productId) => {
 
   if (doDelete) {
     try {
-      await axiosDelete(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${productId}`, userStore.JWT, onSuccess);
-    } catch (error) {
-      console.error(error);
-    }
-  } else {
-    ElMessage({
-      type: "info",
-      message: "Delete canceled",
-    });
-  }
-};
-
-//공구 마감에 대한 사용자 프롬프트
-const confirmClose = async (productId) => {
-  const doClose = await ElMessageBox.confirm("공구를 마감할까요?", "Warning", {
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    type: "warning",
-  });
-
-  if (doClose) {
-    try {
-      await axiosPost(`/product/delete/${productId}`, {}, onSuccess);
+      await axiosDelete(`https://09market.site/deal/${productId}`, userStore.JWT, onSuccess);
     } catch (error) {
       console.error(error);
     }

@@ -67,7 +67,7 @@ const onLoginSuccess = (respData) => {
 };
 
 const loginSubmit = () => {
-  axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/login", null, userInfo, onLoginSuccess);
+  axiosPost("https://09market.site/login", null, userInfo, onLoginSuccess);
 };
 </script>
 
