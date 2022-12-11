@@ -121,7 +121,7 @@
       </div>
       <div class="mb-3 row">
         <div class="col-6 d-grid p-1">
-          <router-link to="/sales">
+          <router-link to="/raised">
             <button type="button" class="col-12 btn btn-block btn-lg btn-dark">취소하기</button>
           </router-link>
         </div>
@@ -262,9 +262,9 @@ function validateData() {
   const toSkip = ["unitprice", "unit", "keywords", "createdby", "images", "nowCount"];
 
   Object.keys(newDeal).forEach((fieldName) => {
-    console.log(fieldName + "를 검사하고 있습니다");
     if (toSkip.includes(fieldName)) return;
-    if (newDeal[fieldName] == "") {
+    if (newDeal[fieldName] == "" || newDeal[fieldName] == null) {
+      //null : 날짜 입력했다가 지우기
       showError(fieldName, "필수 항목입니다");
     } else {
       showSuccess(fieldName);
