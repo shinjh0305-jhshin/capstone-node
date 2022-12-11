@@ -12,7 +12,10 @@
             </div>
             <div class="form-group mb-3">
               <label class="label" for="id">ID</label>
-              <input type="text" id="id" class="form-control" placeholder="ID" v-model="userInfo.id" required />
+              <div class="input-group" id="idGroup">
+                <input type="text" id="id" class="form-control" placeholder="ID" v-model="userInfo.id" required />
+                <button class="btn btn-outline-secondary" type="button" id="idConfirm" @click="idConfirm">중복검사</button>
+              </div>
               <small>{{ errorMsg.id }}</small>
             </div>
             <div class="form-group mb-3">
@@ -48,18 +51,21 @@ const password2 = document.getElementById("password2");
 
 import useAxios from "../modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import router from "../routers";
 
 const { axiosGet, axiosPost } = useAxios();
 var allIsWell = true;
+var idValidated = ref(false); //id의 중복 체크가 완료되었는지
 
-const userInfo = reactive({
+const _userInfo = {
   id: "",
   email: "",
   password: "",
   password2: "",
-});
+};
+
+const userInfo = reactive(_userInfo);
 
 const errorMsg = reactive({
   id: "",
@@ -69,12 +75,8 @@ const errorMsg = reactive({
 });
 
 const onJoinSuccess = (respData) => {
-  const userStore = useUserInfoStore();
-  userStore.setInfo(respData.data.userID, respData.data.userNick, true);
-  console.log("✅ userStore", userStore.getInfo);
-  if (userStore.loggedIn) {
-    router.push("/");
-  }
+  alert("회원가입 성공!");
+  router.push("/");
 };
 
 const onJoinFail = (respData = null) => {
@@ -133,13 +135,6 @@ function checkRequired(inputArr) {
       showSuccess(key);
     }
   }
-
-  // if (input.value.trim() === "") {
-  //   showError(input, `${input.id} is required`);
-  //   isError = true;
-  // } else {
-  //   showSuccess(input);
-  // }
 }
 
 //버튼에 대한 이벤트 핸들러를 등록한다.
@@ -152,12 +147,38 @@ const joinSubmit = function () {
   checkEmail("email");
   checkPasswordsMatch("password", "password2");
 
-  if (allIsWell) {
+  if (!idValidated.value) {
+    showError("id", "ID 중복 체크를 해주세요");
+  } else if (allIsWell) {
     console.log("👍 User Information valid!");
+    console.log(_userInfo);
   }
 
-  //axiosPost("/users/login", userInfo, onLoginSuccess, onLoginFail);
+  axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/join", null, _userInfo, onJoinSuccess);
 };
+
+function onIdConfirm(resp) {
+  if (resp.ok === "true") {
+    showSuccess("id");
+    idValidated.value = true;
+    document.getElementById("id").setAttribute("disabled", "");
+    const idGroup = document.getElementById("idGroup");
+    idGroup.removeChild(idGroup.lastChild);
+  } else {
+    showError("id", "이미 사용중인 아이디입니다."), 1500;
+    idValidated.value = false;
+  }
+  console.log(idValidated.value);
+}
+
+//id 중복검사
+function idConfirm() {
+  if (userInfo.id.length < 3) {
+    alert("ID는 세 글자 이상이여야 합니다");
+    return;
+  }
+  axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/isduplicate", null, { id: userInfo.id }, onIdConfirm);
+}
 </script>
 
 <style scoped>
