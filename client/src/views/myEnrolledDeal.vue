@@ -60,7 +60,7 @@ function formatTime(value) {
 function onSuccess(resp) {
   // console.log(resp.user);
   // console.log(sendAmount);
-  router.push({ name: "paymentMain", query: { to: resp.user, amount: sendAmount } });
+  router.push({ name: "paymentCheck", query: { to: resp.user, amount: sendAmount } });
 }
 
 function onFail(resp) {

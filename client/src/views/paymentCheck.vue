@@ -1,12 +1,13 @@
 <template></template>
 <script setup>
 import useAxios from "@/modules/axios";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useUserInfoStore } from "/@stores/userInfo";
 
 const userStore = useUserInfoStore();
 const { axiosGet, axiosPost } = useAxios();
 const router = useRouter();
+const route = useRoute();
 
 function onPayCreate(resp) {
   router.push("/payment");
@@ -16,7 +17,11 @@ function onPayCreateFail(resp) {
 }
 
 function onSuccess(resp) {
-  router.push("/payment");
+  if (route.query.to !== undefined && route.query.amount !== undefined) {
+    router.push({ name: "paymentMain", query: { to: route.query.to, amount: route.query.amount } });
+  } else {
+    router.push("/payment");
+  }
 }
 
 function onFail(resp) {
