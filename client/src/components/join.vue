@@ -154,7 +154,7 @@ const joinSubmit = function () {
     console.log(_userInfo);
   }
 
-  axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/join", null, _userInfo, onJoinSuccess);
+  axiosPost("https://09market.site/join", null, _userInfo, onJoinSuccess);
 };
 
 function onIdConfirm(resp) {
@@ -177,7 +177,7 @@ function idConfirm() {
     alert("ID는 세 글자 이상이여야 합니다");
     return;
   }
-  axiosPost("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/isduplicate", null, { id: userInfo.id }, onIdConfirm);
+  axiosPost("https://09market.site/isduplicate", null, { id: userInfo.id }, onIdConfirm);
 }
 </script>
 

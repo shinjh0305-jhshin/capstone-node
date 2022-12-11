@@ -1,7 +1,8 @@
 <template>
   <nav class="navbar navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
-      <a href="#" class="navbar-brand text-white">우리동네 공유마켓</a>
+      <router-link to="/" class="navbar-brand text-white"> 우리동네 공구마켓 </router-link>
+      <!-- <div class="navbar-brand text-white">우리동네 공구마켓</div> -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
@@ -55,7 +56,7 @@ const { axiosGet, axiosPost } = useAxios();
 const menu = ref("home");
 
 const menus = [
-  { key: "home", value: "홈", URL: "/", position: "left" },
+  //{ key: "home", value: "홈", URL: "/", position: "left" },
   {
     key: "chat",
     value: "전체 채팅",

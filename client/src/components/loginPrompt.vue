@@ -21,13 +21,9 @@
             <div>
               <button type="submit" class="form-control btn btn-primary rounded submit px-3" @click="loginSubmit">Sign In</button>
             </div>
-            <div class="form-group d-md-flex">
-              <div class="w-50 text-left" />
-              <div class="w-50 text-md-right">
-                <a href="#">Forgot Password</a>
-              </div>
+            <div class="mt-4">
+              <p class="text-center">Not a member? <span @click="goToJoin">Sign Up</span></p>
             </div>
-            <p class="text-center">Not a member? <span @click="goToJoin">Sign Up</span></p>
           </div>
         </div>
       </div>
