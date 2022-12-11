@@ -27,7 +27,7 @@ PWA 알림 적용
 - JWT Refresh token(Cookie)
 
 보강구현
-- Deal Create data validation
+- ~Deal Create data validation~
 - Redirect to '/payment/check' when the user clicks the 'transaction' button at 'my enrolled deal' list. Currently, it redirects to /payment.
 
 
