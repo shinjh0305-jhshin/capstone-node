@@ -9,10 +9,10 @@
         </div>
         <div class="row my-3 g-2">
           <div class="col-12 col-md-6">
-            <button class="w-100 btn btn-lg btn-secondary" type="submit">충전하기</button>
+            <button class="w-100 btn btn-lg btn-secondary" @click="charge">충전하기</button>
           </div>
           <div class="col-12 col-md-6">
-            <button class="w-100 btn btn-lg btn-secondary" type="submit">환전하기</button>
+            <button class="w-100 btn btn-lg btn-secondary" @click="discharge">환전하기</button>
           </div>
         </div>
       </div>
@@ -27,20 +27,24 @@
             <input type="text" class="form-control" id="floatingAmount" placeholder="금액" @input="checkPrice" v-model="amount" />
             <label for="floatingAmount">금액</label>
           </div>
-          <button class="w-100 btn btn-lg btn-dark" type="submit" v-if="amount > balance" disabled>잔액이 부족합니다</button>
+          <button class="w-100 btn btn-lg btn-dark" type="submit" v-if="receiver === userStore.userNick" disabled>자신한테 송금할 수 없습니다</button>
+          <button class="w-100 btn btn-lg btn-dark" type="submit" v-else-if="amount > balance" disabled>잔액이 부족합니다</button>
           <button class="w-100 btn btn-lg btn-dark" type="submit" v-else>송금하기</button>
           <hr class="my-4" />
           <small class="text-muted">우리동네 공구마켓은 회원간의 송금에 책임을 지지 않으며, 실물 거래 현장에서 송금할 것을 강력히 권장합니다.</small>
         </form>
       </div>
     </div>
+    <transaction-list :transactionList="history" />
   </div>
 </template>
 <script setup>
 import { ref } from "vue";
 import useAxios from "@/modules/axios";
 import { useRouter, useRoute } from "vue-router";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { useUserInfoStore } from "/@stores/userInfo";
+import transactionList from "./transactionList.vue";
 
 const userStore = useUserInfoStore();
 const { axiosGet, axiosPost } = useAxios();
@@ -50,24 +54,33 @@ const route = useRoute();
 const balance = ref(0);
 const receiver = ref("");
 const amount = ref("");
+const history = ref([]);
 
-function onSuccess(resp) {
+function onBalanceSuccess(resp) {
   balance.value = resp.balance;
 }
 function onFail(resp) {
+  alert("데이터를 불러오는데 실패했습니다");
   console.log(resp);
 }
 
 function onTransactionSuccess(resp) {
-  router.go(0);
+  alert("송금을 성공했습니다");
+  router.replace("/payment/check");
 }
 
 function onTransactionFail(resp) {
-  console.log("transactionFail", resp);
+  alert(resp);
 }
 
-function getBalance() {
-  axiosGet("https://09market.site/payment", userStore.JWT, null, onSuccess, onFail);
+function onHistorySuccess(respData) {
+  history.value = respData;
+  console.log(history.value);
+}
+
+function getBalanceandHistory() {
+  axiosGet("https://09market.site/payment", userStore.JWT, null, onBalanceSuccess, onFail);
+  axiosGet("https://09market.site/payment/transaction", userStore.JWT, null, onHistorySuccess, onFail);
 }
 
 function checkPrice(e) {
@@ -86,8 +99,112 @@ function doTransaction() {
   }
 }
 
+//코인 충전
+function charge() {
+  ElMessageBox.prompt("충전하실 금액을 입력해주세요", "공구 페이 충전", {
+    confirmButtonText: "확인",
+    cancelButtonText: "취소",
+    inputPattern: /^[0-9]+$/,
+    inputErrorMessage: "숫자만 입력 가능합니다",
+  })
+    .then(({ value }) => {
+      ElMessageBox.confirm(`${new Intl.NumberFormat("ko").format(value)}원을 충전합니다.`, "공구 페이 충전", {
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+        type: "success",
+      })
+        .then(() => {
+          const payload = {
+            requestCoin: value,
+          };
+          axiosPost("https://09market.site/payment/charge", userStore.JWT, payload, onChargeSuccess, onChargeFail);
+        })
+        .catch(() => {
+          ElMessage({
+            type: "info",
+            message: "충전이 취소됐습니다",
+          });
+        });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "충전이 취소됐습니다",
+      });
+    });
+}
+
+function onChargeSuccess() {
+  ElMessage({
+    type: "success",
+    message: `충전이 완료되었습니다`,
+  });
+  setTimeout(() => {
+    router.go(0);
+  }, 500);
+}
+
+function onChargeFail(resp) {
+  ElMessage({
+    type: "error",
+    message: "오류가 발생했습니다. 다시 시도해주세요.",
+  });
+}
+
+//코인 환전
+function discharge() {
+  ElMessageBox.prompt("환전하실 금액을 입력해주세요", "공구 페이 환전", {
+    confirmButtonText: "확인",
+    cancelButtonText: "취소",
+    inputPattern: /^[0-9]+$/,
+    inputErrorMessage: "숫자만 입력 가능합니다",
+  })
+    .then(({ value }) => {
+      ElMessageBox.confirm(`${new Intl.NumberFormat("ko").format(value)}원을 환전합니다.`, "공구 페이 환전", {
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+        type: "success",
+      })
+        .then(() => {
+          const payload = {
+            requestCoin: value,
+          };
+          axiosPost("https://09market.site/payment/discharge", userStore.JWT, payload, onDischargeSuccess, onDischargeFail);
+        })
+        .catch(() => {
+          ElMessage({
+            type: "info",
+            message: "환전이 취소됐습니다",
+          });
+        });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "환전이 취소됐습니다",
+      });
+    });
+}
+
+function onDischargeSuccess() {
+  ElMessage({
+    type: "success",
+    message: `환전이 완료되었습니다`,
+  });
+  setTimeout(() => {
+    router.go(0);
+  }, 500);
+}
+
+function onDischargeFail(resp) {
+  ElMessage({
+    type: "error",
+    message: "오류가 발생했습니다. 금액이 정확한지 확인 해주세요.",
+  });
+}
+
 //onCreate
-getBalance();
+getBalanceandHistory();
 receiver.value = route.query.to === undefined ? "" : route.query.to;
 amount.value = route.query.amount === undefined ? "" : route.query.amount;
 </script>
