@@ -18,24 +18,32 @@ const initKafka = async () => {
 
 export const chatKafka = async () => {
   await consumerJoin.subscribe({
-    topics: ["chatJoin", "chatExit", "chatMessage"],
+    topics: [
+      "chatJoin",
+      "chatExit",
+      "dealJoin",
+      "dealComplete",
+      "dealDelete",
+      "test1",
+    ],
     fromBeginning: true,
   });
   await consumerJoin.run({
     eachMessage: async ({ topic, partition, message }) => {
-      /*
       console.log("⭐️ Kafka Consume", {
         topic,
         partition,
         offset: message.offset,
         value: message.value.toString(),
       });
-      */
+
       try {
+        /*
         console.log("⭐️ Kafka - ", {
           topic,
           value: message.value.toString(),
         });
+        */
         if (topic === "chatJoin" || topic === "chatExit") {
           // send Notification
           const info = JSON.parse(message.value.toString());
@@ -55,8 +63,6 @@ export const chatKafka = async () => {
           await db.query(
             `INSERT INTO chat(deal_id,nickname,chat_type,content,image_path) VALUES('${info.dealId}','${info.nickName}','${msgObj.chatType}','${msgObj.content}','${msgObj.imgPath}');`
           );
-        } else if (topic === "chatMessage") {
-          // 푸시 알림 구현
         }
       } catch (err) {
         console.log("❌ Kafka - ", err);

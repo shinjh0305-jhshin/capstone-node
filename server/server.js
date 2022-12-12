@@ -94,10 +94,12 @@ io.on("connection", (socket) => {
     try {
       console.log("SEND FROM SERVER - roomInfo:", roomInfo);
       io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
+
       await producer.send({
         topic: "chatMessage",
         messages: [{ value: JSON.stringify(roomInfo) }],
       });
+      console.log("⭐️ Kafka Send - ", JSON.stringify(roomInfo));
     } catch (err) {
       console.log("[Error]", "message Send :", err);
     }
