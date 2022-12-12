@@ -36,7 +36,7 @@ import { useRouter } from "vue-router";
 import * as moment from "moment";
 
 const userStore = useUserInfoStore();
-const { axiosGet } = useAxios();
+const { axiosDelete } = useAxios();
 const router = useRouter();
 const props = defineProps({
   productList: Array,
@@ -57,20 +57,24 @@ function formatTime(value) {
   return moment(value).format("YYYY-MM-DD");
 }
 
-function onSuccess(resp) {
-  // console.log(resp.user);
-  // console.log(sendAmount);
-  router.push({ name: "paymentCheck", query: { to: resp.user, amount: sendAmount } });
+function onDeleteSuccess(resp) {
+  router.go(0);
 }
 
-function onFail(resp) {
-  console.log("Transaction fail", resp);
+function onDeleteFail(resp) {
+  alert("공구 참여 철회에 실패했습니다.");
 }
 
 function confirmTransaction(product) {
   if (confirm("실물 거래 이전에 먼저 송금하는 것은 위험합니다.\n계속 진행하시겠습니까?")) {
     sendAmount = product.unitPrice * product.userCount;
-    axiosGet(`https://09market.site/deal/${product.id}`, userStore.JWT, null, onSuccess, onFail);
+    router.push({ name: "paymentCheck", query: { to: product.hostName, amount: sendAmount } });
+  }
+}
+
+function confirmDelete(dealId) {
+  if (confirm("공구 참여를 취소하시겠습니까?")) {
+    axiosDelete(`https://09market.site/deal/${dealId}/enrollment`, userStore.JWT, onDeleteSuccess, onDeleteFail);
   }
 }
 </script>

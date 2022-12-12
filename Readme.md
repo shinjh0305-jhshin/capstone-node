@@ -26,7 +26,7 @@ PWA 알림 적용
 - ~Mypage, User info change~
 - ~Payment~
 - Filter & Sorting
-- Redirect to user's raised deal page from deal detail page when clicking the user's nickname
+- ~Redirect to user's raised deal page from deal detail page when clicking the user's nickname~
 - ~Member register : ID uniqueness check~
 - ~Chatting : # of messages not read~
 - JWT Refresh token(Cookie)

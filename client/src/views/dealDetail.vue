@@ -31,7 +31,13 @@
                 <span class="badge bg-danger me-1">{{ productDetail.nowCount }}/{{ productDetail.totalCount }}명</span>
                 <span class="badge bg-warning me-1">{{ leftDays(productDetail.remainDate) }}</span>
               </p>
-              <p class="card-text pb-3" style="font-weight: bolder; font-size: 1.2em">{{ productDetail.user }} <span style="font-weight: normal; font-size: 0.7em">(마포구 상암동)</span></p>
+              <p class="card-text pb-3" style="font-weight: bolder; font-size: 1.2em">
+                <img src="../assets/face_FILL1_wght400_GRAD0_opsz48.svg" alt="" />
+                <router-link :to="{ name: 'sellerHistory', query: { seller: productDetail.user } }" style="color: black; text-decoration: none">
+                  {{ productDetail.user }}
+                </router-link>
+                <a :href="parseURL(productDetail.url)" target="_blank" style="text-decoration: none"><el-button plain class="ms-3">구매 사이트로 이동</el-button></a>
+              </p>
               <p class="card-text pb-3">{{ productDetail.content }}</p>
               <div class="card-text border-top border-bottom py-3">
                 <div class="row">
@@ -165,11 +171,24 @@ function enrollDeal() {
   const payload = {
     quantity: total.value / productDetail.value.unitQuantity,
   };
-  axiosPost(`https://09market.site/deal/${dealId}/enrollment`, userStore.JWT, payload, onDealEnrollSuccess);
+  if (confirm(`공구에 참여하시겠습니까? 구매 단위를 다시 한번 확인하시기 바랍니다.\n\n구매단위 : ${payload.quantity}단위`)) {
+    axiosPost(`https://09market.site/deal/${dealId}/enrollment`, userStore.JWT, payload, onDealEnrollSuccess, onDealEnrollFail);
+  }
 }
 
 function onDealEnrollSuccess(resp) {
-  router.push("/");
+  alert("공구 참여에 성공했습니다.");
+  router.push("/raised");
+}
+
+function onDealEnrollFail(resp) {
+  alert("공구 참여에 실패했습니다.");
+  console.log(resp);
+}
+
+function parseURL(url) {
+  if (url.startsWith("http")) return url;
+  return "http://" + url;
 }
 
 //onCreated

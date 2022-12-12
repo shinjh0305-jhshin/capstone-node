@@ -7,7 +7,7 @@
         <th>공구가격</th>
         <th>모집현황</th>
         <th>잔여일</th>
-        <th></th>
+        <th v-if="showControls"></th>
       </tr>
     </thead>
     <tbody>
@@ -22,7 +22,7 @@
         <td>{{ product.nowCount }} / {{ product.totalCount }}</td>
         <td>{{ product.remainDate > 0 ? `${product.remainDate}일` : product.remainDate === 0 ? "오늘 마감" : "마감" }}</td>
         <!-- <td>{{ formatTime(product.ends) }}</td> -->
-        <td>
+        <td v-if="showControls">
           <div v-if="!product.deleted">
             <router-link :to="{ name: 'Update', query: { deal_id: product.id } }" v-if="!product.expired" class="me-3" style="text-decoration: none; color: inherit">
               <el-button type="success" plain>수정하기</el-button>
@@ -44,6 +44,7 @@ const { axiosDelete } = useAxios();
 const router = useRouter();
 const props = defineProps({
   productList: Array,
+  showControls: Boolean,
 });
 const getImageUrl = (name) => {
   let fileName;
