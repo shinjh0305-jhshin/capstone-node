@@ -1,14 +1,29 @@
 <template>
   <nav class="navbar sticky-top navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
-      <router-link to="/" class="navbar-brand text-white"> 우리동네 공구마켓 </router-link>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <router-link to="/" class="navbar-brand text-white">
+        우리동네 공구마켓
+      </router-link>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }" v-for="menu in menus_category" :key="menu.id">
-          <li class="nav-item" v-for="menu_object in menu.value" :key="menu_object.key">
+        <ul
+          :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
+          v-for="menu in menus_category"
+          :key="menu.id"
+        >
+          <li
+            class="nav-item"
+            v-for="menu_object in menu.value"
+            :key="menu_object.key"
+          >
             <router-link
               v-if="menu_object.key == 'nick'"
               :class="{
@@ -99,7 +114,8 @@ const right_menus = computed(() => menus.filter((i) => i.position == "right"));
 
 const onMovePage = (evt, menu_object) => {
   if (menu_object.key === "logout") {
-    unsubscribe();
+    const jwt = userStore.JWT;
+    unsubscribe(jwt);
     userStore.setInfo("", "", false);
   }
   console.log(menu_object);
@@ -114,7 +130,7 @@ const menus_category = [
   { id: 2, me_auto: false, value: right_menus.value },
 ];
 
-function unsubscribe() {
+function unsubscribe(JWT) {
   navigator.serviceWorker.ready
     .then((swreg) => {
       return swreg.pushManager.getSubscription();
@@ -124,7 +140,8 @@ function unsubscribe() {
         endpoint: oldsub.endpoint,
       };
       oldsub.unsubscribe();
-      axiosPost("/push/unregister", null, body);
+      console.log("from unsubscribe", JWT);
+      axiosPost("https://09market.site/user/unregister", JWT, body);
     })
     .then((res) => {
       console.log("😁 Push service unsubscribed");

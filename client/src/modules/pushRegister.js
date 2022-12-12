@@ -3,7 +3,7 @@ import useAxios from "@/modules/axios";
 const { axiosGet, axiosPost } = useAxios();
 
 //push server subscription 진행
-function newSubscription(userNick) {
+function newSubscription(userNick, JWT) {
   navigator.serviceWorker.ready.then((swreg) => {
     const vapid_public = urlBase64ToUint8Array(
       import.meta.env.VITE_VAPID_PUBLIC
@@ -18,8 +18,8 @@ function newSubscription(userNick) {
 
         console.log(filteredSub);
         axiosPost(
-          `/push/register/${userNick}`,
-          null,
+          `https://09market.site/user/register`,
+          JWT,
           filteredSub,
           onSuccess,
           onFail
@@ -30,7 +30,7 @@ function newSubscription(userNick) {
 
 //Subscribe : 브라우저의 푸시 서버에 푸시 알림 구독 정보 저장
 //subscribe 되었는지 확인하는 함수
-export function checkIfSubscribed(userNick) {
+export function checkIfSubscribed(userNick, JWT) {
   navigator.serviceWorker.ready
     .then((swreg) => {
       console.log("😍 Service Worker ready");
@@ -39,7 +39,7 @@ export function checkIfSubscribed(userNick) {
     .then((sub) => {
       if (sub == null) {
         console.log("🤔 Not subscribed yet");
-        newSubscription(userNick);
+        newSubscription(userNick, JWT);
       } else {
         console.log("🤔 Subscription exists");
       }
@@ -50,6 +50,6 @@ function onSuccess(resp) {
   console.log("😆 Subscription Success!");
 }
 function onFail(resp) {
-  console.log("Subscription failed");
+  console.log("❌ Subscription failed");
   console.log(resp);
 }
