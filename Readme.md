@@ -57,8 +57,8 @@ UI/UX 부분
 
 ### 이미지 전송
 
-<img src="https://user-images.githubusercontent.com/76815545/206981640-ba1e1495-8d19-4022-964e-910b67cb39eb.gif">
+<img src="https://user-images.githubusercontent.com/76815545/206995842-b27e707c-27d5-4dfb-a213-ce5cb21756bf.gif">
 
 ### 확인하지 않은 메세지 개수 표시
 
-<img src="https://user-images.githubusercontent.com/76815545/206989926-a780d690-a910-42ed-ada3-a6a0b532dfed.gif">
+<img src="https://user-images.githubusercontent.com/76815545/206995962-2dfe69ee-daaa-4ddd-92a5-2fd2876f2389.gif">
