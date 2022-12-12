@@ -46,3 +46,19 @@ UI/UX 부분
 
 - Make footer
 - Navbar auto collapse
+
+---
+
+## 12.10 구현
+
+### 채팅 전송
+
+<img src="https://user-images.githubusercontent.com/76815545/206977944-c17a1d74-8524-4626-a15b-b89e9a63a59b.gif">
+
+### 이미지 전송
+
+<img src="https://user-images.githubusercontent.com/76815545/206981640-ba1e1495-8d19-4022-964e-910b67cb39eb.gif">
+
+### 확인하지 않은 메세지 개수 표시
+
+<img src="https://user-images.githubusercontent.com/76815545/206989926-a780d690-a910-42ed-ada3-a6a0b532dfed.gif">
