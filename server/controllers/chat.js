@@ -120,7 +120,8 @@ export const getChat = async (req, res) => {
   if (roomId === undefined) {
     return res.status(401).json({ ok: false });
   }
-  if (roomId === "0") return res.status(200).json({ ok: true, msgList: [] });
+  if (String(roomId) === "0")
+    return res.status(200).json({ ok: true, msgList: [] });
   try {
     await db.query(
       `UPDATE deal_member SET entered_at=now() WHERE deal_member.deal_id = ${roomId};`
@@ -172,5 +173,23 @@ export const postSendNotification = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(400).json({ ok: false });
+  }
+};
+
+export const updateEnterTime = async (req, res) => {
+  console.log("✅ Update Time", req.body.roomId);
+  const { roomId } = req.body;
+  if (roomId === undefined) {
+    return res.status(401).json({ ok: false });
+  }
+  if (String(roomId) === "0") return res.status(200).json({ ok: true });
+  try {
+    await db.query(
+      `UPDATE deal_member SET entered_at=now() WHERE deal_member.deal_id = ${roomId};`
+    );
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json({ ok: false });
   }
 };

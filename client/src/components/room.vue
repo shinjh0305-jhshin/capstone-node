@@ -186,7 +186,9 @@ export default {
           }
         }
       }
-      console.log(this.myRoomList);
+      const store = useUserInfoStore();
+      axiosPost("/room/time", store.JWT, { roomId: this.curRoomId });
+      //console.log(this.myRoomList);
     });
     this.socket.on("notify", (resp) => {
       console.log("✅ Notification", resp.msg);

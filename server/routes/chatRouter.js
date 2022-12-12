@@ -7,6 +7,7 @@ import {
   getChat,
   postChat,
   postSendNotification,
+  updateEnterTime,
 } from "../controllers/chat";
 
 const chatRouter = express.Router();
@@ -19,5 +20,6 @@ chatRouter.get("/:roomId/nickname/:nickname", checkUserInRoom);
 chatRouter.get("/:roomId/chat", getChat);
 chatRouter.post("/chat", postChat);
 chatRouter.post("/notification", postSendNotification);
+chatRouter.post("/time", updateEnterTime);
 
 export default chatRouter;
