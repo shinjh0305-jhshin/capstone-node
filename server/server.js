@@ -11,7 +11,7 @@ const pushServiceRouter = require("./routes/pushServiceRouter");
 const { createClient } = require("redis");
 const { createAdapter } = require("@socket.io/redis-adapter");
 const { Kafka, Partitioners } = require("kafkajs");
-import { chatKafka } from "./tools/kafka";
+//import { chatKafka } from "./tools/kafka";
 const db = require("./tools/db");
 
 const app = express();
@@ -125,6 +125,6 @@ io.on("connection", (socket) => {
   });
 });
 
-chatKafka().catch(console.error);
+//chatKafka().catch(console.error);
 
 export default io;
