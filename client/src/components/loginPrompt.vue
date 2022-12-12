@@ -3,12 +3,7 @@
     <div class="row justify-content-center">
       <div class="col-md-12 col-lg-10">
         <div class="wrap d-md-flex">
-          <div
-            class="img"
-            style="
-              background-image: url('https://gongu-image.s3.ap-northeast-2.amazonaws.com/soganguniv.jpg');
-            "
-          ></div>
+          <div class="img" style="background-image: url('https://gongu-image.s3.ap-northeast-2.amazonaws.com/soganguniv.jpg')"></div>
           <div class="login-wrap p-4 p-md-5">
             <div class="d-flex">
               <div class="w-100">
@@ -17,42 +12,18 @@
             </div>
             <div class="mb-3">
               <label class="label" for="name">ID</label>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="ID"
-                v-model="userInfo.id"
-                required
-              />
+              <input type="text" class="form-control" placeholder="ID" v-model="userInfo.id" required />
             </div>
             <div class="mb-3">
               <label class="label" for="password">Password</label>
-              <input
-                type="password"
-                class="form-control"
-                placeholder="Password"
-                v-model="userInfo.password"
-                required
-              />
+              <input type="password" class="form-control" placeholder="Password" v-model="userInfo.password" required />
             </div>
             <div>
-              <button
-                type="submit"
-                class="form-control btn btn-primary rounded submit px-3"
-                @click="loginSubmit"
-              >
-                Sign In
-              </button>
+              <button type="submit" class="form-control btn btn-primary rounded submit px-3" @click="loginSubmit">Sign In</button>
             </div>
-            <div class="form-group d-md-flex">
-              <div class="w-50 text-left" />
-              <div class="w-50 text-md-right">
-                <a href="#">Forgot Password</a>
-              </div>
+            <div class="mt-4">
+              <p class="text-center">Not a member? <span @click="goToJoin">Sign Up</span></p>
             </div>
-            <p class="text-center">
-              Not a member? <span @click="goToJoin">Sign Up</span>
-            </p>
           </div>
         </div>
       </div>
@@ -78,32 +49,21 @@ const goToJoin = () => {
 };
 
 const onLoginSuccess = (respData) => {
-  const userStore = useUserInfoStore();
+  if (respData.ok === "true") {
+    const userStore = useUserInfoStore();
 
-  userStore.setInfo(userInfo.id, respData.accesstoken, true);
-  console.log("✅ userStore", userStore.getInfo);
-  if (userStore.loggedIn) {
-    router.push("/");
-  }
-};
-
-const onLoginFail = (respData = null) => {
-  console.log(`❌ ${respData}`);
-  if (respData === "user does not exist") {
-    alert("아이디를 다시 확인하세요");
+    userStore.setInfo(userInfo.id, respData.accesstoken, true);
+    console.log("✅ userStore", userStore.getInfo);
+    if (userStore.loggedIn) {
+      router.push("/");
+    }
   } else {
-    alert("패스워드를 다시 확인하세요");
+    alert("로그인 정보를 다시 확인해주세요");
   }
 };
 
 const loginSubmit = () => {
-  axiosPost(
-    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/login",
-    "",
-    userInfo,
-    onLoginSuccess,
-    onLoginFail
-  );
+  axiosPost("https://09market.site/login", null, userInfo, onLoginSuccess);
 };
 </script>
 

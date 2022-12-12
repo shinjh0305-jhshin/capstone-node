@@ -8,7 +8,7 @@
 
 Migration
 - ~Deal detail, My deal, Joined deal~
-- Member register
+- ~Member register~
 
 PWA 알림 적용
 - Deal join, Deal done, Deal deleted
@@ -22,14 +22,19 @@ PWA 알림 적용
 - ~Payment~
 - Filter & Sorting
 - Redirect to user's raised deal page from deal detail page when clicking the user's nickname
-- Member register : ID uniqueness check
+- ~Member register : ID uniqueness check~
 - ~Chatting : # of messages not read~
-- (Waiting for BE) JWT Refresh token(Cookie)
+- JWT Refresh token(Cookie)
 
 보강구현
-- Deal Create data validation
-- Redirect to '/payment/check' when the user clicks the 'transaction' button at 'my enrolled deal' list. Currently, it redirects to /payment.
+- ~Deal Create data validation~
+- ~Redirect to '/payment/check' when the user clicks the 'transaction' button at 'my enrolled deal' list. Currently, it redirects to /payment.~
 
 
 구현중
 - Payment : Withdraw & Deposit
+
+***
+UI/UX 부분
+- Make footer
+- Navbar auto collapse

@@ -54,7 +54,7 @@ const saveResult = function (respData) {
 };
 
 onBeforeMount(async () => {
-  await axiosGet("http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal", userStore.JWT, null, saveResult);
+  await axiosGet("https://09market.site/deal", userStore.JWT, null, saveResult);
 });
 
 const getImageUrl = (name) => {

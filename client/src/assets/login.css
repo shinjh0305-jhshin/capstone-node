@@ -11811,6 +11811,22 @@ h5,
   background-font-weight: 300;
 }
 
+/* .input-group {
+  position: relative;
+}
+
+.input-group .label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #000;
+  font-weight: 700;
+}
+
+.input-group a {
+  color: gray;
+} */
+
 .form-group {
   position: relative;
 }

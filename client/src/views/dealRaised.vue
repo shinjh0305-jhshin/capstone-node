@@ -42,8 +42,8 @@ const saveJoinedResult = function (respData) {
 };
 
 function getProductList() {
-  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/sale/${userStore.userNick}`, userStore.JWT, null, saveCreatedResult);
-  axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/enrollment/${userStore.userNick}`, userStore.JWT, null, saveJoinedResult);
+  axiosGet(`https://09market.site/deal/sale/${userStore.userNick}`, userStore.JWT, null, saveCreatedResult);
+  axiosGet(`https://09market.site/deal/enrollment/${userStore.userNick}`, userStore.JWT, null, saveJoinedResult);
 }
 
 const getImageUrl = (name) => {

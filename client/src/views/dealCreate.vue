@@ -3,50 +3,27 @@
     <div class="container">
       <h2 class="text-center my-4">공구 등록</h2>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >공구 제목<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">공구 제목<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            v-model="deal.title"
-            placeholder="공구 제목을 입력해 주세요"
-          />
+          <input type="text" class="form-control form-control-sm" v-model="deal.title" placeholder="공구 제목을 입력해 주세요" />
           <small id="titleError"></small>
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >모을 금액<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">모을 금액<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
           <div class="input-group input-group-sm">
-            <input
-              type="text"
-              class="form-control"
-              @input="checkPrice"
-              @keyup="calculatePrice"
-            />
+            <input type="text" class="form-control" @input="checkPrice" @keyup="calculatePrice" />
             <span class="input-group-text">원</span>
           </div>
           <small id="priceError"></small>
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >모일 인원<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">모일 인원<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
           <div class="input-group input-group-sm">
-            <input
-              id="numPeople"
-              type="text"
-              class="form-control"
-              @input="checkPeople"
-              v-model="deal.totalCount"
-              @keyup="calculatePrice"
-            />
+            <input id="numPeople" type="text" class="form-control" @input="checkPeople" v-model="deal.totalCount" @keyup="calculatePrice" />
             <span class="input-group-text">명</span>
           </div>
           <small id="totalCountError"></small>
@@ -56,67 +33,36 @@
         <label class="col-md-3 col-form-label">1인당 공구가격</label>
         <div class="col-md-9">
           <div class="input-group input-group-sm mb-3">
-            <input
-              type="text"
-              class="form-control"
-              v-model="deal.unitprice"
-              disabled
-              readonly
-            />
+            <input type="text" class="form-control" v-model="deal.unitprice" disabled readonly />
             <span class="input-group-text">원</span>
           </div>
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >구매 사이트<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">구매 사이트<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            v-model="deal.url"
-            placeholder="구매 예정인 사이트 링크를 입력해주세요"
-          />
+          <input type="text" class="form-control form-control-sm" v-model="deal.url" placeholder="구매 예정인 사이트 링크를 입력해주세요" />
           <small id="urlError"></small>
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >공구 단위<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">공구 단위<sup class="requiredInput">*</sup></label>
         <div class="col-auto">
           <div class="input-group input-group-sm">
             <span class="input-group-text">1인당</span>
-            <input
-              type="text"
-              class="form-control"
-              v-model="deal.unitQuantity"
-            />
+            <input type="text" class="form-control" v-model="deal.unitQuantity" />
             <select class="form-select from-select-sm" v-model="deal.unit">
-              <option
-                v-for="(name, i) in units"
-                :key="i"
-                v-text="name"
-                :value="name"
-              ></option>
+              <option v-for="(name, i) in units" :key="i" v-text="name" :value="name"></option>
             </select>
           </div>
           <small id="unitQuantityError"></small>
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >카테고리<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">카테고리<sup class="requiredInput">*</sup></label>
         <div class="col-auto">
           <select class="form-select form-select-sm" v-model="deal.categoryId">
-            <option
-              v-for="(name, i) in categories"
-              :key="i"
-              v-text="name"
-              :value="i"
-            ></option>
+            <option v-for="(name, i) in categories" :key="i" v-text="name" :value="i"></option>
           </select>
           <small id="categoryIdError"></small>
         </div>
@@ -124,49 +70,22 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">태그</label>
         <div class="col-md-9">
-          <el-tag
-            v-for="tag in deal.keywords"
-            :key="tag"
-            :type="'success'"
-            class="mr-1"
-            closable
-            :disable-transitions="false"
-            size="large"
-            @close="handleClose(tag)"
-          >
+          <el-tag v-for="tag in deal.keywords" :key="tag" :type="'success'" class="mr-1" closable :disable-transitions="false" size="large" @close="handleClose(tag)">
             {{ tag }}
           </el-tag>
-          <el-input
-            v-if="inputVisible"
-            ref="InputRef"
-            v-model="inputValue"
-            class="col-auto"
-            @keyup.enter="handleInputConfirm"
-            @blur="handleInputConfirm"
-          />
-          <el-button v-else class="button-new-tag mr-1" @click="showInput">
-            + New Tag
-          </el-button>
+          <el-input v-if="inputVisible" ref="InputRef" v-model="inputValue" class="col-auto" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
+          <el-button v-else class="button-new-tag mr-1" @click="showInput"> + New Tag </el-button>
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >공구 마감일<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">공구 마감일<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
-          <el-date-picker
-            v-model="deal.expireTime"
-            type="date"
-            placeholder="Pick a day"
-            :disabled-date="disabledDate"
-          />
+          <el-date-picker v-model="deal.expireTime" type="date" placeholder="Pick a day" :disabled-date="disabledDate" />
           <small id="expireTimeError"></small>
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >썸네일 이미지<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">썸네일 이미지<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
           <el-upload
             v-model:file-list="uploadedFile"
@@ -180,9 +99,7 @@
             :limit="5"
           >
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-            <div class="el-upload__text">
-              Drop file here or <em>click to upload</em>
-            </div>
+            <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
             <template #tip>
               <div class="el-upload__tip">
                 이미지 파일 당 최대 크기 : 5MB | 최대 5개 파일 업로드 가능<br />
@@ -194,37 +111,22 @@
         </div>
       </div>
       <div class="mb-3 row">
-        <label class="col-md-3 col-form-label"
-          >상품 설명<sup class="requiredInput">*</sup></label
-        >
+        <label class="col-md-3 col-form-label">상품 설명<sup class="requiredInput">*</sup></label>
         <div class="col-md-9">
           <div class="mb-3">
-            <textarea
-              class="form-control"
-              id="exampleFormControlTextarea1"
-              rows="3"
-              v-model="deal.content"
-            ></textarea>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="deal.content"></textarea>
             <small id="contentError"></small>
           </div>
         </div>
       </div>
       <div class="mb-3 row">
         <div class="col-6 d-grid p-1">
-          <router-link to="/sales">
-            <button type="button" class="col-12 btn btn-block btn-lg btn-dark">
-              취소하기
-            </button>
+          <router-link to="/raised">
+            <button type="button" class="col-12 btn btn-block btn-lg btn-dark">취소하기</button>
           </router-link>
         </div>
         <div class="col-6 d-grid p-1">
-          <button
-            type="button"
-            @click="submitDeal"
-            class="btn btn-lg btn-danger"
-          >
-            저장하기
-          </button>
+          <button type="button" @click="submitDeal" class="btn btn-lg btn-danger">저장하기</button>
         </div>
       </div>
     </div>
@@ -300,9 +202,7 @@ const disabledDate = (time) => {
   const month = today.getMonth();
   const day = today.getDate();
 
-  return (
-    time < new Date(year, month, day) || time > new Date(year, month, day + 7)
-  );
+  return time < new Date(year, month, day) || time > new Date(year, month, day + 7);
 };
 
 const handleClose = (tag) => {
@@ -359,19 +259,19 @@ function showSuccess(fieldName) {
 
 function validateData() {
   console.log(newDeal);
-  const toSkip = ["unitprice", "unit", "tags", "createdby", "images"];
+  const toSkip = ["unitprice", "unit", "keywords", "createdby", "images", "nowCount"];
 
   Object.keys(newDeal).forEach((fieldName) => {
     if (toSkip.includes(fieldName)) return;
-    if (newDeal[fieldName] == "") {
+    if (newDeal[fieldName] == "" || newDeal[fieldName] == null) {
+      //null : 날짜 입력했다가 지우기
       showError(fieldName, "필수 항목입니다");
     } else {
       showSuccess(fieldName);
     }
   });
 
-  const urlRegex =
-    /^[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+  const urlRegex = /^[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
   if (!urlRegex.test(newDeal.url)) {
     showError("url", "잘못된 url입니다");
   } else {
@@ -390,23 +290,22 @@ function onSuccess(resp) {
 }
 
 async function submitDeal() {
-  const dealServer =
-    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal";
+  const dealServer = "https://09market.site/deal";
   newDeal.images = []; //images 포맷 변경
   for (var i = 0; i < uploadedFile.value.length; i++) {
     newDeal.images.push(uploadedFile.value[i].response.fileName);
   }
 
   allIsWell = true;
-  //validateData();
+  validateData();
 
   if (!allIsWell) {
-    console.log("😢Data validation failed");
+    alert("누락된 항목이 있습니다. 전부 적으셨는지 확인 부탁드려요!");
   } else {
     //newDeal.keywords = JSON.stringify(newDeal.keywords); //newDeal stringify
     //newDeal.expireTime = moment(newDeal.expireTime).format("YYYY-MM-DD"); //endDate 포맷 변경
     console.log(newDeal);
-    await axiosPost(dealServer, userStore.JWT, newDeal, onSuccess);
+    //await axiosPost(dealServer, userStore.JWT, newDeal, onSuccess);
   }
 }
 </script>

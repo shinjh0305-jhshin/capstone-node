@@ -5,39 +5,15 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">태그</label>
         <div class="col-md-9">
-          <el-tag
-            v-for="tag in keywordRef"
-            :key="tag"
-            :type="'success'"
-            class="mr-1"
-            closable
-            :disable-transitions="false"
-            size="large"
-            @close="handleClose(tag)"
-          >
+          <el-tag v-for="tag in keywordRef" :key="tag" :type="'success'" class="mr-1" closable :disable-transitions="false" size="large" @close="handleClose(tag)">
             {{ tag }}
           </el-tag>
-          <el-input
-            v-if="inputVisible"
-            ref="InputRef"
-            v-model="inputValue"
-            class="col-auto"
-            @keyup.enter="handleInputConfirm"
-            @blur="handleInputConfirm"
-          />
-          <el-button v-else class="button-new-tag mr-1" @click="showInput">
-            + New Tag
-          </el-button>
+          <el-input v-if="inputVisible" ref="InputRef" v-model="inputValue" class="col-auto" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
+          <el-button v-else class="button-new-tag mr-1" @click="showInput"> + New Tag </el-button>
         </div>
       </div>
       <div class="col-6 d-grid p-1">
-        <button
-          type="button"
-          @click="submitChange"
-          class="btn btn-lg btn-danger"
-        >
-          저장하기
-        </button>
+        <button type="button" @click="submitChange" class="btn btn-lg btn-danger">저장하기</button>
       </div>
     </div>
   </main>
@@ -88,8 +64,7 @@ function onFail(resp) {
 }
 
 async function submitChange() {
-  const dealServer =
-    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/user/updatekeyword";
+  const dealServer = "https://09market.site/user/updatekeyword";
   console.log(keywordRef.value);
   const changeKeyword = { keyword: keyword };
   console.log(changeKeyword);
