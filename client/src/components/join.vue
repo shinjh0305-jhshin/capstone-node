@@ -152,9 +152,8 @@ const joinSubmit = function () {
   } else if (allIsWell) {
     console.log("👍 User Information valid!");
     console.log(_userInfo);
+    axiosPost("https://09market.site/join", null, _userInfo, onJoinSuccess);
   }
-
-  axiosPost("https://09market.site/join", null, _userInfo, onJoinSuccess);
 };
 
 function onIdConfirm(resp) {

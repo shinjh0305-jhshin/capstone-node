@@ -38,7 +38,7 @@ PWA 알림 적용
 
 구현중
 
-- Payment : Withdraw & Deposit
+- ~Payment : Withdraw & Deposit~
 
 ---
 
