@@ -186,7 +186,7 @@ function onFail(resp) {
 
 async function submitDeal() {
   console.log(newDeal);
-  const updateURL = `http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${newDeal.id}`;
+  const updateURL = `https://09market.site/deal/${newDeal.id}`;
   newDeal.images = []; //images 포맷 변경
 
   for (var i = 0; i < uploadedFile.value.length; i++) {
@@ -229,7 +229,7 @@ function saveDetail(resp) {
 }
 
 onMounted(async () => {
-  await axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${productId}`, userStore.JWT, null, saveDetail);
+  await axiosGet(`https://09market.site/deal/${productId}`, userStore.JWT, null, saveDetail);
 });
 </script>
 

@@ -60,7 +60,7 @@ function formatTime(value) {
 function onSuccess(resp) {
   // console.log(resp.user);
   // console.log(sendAmount);
-  router.push({ name: "paymentMain", query: { to: resp.user, amount: sendAmount } });
+  router.push({ name: "paymentCheck", query: { to: resp.user, amount: sendAmount } });
 }
 
 function onFail(resp) {
@@ -70,7 +70,7 @@ function onFail(resp) {
 function confirmTransaction(product) {
   if (confirm("실물 거래 이전에 먼저 송금하는 것은 위험합니다.\n계속 진행하시겠습니까?")) {
     sendAmount = product.unitPrice * product.userCount;
-    axiosGet(`http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/deal/${product.id}`, userStore.JWT, null, onSuccess, onFail);
+    axiosGet(`https://09market.site/deal/${product.id}`, userStore.JWT, null, onSuccess, onFail);
   }
 }
 </script>
