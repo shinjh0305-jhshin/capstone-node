@@ -124,7 +124,7 @@ export const getChat = async (req, res) => {
     return res.status(200).json({ ok: true, msgList: [] });
   try {
     await db.query(
-      `UPDATE deal_member SET entered_at=now() WHERE deal_member.deal_id = ${roomId};`
+      `UPDATE deal_member SET entered_at=now() WHERE deal_member.deal_id = '${roomId}';`
     );
     const [result] = await db.query(
       `SELECT nickname, content, chat_type, created_at, deal_id, image_path FROM chat WHERE deal_id = '${roomId}';`
@@ -185,7 +185,7 @@ export const updateEnterTime = async (req, res) => {
   if (String(roomId) === "0") return res.status(200).json({ ok: true });
   try {
     await db.query(
-      `UPDATE deal_member SET entered_at=now() WHERE deal_member.deal_id = ${roomId};`
+      `UPDATE deal_member SET entered_at=now() WHERE deal_member.deal_id = '${roomId}';`
     );
     return res.status(200).json({ ok: true });
   } catch (err) {
