@@ -33,8 +33,9 @@
 import useAxios from "@/modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
 import { useRouter } from "vue-router";
-import * as moment from "moment";
+import * as moment_ from "moment";
 
+const moment = moment_;
 const userStore = useUserInfoStore();
 const { axiosDelete } = useAxios();
 const router = useRouter();

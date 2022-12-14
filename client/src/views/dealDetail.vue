@@ -87,7 +87,6 @@
 import useAxios from "@/modules/axios";
 import { ref, onMounted, onBeforeMount, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import * as moment from "moment";
 import { categories, units } from "@/modules/selectData";
 const { axiosGet, axiosPost } = useAxios();
 import { useUserInfoStore } from "/@stores/userInfo";

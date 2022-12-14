@@ -110,9 +110,11 @@ import { reactive, nextTick, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { UploadFilled } from "@element-plus/icons-vue";
 import * as _ from "lodash";
-import * as moment from "moment";
+import * as moment_ from "moment";
 import useAxios from "@/modules/axios";
 import { categories, units } from "@/modules/selectData";
+
+const moment = moment_;
 const { axiosPost, axiosGet, axiosPatch } = useAxios();
 const router = useRouter();
 const route = useRoute();

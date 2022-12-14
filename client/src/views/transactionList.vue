@@ -25,9 +25,10 @@
 <script setup>
 import useAxios from "@/modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
-import * as moment from "moment";
+import * as moment_ from "moment";
 import { useRouter } from "vue-router";
 
+const moment = moment_;
 const userStore = useUserInfoStore();
 const { axiosDelete } = useAxios();
 const router = useRouter();
