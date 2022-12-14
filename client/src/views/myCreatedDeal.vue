@@ -21,7 +21,6 @@
         <td>{{ new Intl.NumberFormat("ko").format(product.unitPrice * product.totalCount) }}원</td>
         <td>{{ product.nowCount }} / {{ product.totalCount }}</td>
         <td>{{ product.remainDate > 0 ? `${product.remainDate}일` : product.remainDate === 0 ? "오늘 마감" : "마감" }}</td>
-        <!-- <td>{{ formatTime(product.ends) }}</td> -->
         <td v-if="showControls">
           <div v-if="!product.deleted">
             <router-link :to="{ name: 'Update', query: { deal_id: product.id } }" v-if="!product.expired" class="me-3" style="text-decoration: none; color: inherit">

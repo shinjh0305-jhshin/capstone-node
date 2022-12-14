@@ -55,7 +55,8 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 마감일</label>
         <div class="col-md-9">
-          <div class="col-md-9">{{ deal.ends }}</div>
+          <!-- <div class="col-md-9">{{ deal.ends }}</div> -->
+          <div class="col-md-9">9999-99-99</div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -218,7 +219,7 @@ function saveDetail(resp) {
   newDeal.unit = resp.unit;
   newDeal.category = resp.category.name;
   newDeal.keywords = resp.keywords;
-  newDeal.ends = moment(resp.expiredDate).format("YYYY-MM-DD");
+  //newDeal.ends = moment(resp.expiredDate).format("YYYY-MM-DD");
   newDeal.content = resp.content;
 
   resp.images.forEach((x) => {

@@ -22,7 +22,7 @@
         <td>{{ (product.quantity / product.totalCount) * product.userCount }}{{ product.unit }}</td>
         <td>{{ formatTime(product.expiredDate) }}</td>
         <td style="width: 300px" v-if="!product.deleted">
-          <el-button type="success" plain @click="confirmTransaction(product)" v-if="!product.deleted">송금하기</el-button>
+          <el-button type="success" plain @click="confirmTransaction(product)">송금하기</el-button>
           <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.expired">공구취소</el-button>
         </td>
       </tr>

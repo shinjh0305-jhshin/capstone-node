@@ -37,7 +37,7 @@ const props = defineProps({
 });
 
 function formatTime(value) {
-  return moment.utc(value).local().format("YYYY-MM-DD HH:mm:ss");
+  return moment.parseZone(value).local().format("YYYY-MM-DD HH:mm:ss");
 }
 </script>
 <style scoped>
