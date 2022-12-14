@@ -21,33 +21,35 @@ export default defineConfig({
         enabled: true,
       },
       strategies: "injectManifest",
-      srcDir: "src/assets",
+      srcDir: "src",
       filename: "sw.js",
+      start_url: "http://localhost:5173/login",
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
-        name: "Test Projects",
-        short_name: "Test",
+        name: "우리동네 공구마켓",
+        short_name: "09market",
+        description: "나누는 행복, 나눔의 행복",
         theme_color: "#ffffff",
-        start_url: "/",
-        display: "standalone",
-        background_color: "#ffffff",
-        // icons: [
-        //   {
-        //     src: "icon-192.png",
-        //     sizes: "192x192",
-        //     type: "image/png",
-        //   },
-        //   {
-        //     src: "/icon-512.png",
-        //     sizes: "512x512",
-        //     type: "image/png",
-        //   },
-        //   {
-        //     src: "icon-512.png",
-        //     sizes: "512x512",
-        //     type: "image/png",
-        //     purpose: "any maskable",
-        //   },
-        // ],
+        icons: [
+          {
+            src: "icons/maskable-icon-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
+          {
+            src: "icons/android-chrome-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "icons/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+        display: "standalone", //기기의 최대 화면으로 설정
+        orientation: "portrait", //세로로 볼 수 있도록 한다
       },
     }),
   ],
@@ -59,5 +61,8 @@ export default defineConfig({
       "/@stores": path.resolve(__dirname, "./src/stores"),
       "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
     },
+  },
+  build: {
+    chunkSizeWarningLimit: 1600,
   },
 });

@@ -1,4 +1,5 @@
-//import { precacheAndRoute } from "workbox-precaching";
+import { precacheAndRoute } from "workbox-precaching";
+precacheAndRoute(self.__WB_MANIFEST);
 
 let data;
 
@@ -20,4 +21,3 @@ self.addEventListener("push", (event) => {
     console.log(error);
   }
 });
-//precacheAndRoute(self.__WB_MANIFEST);

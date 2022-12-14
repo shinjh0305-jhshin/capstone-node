@@ -25,9 +25,10 @@
 <script setup>
 import useAxios from "@/modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
-import * as moment from "moment";
+import * as moment_ from "moment";
 import { useRouter } from "vue-router";
 
+const moment = moment_;
 const userStore = useUserInfoStore();
 const { axiosDelete } = useAxios();
 const router = useRouter();
@@ -36,7 +37,7 @@ const props = defineProps({
 });
 
 function formatTime(value) {
-  return moment.utc(value).local().format("YYYY-MM-DD HH:mm:ss");
+  return moment.parseZone(value).local().format("YYYY-MM-DD HH:mm:ss");
 }
 </script>
 <style scoped>

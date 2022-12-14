@@ -1,6 +1,8 @@
 <template>
   <navbar />
-  <router-view :key="route.fullPath" />
+  <router-view />
+  <!-- <router-view :key="route.fullPath" /> -->
+  <footer />
 </template>
 
 <script>
@@ -12,6 +14,7 @@ export default {
 <script setup>
 import { useRoute } from "vue-router";
 import navbar from "./components/navbar.vue";
+import footer from "./components/footer.vue";
 
 const route = useRoute();
 </script>

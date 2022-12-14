@@ -79,8 +79,8 @@ function onHistorySuccess(respData) {
 }
 
 function getBalanceandHistory() {
-  axiosGet("https://09market.site/payment", userStore.JWT, null, onBalanceSuccess, onFail);
-  axiosGet("https://09market.site/payment/transaction", userStore.JWT, null, onHistorySuccess, onFail);
+  axiosGet("https://api.09market.site/payment", userStore.JWT, null, onBalanceSuccess, onFail);
+  axiosGet("https://api.09market.site/payment/transaction", userStore.JWT, null, onHistorySuccess, onFail);
 }
 
 function checkPrice(e) {
@@ -95,7 +95,7 @@ function doTransaction() {
       to: receiver.value,
       amount: amount.value,
     };
-    axiosPost("https://09market.site/payment/remit", userStore.JWT, payload, onTransactionSuccess, onTransactionFail);
+    axiosPost("https://api.09market.site/payment/remit", userStore.JWT, payload, onTransactionSuccess, onTransactionFail);
   }
 }
 
@@ -117,7 +117,7 @@ function charge() {
           const payload = {
             requestCoin: value,
           };
-          axiosPost("https://09market.site/payment/charge", userStore.JWT, payload, onChargeSuccess, onChargeFail);
+          axiosPost("https://api.09market.site/payment/charge", userStore.JWT, payload, onChargeSuccess, onChargeFail);
         })
         .catch(() => {
           ElMessage({
@@ -169,7 +169,7 @@ function discharge() {
           const payload = {
             requestCoin: value,
           };
-          axiosPost("https://09market.site/payment/discharge", userStore.JWT, payload, onDischargeSuccess, onDischargeFail);
+          axiosPost("https://api.09market.site/payment/discharge", userStore.JWT, payload, onDischargeSuccess, onDischargeFail);
         })
         .catch(() => {
           ElMessage({
