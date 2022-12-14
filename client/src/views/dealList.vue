@@ -4,51 +4,28 @@
       <div class="row mb-2">
         <div class="col-12">
           <select class="form-select">
-            <option
-              v-for="(name, i) in categories"
-              :key="i"
-              v-text="name"
-              :value="i"
-            ></option>
+            <option v-for="(name, i) in categories" :key="i" v-text="name" :value="i"></option>
           </select>
         </div>
       </div>
       <div class="row g-3">
-        <div
-          class="col-xl-3 col-lg-4 col-md-6"
-          :key="i"
-          v-for="(deal, i) in dealList"
-        >
+        <div class="col-xl-3 col-lg-4 col-md-6" :key="i" v-for="(deal, i) in dealList">
           <div class="card" style="width: 18rem">
             <img :src="getImageUrl(deal)" class="card-img-top" alt="..." />
             <div class="card-body">
               <h5 class="card-title">{{ deal.title }}</h5>
               <p class="card-text">
                 <span class="badge bg-dark me-1">{{ deal.category }}</span>
-                <span class="badge bg-danger me-1"
-                  >{{ deal.nowCount }}/{{ deal.totalCount }}명</span
-                >
-                <span class="badge bg-warning me-1">{{
-                  leftDays(deal.remainDate)
-                }}</span>
+                <span class="badge bg-danger me-1">{{ deal.nowCount }}/{{ deal.totalCount }}명</span>
+                <span class="badge bg-warning me-1">{{ leftDays(deal.remainDate) }}</span>
               </p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group" role="group" aria-label="Basic example">
                   <router-link :to="{ name: 'Detail', query: { id: deal.id } }">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                    >
-                      공구 참여
-                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">공구 참여</button>
                   </router-link>
                 </div>
-                <small class="text-dark"
-                  >1인당
-                  {{
-                    new Intl.NumberFormat("ko").format(deal.unitPrice)
-                  }}원</small
-                >
+                <small class="text-dark">1인당 {{ new Intl.NumberFormat("ko").format(deal.unitPrice) }}원</small>
               </div>
             </div>
           </div>
@@ -77,7 +54,7 @@ const saveResult = function (respData) {
 };
 
 onBeforeMount(async () => {
-  await axiosGet("https://09market.site/deal", userStore.JWT, null, saveResult);
+  await axiosGet("https://api.09market.site/deal", userStore.JWT, null, saveResult);
 });
 
 const getImageUrl = (name) => {

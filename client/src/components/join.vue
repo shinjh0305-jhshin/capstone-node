@@ -152,9 +152,8 @@ const joinSubmit = function () {
   } else if (allIsWell) {
     console.log("👍 User Information valid!");
     console.log(_userInfo);
+    axiosPost("https://api.09market.site/join", null, _userInfo, onJoinSuccess);
   }
-
-  axiosPost("https://09market.site/join", null, _userInfo, onJoinSuccess);
 };
 
 function onIdConfirm(resp) {
@@ -177,7 +176,7 @@ function idConfirm() {
     alert("ID는 세 글자 이상이여야 합니다");
     return;
   }
-  axiosPost("https://09market.site/isduplicate", null, { id: userInfo.id }, onIdConfirm);
+  axiosPost("https://api.09market.site/isduplicate", null, { id: userInfo.id }, onIdConfirm);
 }
 </script>
 

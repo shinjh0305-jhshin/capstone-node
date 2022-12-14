@@ -137,7 +137,6 @@
 import { reactive, nextTick, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { UploadFilled } from "@element-plus/icons-vue";
-import * as moment from "moment";
 import useAxios from "@/modules/axios";
 import { categories, units } from "@/modules/selectData";
 import { useUserInfoStore } from "/@stores/userInfo";
@@ -290,7 +289,7 @@ function onSuccess(resp) {
 }
 
 async function submitDeal() {
-  const dealServer = "https://09market.site/deal";
+  const dealServer = "https://api.09market.site/deal";
   newDeal.images = []; //images 포맷 변경
   for (var i = 0; i < uploadedFile.value.length; i++) {
     newDeal.images.push(uploadedFile.value[i].response.fileName);
@@ -302,10 +301,7 @@ async function submitDeal() {
   if (!allIsWell) {
     alert("누락된 항목이 있습니다. 전부 적으셨는지 확인 부탁드려요!");
   } else {
-    //newDeal.keywords = JSON.stringify(newDeal.keywords); //newDeal stringify
-    //newDeal.expireTime = moment(newDeal.expireTime).format("YYYY-MM-DD"); //endDate 포맷 변경
-    console.log(newDeal);
-    //await axiosPost(dealServer, userStore.JWT, newDeal, onSuccess);
+    await axiosPost(dealServer, userStore.JWT, newDeal, onSuccess);
   }
 }
 </script>

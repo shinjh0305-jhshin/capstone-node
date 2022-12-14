@@ -63,7 +63,7 @@ const onLoginSuccess = (respData) => {
 };
 
 const loginSubmit = () => {
-  axiosPost("https://09market.site/login", null, userInfo, onLoginSuccess);
+  axiosPost("https://api.09market.site/login", null, userInfo, onLoginSuccess);
 };
 </script>
 

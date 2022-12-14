@@ -55,7 +55,8 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 마감일</label>
         <div class="col-md-9">
-          <div class="col-md-9">{{ deal.ends }}</div>
+          <!-- <div class="col-md-9">{{ deal.ends }}</div> -->
+          <div class="col-md-9">9999-99-99</div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -110,9 +111,11 @@ import { reactive, nextTick, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { UploadFilled } from "@element-plus/icons-vue";
 import * as _ from "lodash";
-import * as moment from "moment";
+import * as moment_ from "moment";
 import useAxios from "@/modules/axios";
 import { categories, units } from "@/modules/selectData";
+
+const moment = moment_;
 const { axiosPost, axiosGet, axiosPatch } = useAxios();
 const router = useRouter();
 const route = useRoute();
@@ -186,7 +189,7 @@ function onFail(resp) {
 
 async function submitDeal() {
   console.log(newDeal);
-  const updateURL = `https://09market.site/deal/${newDeal.id}`;
+  const updateURL = `https://api.09market.site/deal/${newDeal.id}`;
   newDeal.images = []; //images 포맷 변경
 
   for (var i = 0; i < uploadedFile.value.length; i++) {
@@ -216,7 +219,7 @@ function saveDetail(resp) {
   newDeal.unit = resp.unit;
   newDeal.category = resp.category.name;
   newDeal.keywords = resp.keywords;
-  newDeal.ends = moment(resp.expiredDate).format("YYYY-MM-DD");
+  //newDeal.ends = moment(resp.expiredDate).format("YYYY-MM-DD");
   newDeal.content = resp.content;
 
   resp.images.forEach((x) => {
@@ -229,7 +232,7 @@ function saveDetail(resp) {
 }
 
 onMounted(async () => {
-  await axiosGet(`https://09market.site/deal/${productId}`, userStore.JWT, null, saveDetail);
+  await axiosGet(`https://api.09market.site/deal/${productId}`, userStore.JWT, null, saveDetail);
 });
 </script>
 

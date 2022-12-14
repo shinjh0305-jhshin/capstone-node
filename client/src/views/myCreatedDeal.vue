@@ -7,7 +7,7 @@
         <th>공구가격</th>
         <th>모집현황</th>
         <th>잔여일</th>
-        <th></th>
+        <th v-if="showControls"></th>
       </tr>
     </thead>
     <tbody>
@@ -21,8 +21,7 @@
         <td>{{ new Intl.NumberFormat("ko").format(product.unitPrice * product.totalCount) }}원</td>
         <td>{{ product.nowCount }} / {{ product.totalCount }}</td>
         <td>{{ product.remainDate > 0 ? `${product.remainDate}일` : product.remainDate === 0 ? "오늘 마감" : "마감" }}</td>
-        <!-- <td>{{ formatTime(product.ends) }}</td> -->
-        <td>
+        <td v-if="showControls">
           <div v-if="!product.deleted">
             <router-link :to="{ name: 'Update', query: { deal_id: product.id } }" v-if="!product.expired" class="me-3" style="text-decoration: none; color: inherit">
               <el-button type="success" plain>수정하기</el-button>
@@ -44,6 +43,7 @@ const { axiosDelete } = useAxios();
 const router = useRouter();
 const props = defineProps({
   productList: Array,
+  showControls: Boolean,
 });
 const getImageUrl = (name) => {
   let fileName;
@@ -59,30 +59,14 @@ function formatTime(value) {
   return temp[0];
 }
 function onSuccess(resp) {
-  console.log("yay!");
-  console.log(resp);
-  router.push("/");
+  alert("공구가 삭제되었습니다.");
+  router.replace("/");
 }
 
 //공구 삭제에 대한 사용자 프롬프트
-const confirmDelete = async (productId) => {
-  const doDelete = await ElMessageBox.confirm("공구를 삭제할까요?", "Warning", {
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    type: "warning",
-  });
-
-  if (doDelete) {
-    try {
-      await axiosDelete(`https://09market.site/deal/${productId}`, userStore.JWT, onSuccess);
-    } catch (error) {
-      console.error(error);
-    }
-  } else {
-    ElMessage({
-      type: "info",
-      message: "Delete canceled",
-    });
+const confirmDelete = (productId) => {
+  if (confirm("공구를 삭제할까요?")) {
+    axiosDelete(`https://api.09market.site/deal/${productId}`, userStore.JWT, onSuccess);
   }
 };
 </script>
