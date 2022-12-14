@@ -157,8 +157,8 @@ export default {
       //this.updatePage(from.params.roomId, to.params.roomId);
       this.setRoomName(to.params.roomId);
       this.setCurRoomId(to.params.roomId);
-      //console.log("✅ curRoomId:", this.curRoomId);
-      //console.log("✅ curRoomName:", this.curRoomName);
+      console.log("✅ curRoomId:", this.curRoomId);
+      console.log("✅ curRoomName:", this.curRoomName);
     },
   },
   mounted() {
@@ -186,13 +186,15 @@ export default {
           }
         }
       }
+      const store = useUserInfoStore();
+      axiosPost("/room/time", store.JWT, { roomId: this.curRoomId });
       console.log(this.myRoomList);
     });
     this.socket.on("notify", (resp) => {
       console.log("✅ Notification", resp.msg);
       this.messageObjList.push(resp.msg);
     });
-    //this.changeRoom(this.$route.params.roomId); // 현재 페이지 새로고침하는 경우
+    this.changeRoom(this.$route.params.roomId); // 현재 페이지 새로고침하는 경우
     this.setRoomName(this.$route.params.roomId);
   },
   updated() {
