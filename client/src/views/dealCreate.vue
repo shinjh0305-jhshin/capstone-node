@@ -289,7 +289,7 @@ function onSuccess(resp) {
 }
 
 async function submitDeal() {
-  const dealServer = "https://09market.site/deal";
+  const dealServer = "https://api.09market.site/deal";
   newDeal.images = []; //images 포맷 변경
   for (var i = 0; i < uploadedFile.value.length; i++) {
     newDeal.images.push(uploadedFile.value[i].response.fileName);

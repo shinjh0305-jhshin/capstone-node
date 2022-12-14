@@ -75,7 +75,7 @@ function confirmTransaction(product) {
 
 function confirmDelete(dealId) {
   if (confirm("공구 참여를 취소하시겠습니까?")) {
-    axiosDelete(`https://09market.site/deal/${dealId}/enrollment`, userStore.JWT, onDeleteSuccess, onDeleteFail);
+    axiosDelete(`https://api.09market.site/deal/${dealId}/enrollment`, userStore.JWT, onDeleteSuccess, onDeleteFail);
   }
 }
 </script>

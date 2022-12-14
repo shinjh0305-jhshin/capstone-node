@@ -188,7 +188,7 @@ function onFail(resp) {
 
 async function submitDeal() {
   console.log(newDeal);
-  const updateURL = `https://09market.site/deal/${newDeal.id}`;
+  const updateURL = `https://api.09market.site/deal/${newDeal.id}`;
   newDeal.images = []; //images 포맷 변경
 
   for (var i = 0; i < uploadedFile.value.length; i++) {
@@ -231,7 +231,7 @@ function saveDetail(resp) {
 }
 
 onMounted(async () => {
-  await axiosGet(`https://09market.site/deal/${productId}`, userStore.JWT, null, saveDetail);
+  await axiosGet(`https://api.09market.site/deal/${productId}`, userStore.JWT, null, saveDetail);
 });
 </script>
 

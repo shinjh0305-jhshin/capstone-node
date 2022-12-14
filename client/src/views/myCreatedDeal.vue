@@ -60,30 +60,14 @@ function formatTime(value) {
   return temp[0];
 }
 function onSuccess(resp) {
-  console.log("yay!");
-  console.log(resp);
-  router.push("/");
+  alert("공구가 삭제되었습니다.");
+  router.replace("/");
 }
 
 //공구 삭제에 대한 사용자 프롬프트
-const confirmDelete = async (productId) => {
-  const doDelete = await ElMessageBox.confirm("공구를 삭제할까요?", "Warning", {
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    type: "warning",
-  });
-
-  if (doDelete) {
-    try {
-      await axiosDelete(`https://09market.site/deal/${productId}`, userStore.JWT, onSuccess);
-    } catch (error) {
-      console.error(error);
-    }
-  } else {
-    ElMessage({
-      type: "info",
-      message: "Delete canceled",
-    });
+const confirmDelete = (productId) => {
+  if (confirm("공구를 삭제할까요?")) {
+    axiosDelete(`https://api.09market.site/deal/${productId}`, userStore.JWT, onSuccess);
   }
 };
 </script>

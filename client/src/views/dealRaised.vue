@@ -10,7 +10,7 @@
           <button type="button" class="btn btn-dark mb-2">공구 개시</button>
         </router-link>
       </div>
-      <my-created-deal :productList="myCreatedDealList" v-if="title" />
+      <my-created-deal :productList="myCreatedDealList" v-if="title" :showControls="true" />
       <my-enrolled-deal :productList="myJoinedDealList" v-if="!title" />
     </div>
   </main>
@@ -42,8 +42,8 @@ const saveJoinedResult = function (respData) {
 };
 
 function getProductList() {
-  axiosGet(`https://09market.site/deal/sale/${userStore.userNick}`, userStore.JWT, null, saveCreatedResult);
-  axiosGet(`https://09market.site/deal/enrollment/${userStore.userNick}`, userStore.JWT, null, saveJoinedResult);
+  axiosGet(`https://api.09market.site/deal/sale/${userStore.userNick}`, userStore.JWT, null, saveCreatedResult);
+  axiosGet(`https://api.09market.site/deal/enrollment/${userStore.userNick}`, userStore.JWT, null, saveJoinedResult);
 }
 
 const getImageUrl = (name) => {

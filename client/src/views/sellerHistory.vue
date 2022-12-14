@@ -26,7 +26,7 @@ const saveCreatedResult = function (respData) {
 };
 
 function getProductList() {
-  axiosGet(`https://09market.site/deal/sale/${route.query.seller}`, userStore.JWT, null, saveCreatedResult);
+  axiosGet(`https://api.09market.site/deal/sale/${route.query.seller}`, userStore.JWT, null, saveCreatedResult);
 }
 
 getProductList(); //script setup에서는 created를 안 써도 된다.

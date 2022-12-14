@@ -36,7 +36,7 @@
                 <router-link :to="{ name: 'sellerHistory', query: { seller: productDetail.user } }" style="color: black; text-decoration: none">
                   {{ productDetail.user }}
                 </router-link>
-                <a :href="parseURL(productDetail.url)" target="_blank" style="text-decoration: none"><el-button plain class="ms-3">구매 사이트로 이동</el-button></a>
+                <a :href="productDetail.url" target="_blank" style="text-decoration: none"><el-button plain class="ms-3">구매 사이트로 이동</el-button></a>
               </p>
               <p class="card-text pb-3">{{ productDetail.content }}</p>
               <div class="card-text border-top border-bottom py-3">
@@ -144,6 +144,7 @@ const saveDetail = function (respData) {
   productDetail.value.category = productDetail.value.category.name;
   reached.value = productDetail.value.totalCount - productDetail.value.nowCount <= 0 ? true : false;
   deleted.value = productDetail.value.deleted;
+  productDetail.value.url = parseURL(productDetail.value.url);
   productImage.value = productDetail.value.images.map((x) => {
     return x.fileName;
   });
@@ -157,7 +158,7 @@ const saveDetail = function (respData) {
 
 //제품 상세 쿼리
 async function getProductDetail() {
-  axiosGet(`https://09market.site/deal/${dealId}`, userStore.JWT, null, saveDetail);
+  axiosGet(`https://api.09market.site/deal/${dealId}`, userStore.JWT, null, saveDetail);
 }
 
 //이미지를 실제 경로에서 가져온다.
@@ -171,7 +172,7 @@ function enrollDeal() {
     quantity: total.value / productDetail.value.unitQuantity,
   };
   if (confirm(`공구에 참여하시겠습니까? 구매 단위를 다시 한번 확인하시기 바랍니다.\n\n구매단위 : ${payload.quantity}단위`)) {
-    axiosPost(`https://09market.site/deal/${dealId}/enrollment`, userStore.JWT, payload, onDealEnrollSuccess, onDealEnrollFail);
+    axiosPost(`https://api.09market.site/deal/${dealId}/enrollment`, userStore.JWT, payload, onDealEnrollSuccess, onDealEnrollFail);
   }
 }
 
