@@ -163,7 +163,7 @@ async function getProductDetail() {
 
 //이미지를 실제 경로에서 가져온다.
 const getImageUrl = (name) => {
-  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${name}`;
+  return `https://gonggubucket.s3.ap-northeast-2.amazonaws.com/${name}`;
 };
 
 //공구에 참여한다

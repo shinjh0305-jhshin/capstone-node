@@ -23,7 +23,7 @@ export default defineConfig({
       strategies: "injectManifest",
       srcDir: "src",
       filename: "sw.js",
-      start_url: "http://localhost:5173/login",
+      start_url: "/",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
         name: "우리동네 공구마켓",

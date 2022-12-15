@@ -27,6 +27,7 @@ import useAxios from "@/modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
 import * as moment_ from "moment";
 import { useRouter } from "vue-router";
+import { parseToYMDHmS } from "@/modules/dayParser";
 
 const moment = moment_;
 const userStore = useUserInfoStore();
@@ -37,7 +38,7 @@ const props = defineProps({
 });
 
 function formatTime(value) {
-  return moment.parseZone(value).local().format("YYYY-MM-DD HH:mm:ss");
+  return parseToYMDHmS(value);
 }
 </script>
 <style scoped>

@@ -91,7 +91,7 @@
             v-model:file-list="uploadedFile"
             class="upload-demo"
             drag
-            action="http://ec2-54-180-101-210.ap-northeast-2.compute.amazonaws.com:8081/images/upload"
+            action="https://api.09market.site/image"
             multiple
             name="image_upload"
             list-type="picture"

@@ -52,7 +52,7 @@ const getImageUrl = (name) => {
   } else {
     fileName = name.image.fileName;
   }
-  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${fileName}`;
+  return `https://gonggubucket.s3.ap-northeast-2.amazonaws.com/${fileName}`;
 };
 function formatTime(value) {
   var temp = value.split("T");

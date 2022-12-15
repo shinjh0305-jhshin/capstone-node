@@ -55,8 +55,7 @@
       <div class="mb-3 row">
         <label class="col-md-3 col-form-label">공구 마감일</label>
         <div class="col-md-9">
-          <!-- <div class="col-md-9">{{ deal.ends }}</div> -->
-          <div class="col-md-9">9999-99-99</div>
+          <div class="col-md-9">{{ deal.ends }}</div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -66,7 +65,7 @@
             v-model:file-list="uploadedFile"
             class="upload-demo"
             drag
-            action="http://ec2-54-180-101-210.ap-northeast-2.compute.amazonaws.com:8081/images/upload"
+            action="https://api.09market.site/image"
             multiple
             name="image_upload"
             list-type="picture"
@@ -114,6 +113,7 @@ import * as _ from "lodash";
 import * as moment_ from "moment";
 import useAxios from "@/modules/axios";
 import { categories, units } from "@/modules/selectData";
+import { parseToYMD } from "@/modules/dayParser";
 
 const moment = moment_;
 const { axiosPost, axiosGet, axiosPatch } = useAxios();
@@ -219,13 +219,13 @@ function saveDetail(resp) {
   newDeal.unit = resp.unit;
   newDeal.category = resp.category.name;
   newDeal.keywords = resp.keywords;
-  //newDeal.ends = moment(resp.expiredDate).format("YYYY-MM-DD");
+  newDeal.ends = parseToYMD(resp.expiredDate);
   newDeal.content = resp.content;
 
   resp.images.forEach((x) => {
     const temp = {};
     temp.name = x.fileName;
-    temp.url = `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${x.fileName}`;
+    temp.url = `https://gonggubucket.s3.ap-northeast-2.amazonaws.com/${x.fileName}`;
     uploadedFile.value.push(temp);
   });
   reRenderOnChange.value++;
