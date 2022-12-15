@@ -2,7 +2,7 @@
   <main class="mt-3">
     <div class="container" id="outer">
       <div class="info-title">
-        <h1>니 정보</h1>
+        <h1>사용자 정보</h1>
       </div>
       <div class="row justify-content-center">
         <div class="basic-info">
@@ -89,7 +89,7 @@ const getUserSuccess = (resp) => {
 
 onBeforeMount(async () => {
   await axiosPost(
-    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/user/mypage",
+    "https://api.09market.site/user/mypage",
     userStore.JWT,
     null,
     getUserSuccess
@@ -123,8 +123,7 @@ function onFail(resp) {
 }
 
 async function submitChange() {
-  const dealServer =
-    "http://gonggu-alb-test-333249785.ap-northeast-2.elb.amazonaws.com/user/updatekeyword";
+  const dealServer = "https://api.09market.site/user/updatekeyword";
   console.log(keywordRef.value);
   const sendKey = [];
   for (const obj of keywordRef.value) sendKey.push(obj);
