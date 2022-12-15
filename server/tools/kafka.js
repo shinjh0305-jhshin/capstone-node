@@ -6,29 +6,24 @@ const kafka = new Kafka({
   clientId: "kafka-my-app",
   brokers: ["13.209.40.90:9092"],
 });
-const producer = kafka.producer({
+
+const kafkaConsumer = kafka.consumer({ groupId: "gonggu" });
+export const kafkaProducer = kafka.producer({
   createPartitioner: Partitioners.LegacyPartitioner,
 });
-const consumerJoin = kafka.consumer({ groupId: "gonggu" });
 
 const initKafka = async () => {
-  //await producer.connect();
-  await consumerJoin.connect();
+  await kafkaProducer.connect();
+  await kafkaConsumer.connect();
 };
+initKafka();
 
 export const chatKafka = async () => {
-  await consumerJoin.subscribe({
-    topics: [
-      "chatJoin",
-      "chatExit",
-      "dealJoin",
-      "dealComplete",
-      "dealDelete",
-      "test1",
-    ],
+  await kafkaConsumer.subscribe({
+    topics: ["chatJoin", "chatExit"],
     fromBeginning: true,
   });
-  await consumerJoin.run({
+  await kafkaConsumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       console.log("⭐️ Kafka Consume", {
         topic,
@@ -71,5 +66,4 @@ export const chatKafka = async () => {
   });
 };
 
-initKafka();
 //runKafka().catch(console.error);

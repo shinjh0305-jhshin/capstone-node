@@ -11,7 +11,7 @@ const pushServiceRouter = require("./routes/pushServiceRouter");
 const { createClient } = require("redis");
 const { createAdapter } = require("@socket.io/redis-adapter");
 const { Kafka, Partitioners } = require("kafkajs");
-import { chatKafka } from "./tools/kafka";
+import { chatKafka, kafkaProducer } from "./tools/kafka";
 const db = require("./tools/db");
 
 const app = express();
@@ -37,20 +37,6 @@ app.use(function (req, res, next) {
 //app.use("/push", pushServiceRouter);
 app.use("/room", chatRouter);
 
-/*
-const rdsTestRouter = express.Router();
-
-const rdsTestHandler = async (req, res) => {
-  const [result] = await db.query("SELECT * FROM user;");
-  console.log(result);
-
-  return res.status(200).json({ message: "rdsTest Done", result: result });
-};
-
-rdsTestRouter.post("/", rdsTestHandler);
-app.use("/rdsTest", rdsTestRouter);
-*/
-
 const server = app.listen(process.env.SERVER_PORT, () => {
   console.log(`✅ Server running on ${process.env.SERVER_PORT}`);
 });
@@ -62,27 +48,12 @@ const io = socket(server, {
   },
 });
 
-const kafka = new Kafka({
-  clientId: "kafka-my-app",
-  brokers: ["13.209.40.90:9092"],
-});
-
-const producer = kafka.producer({
-  createPartitioner: Partitioners.LegacyPartitioner,
-});
-
-const initKafka = async () => {
-  await producer.connect();
-};
-initKafka();
-
 const pubClient = createClient(process.env.REDIS_PORT, process.env.REDIS_HOST, {
   auth_pass: process.env.REDIS_AUTH_PASS,
   legacyMode: true,
 });
 const subClient = pubClient.duplicate();
-//pubClient.connect().then();
-//subClient.connect().then();
+
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(createAdapter(pubClient, subClient));
 });
@@ -95,7 +66,7 @@ io.on("connection", (socket) => {
       console.log("SEND FROM SERVER - roomInfo:", roomInfo);
       io.to(roomInfo.roomId).emit("messageReceived", roomInfo);
 
-      await producer.send({
+      await kafkaProducer.send({
         topic: "chatMessage",
         messages: [{ value: JSON.stringify(roomInfo) }],
       });
@@ -127,6 +98,6 @@ io.on("connection", (socket) => {
   });
 });
 
-chatKafka().catch(console.error);
+//chatKafka().catch(console.error);
 
 export default io;

@@ -155,6 +155,10 @@ export default {
     $route(to, from) {
       console.log("✅ Watch");
       //this.updatePage(from.params.roomId, to.params.roomId);
+      if (Number(to.params.roomId) === 0) {
+        console.log("✅ It's Zero");
+        this.messageObjList = [];
+      }
       this.setRoomName(to.params.roomId);
       this.setCurRoomId(to.params.roomId);
       console.log("✅ curRoomId:", this.curRoomId);
@@ -320,6 +324,7 @@ export default {
           this.newMessageObj.sender = store.userNick;
           this.newMessageObj.content = "";
           this.newMessageObj.imgPath = resp.data.imgPath;
+          this.newMessageObj.title = this.curRoomName;
           this.socket.emit("messageSent", this.newMessageObj);
           axiosPost("/room/chat", store.JWT, this.newMessageObj, onSaveSuccess);
         })
@@ -399,6 +404,7 @@ section.left {
   position: relative;
   z-index: 50;
   color: rgb(192, 192, 184);
+  background-color: #353333;
 }
 section.right {
   width: 80%;
@@ -413,9 +419,8 @@ section.right {
   color: white;
 }
 div.room-left-container {
-  height: 100%;
+  height: 80%;
   position: relative;
-  background-color: #353333;
 }
 div.room-header,
 div.room,
@@ -428,7 +433,6 @@ div.room-header {
   padding: 0.8rem 1rem;
   border-bottom: 3px solid black;
   font-size: 0.9rem;
-  margin-bottom: 2rem;
 }
 div.room {
   height: 90px;

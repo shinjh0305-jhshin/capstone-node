@@ -18,12 +18,15 @@ function newSubscription(userNick, JWT) {
 
         console.log(filteredSub);
         axiosPost(
-          `https://09market.site/user/register`,
+          `https://api.09market.site/user/register`,
           JWT,
           filteredSub,
           onSuccess,
           onFail
         );
+      })
+      .catch((err) => {
+        console.log("❌ push err", err);
       });
   });
 }
