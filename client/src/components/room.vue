@@ -297,14 +297,12 @@ export default {
         }
       }
     },
-    UTCDateToLocal(date) {
-      let newDate = new Date(
-        date.getTime() + date.getTimezoneOffset() * 60 * 1000
-      );
-      const offset = date.getTimezoneOffset() / 60;
-      const hours = date.getHours();
-      newDate.setHours(hours - offset);
-      return newDate;
+    UTCDateToLocal(curr) {
+      const utc = curr.getTime() + curr.getTimezoneOffset() * 60 * 1000;
+      const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+      const kr_curr = new Date(utc + KR_TIME_DIFF);
+      //console.log("kr_curr", kr_curr);
+      return kr_curr;
     },
     sendImage() {
       const onSaveSuccess = (resp) => {
@@ -377,15 +375,20 @@ export default {
           const { msgList } = resp;
           console.log(msgList.length);
           for (const msg of msgList) {
-            const date = this.UTCDateToLocal(new Date(msg.created_at));
             this.messageObjList.push({
               content: msg.content,
               sender: msg.nickname,
-              time: new Date(date.toISOString().slice(0, -1)),
+              time: this.UTCDateToLocal(new Date(msg.created_at)),
               roomId: String(msg.deal_id),
               imgPath: msg.image_path,
               chatType: msg.chat_type,
             });
+            /*
+            console.log(
+              "⭐️",
+              this.messageObjList[this.messageObjList.length - 1].time
+            );
+            */
           }
         };
         axiosGet(
