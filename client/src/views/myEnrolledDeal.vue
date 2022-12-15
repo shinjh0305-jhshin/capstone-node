@@ -20,7 +20,7 @@
         </td>
         <td>{{ new Intl.NumberFormat("ko").format(product.unitPrice * product.userCount) }}원</td>
         <td>{{ (product.quantity / product.totalCount) * product.userCount }}{{ product.unit }}</td>
-        <td>{{ formatTime(product.expiredDate) }}</td>
+        <td>{{ parseToYMD(product.expiredDate) }}</td>
         <td style="width: 300px" v-if="!product.deleted">
           <el-button type="success" plain @click="confirmTransaction(product)">송금하기</el-button>
           <el-button type="danger" plain @click="confirmDelete(product.id)" v-if="!product.expired">공구취소</el-button>
@@ -34,6 +34,7 @@ import useAxios from "@/modules/axios";
 import { useUserInfoStore } from "/@stores/userInfo";
 import { useRouter } from "vue-router";
 import * as moment_ from "moment";
+import { parseToYMD } from "@/modules/dayParser";
 
 const moment = moment_;
 const userStore = useUserInfoStore();
@@ -52,11 +53,8 @@ const getImageUrl = (name) => {
   } else {
     fileName = name.image.fileName;
   }
-  return `https://gongu-image.s3.ap-northeast-2.amazonaws.com/${fileName}`;
+  return `https://gonggubucket.s3.ap-northeast-2.amazonaws.com/${fileName}`;
 };
-function formatTime(value) {
-  return moment(value).format("YYYY-MM-DD");
-}
 
 function onDeleteSuccess(resp) {
   router.go(0);
