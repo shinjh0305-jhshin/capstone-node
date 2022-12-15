@@ -156,7 +156,7 @@ const newDeal = {
   url: "",
   unitQuantity: "",
   unit: "개",
-  categoryId: "",
+  categoryId: 1,
   keywords: [],
   expireTime: "",
   images: [],

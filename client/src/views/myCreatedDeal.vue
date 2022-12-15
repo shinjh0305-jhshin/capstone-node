@@ -60,7 +60,7 @@ function formatTime(value) {
 }
 function onSuccess(resp) {
   alert("공구가 삭제되었습니다.");
-  router.replace("/");
+  router.push("/");
 }
 
 //공구 삭제에 대한 사용자 프롬프트

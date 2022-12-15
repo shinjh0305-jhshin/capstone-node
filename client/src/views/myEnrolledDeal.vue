@@ -57,7 +57,7 @@ const getImageUrl = (name) => {
 };
 
 function onDeleteSuccess(resp) {
-  router.go(0);
+  router.push("/");
 }
 
 function onDeleteFail(resp) {

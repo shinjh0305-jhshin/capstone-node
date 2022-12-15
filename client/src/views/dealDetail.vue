@@ -50,7 +50,7 @@
                       size="large"
                       @change="calculatePrice"
                       :min="productDetail.unitQuantity"
-                      :max="productDetail.unitQuantity * (productDetail.totalCount - productDetail.nowCount)"
+                      :max="productDetail.totalCount === productDetail.nowCount ? productDetail.unitQuantity : productDetail.unitQuantity * (productDetail.totalCount - productDetail.nowCount)"
                       :step="productDetail.unitQuantity"
                       id="userPrice"
                       :key="totalUpdated"
@@ -138,6 +138,7 @@ function calculatePrice() {
 
 //제품 상세 쿼리에 대한 콜백함수
 const saveDetail = function (respData) {
+  console.log(respData);
   productDetail.value = respData;
   total.value = productDetail.value.unitQuantity;
   totalPrice.value = productDetail.value.unitPrice;
