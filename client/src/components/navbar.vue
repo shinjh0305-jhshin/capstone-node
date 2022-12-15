@@ -1,14 +1,29 @@
 <template>
   <nav class="navbar sticky-top navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
-      <router-link to="/" class="navbar-brand text-white"> 우리동네 공구마켓 </router-link>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <router-link to="/" class="navbar-brand text-white">
+        우리동네 공구마켓
+      </router-link>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }" v-for="menu in menus_category" :key="menu.id">
-          <li class="nav-item" v-for="menu_object in menu.value" :key="menu_object.key">
+        <ul
+          :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
+          v-for="menu in menus_category"
+          :key="menu.id"
+        >
+          <li
+            class="nav-item"
+            v-for="menu_object in menu.value"
+            :key="menu_object.key"
+          >
             <router-link
               v-if="menu_object.key == 'nick'"
               :class="{

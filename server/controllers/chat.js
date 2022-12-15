@@ -193,3 +193,7 @@ export const updateEnterTime = async (req, res) => {
     return res.status(401).json({ ok: false });
   }
 };
+
+export const dummyController = async (req, res) => {
+  return res.status(200).json({ ok: true });
+};
