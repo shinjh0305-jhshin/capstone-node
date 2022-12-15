@@ -66,7 +66,7 @@ function onFail(resp) {
 
 function onTransactionSuccess(resp) {
   alert("송금을 성공했습니다");
-  router.replace("/payment/check");
+  router.push("/payment/check");
 }
 
 function onTransactionFail(resp) {
@@ -140,7 +140,7 @@ function onChargeSuccess() {
     message: `충전이 완료되었습니다`,
   });
   setTimeout(() => {
-    router.go(0);
+    router.push("/payment/check");
   }, 500);
 }
 
@@ -192,7 +192,7 @@ function onDischargeSuccess() {
     message: `환전이 완료되었습니다`,
   });
   setTimeout(() => {
-    router.go(0);
+    router.push("/payment/check");
   }, 500);
 }
 
