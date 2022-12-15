@@ -1,20 +1,8 @@
 <template>
   <nav class="navbar sticky-top navbar-expand-lg" v-if="userStore.loggedIn">
     <div class="container-fluid text-white">
-      <router-link
-        to="/"
-        class="navbar-brand text-white"
-        @click="navbarCollapsed = true"
-      >
-        우리동네 공구마켓
-      </router-link>
-      <button
-        :class="{ 'navbar-toggler': true, collapsed: navbarCollapsed }"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        @click="navbarCollapsed = !navbarCollapsed"
-      >
+      <router-link to="/" class="navbar-brand text-white" @click="navbarCollapsed = true"> 우리동네 공구마켓 </router-link>
+      <button :class="{ 'navbar-toggler': true, collapsed: navbarCollapsed }" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" @click="navbarCollapsed = !navbarCollapsed">
         <span class="navbar-toggler-icon navbar-dark"></span>
       </button>
 
@@ -26,16 +14,8 @@
         }"
         id="navbarNav"
       >
-        <ul
-          :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }"
-          v-for="menu in menus_category"
-          :key="menu.id"
-        >
-          <li
-            class="nav-item"
-            v-for="menu_object in menu.value"
-            :key="menu_object.key"
-          >
+        <ul :class="{ 'navbar-nav': true, 'me-auto': menu.me_auto }" v-for="menu in menus_category" :key="menu.id">
+          <li class="nav-item" v-for="menu_object in menu.value" :key="menu_object.key">
             <router-link
               v-if="menu_object.key == 'nick'"
               :class="{
@@ -84,12 +64,6 @@ const navbarCollapsed = ref(true);
 
 const menus = [
   //{ key: "home", value: "홈", URL: "/", position: "left" },
-  {
-    key: "chat",
-    value: "전체 채팅",
-    URL: "/allRoom",
-    position: "left",
-  },
   {
     key: "raiseDeal",
     value: "공구 등록",
