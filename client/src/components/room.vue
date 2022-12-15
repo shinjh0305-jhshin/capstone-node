@@ -184,7 +184,10 @@ export default {
     this.socket.on("messageReceived", (msgObjFromServer) => {
       console.log("✅ Received Message:", msgObjFromServer);
       if (String(msgObjFromServer.roomId) === String(this.curRoomId)) {
+        const tempTime = msgObjFromServer.time;
+        msgObjFromServer.time = this.UTCDateToLocal(msgObjFromServer.time);
         this.messageObjList.push(msgObjFromServer);
+        msgObjFromServer.time = tempTime;
       } else {
         for (let i = 0; i < this.myRoomList.length; i++) {
           if (
@@ -298,6 +301,7 @@ export default {
       }
     },
     UTCDateToLocal(curr) {
+      curr = new Date(curr);
       const utc = curr.getTime() + curr.getTimezoneOffset() * 60 * 1000;
       const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
       const kr_curr = new Date(utc + KR_TIME_DIFF);
@@ -383,12 +387,6 @@ export default {
               imgPath: msg.image_path,
               chatType: msg.chat_type,
             });
-            /*
-            console.log(
-              "⭐️",
-              this.messageObjList[this.messageObjList.length - 1].time
-            );
-            */
           }
         };
         axiosGet(
