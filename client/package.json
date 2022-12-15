@@ -13,6 +13,7 @@
     "@vue/compat": "^3.2.44",
     "axios": "^1.1.2",
     "bootstrap": "^5.2.3",
+    "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
     "element-plus": "^2.2.20",
     "form-data": "^4.0.0",
