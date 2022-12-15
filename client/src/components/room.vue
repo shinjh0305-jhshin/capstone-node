@@ -111,7 +111,7 @@ export default {
       myRoomList: [],
       curRoomName: "",
       curRoomId: "",
-      socket: io(VITE_SOCKET_LOCAL_URL),
+      socket: io(VITE_SOCKET_URL),
       messageObj: {
         sender: "",
         content: "",
@@ -496,6 +496,7 @@ a {
 div.room-right-container {
   position: relative;
   height: 100%;
+  background-color: rgb(40, 37, 37);
 }
 div.message-header {
   display: flex;
@@ -510,9 +511,10 @@ div.message-header {
 div.message-container {
   width: 100%;
   height: 85%;
-  overflow: scroll;
+  overflow-y: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  background-color: rgb(40, 37, 37);
 }
 div.message-body {
   width: 89%;
