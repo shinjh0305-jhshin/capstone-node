@@ -119,7 +119,7 @@ const checkValidRoomMember = async (currentUser, curRoomId) => {
   //console.log(currentUser, curRoomId);
   const { VITE_BASE_URL } = import.meta.env;
   const result = await axios.get(
-    VITE_BASE_URL + `/room/${curRoomId}/nickname/${currentUser}`
+    `https://api.09market.site/room/${curRoomId}/nickname/${currentUser}`
   );
   //console.log(result.data, result.status);
   if (result.data.ok === true) {

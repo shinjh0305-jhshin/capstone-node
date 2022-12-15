@@ -111,7 +111,7 @@ export default {
       myRoomList: [],
       curRoomName: "",
       curRoomId: "",
-      socket: io(VITE_SOCKET_URL),
+      socket: io("https://api.09market.site"),
       messageObj: {
         sender: "",
         content: "",
@@ -149,7 +149,13 @@ export default {
     const store = useUserInfoStore();
     const nickname = store.userNick;
     this.currentUser = store.userNick;
-    axiosGet(`/room/${nickname}`, null, null, getMyRoomSuccess, getMyRoomFail);
+    axiosGet(
+      `https://api.09market.site/room/${nickname}`,
+      null,
+      null,
+      getMyRoomSuccess,
+      getMyRoomFail
+    );
   },
   watch: {
     $route(to, from) {
@@ -191,7 +197,9 @@ export default {
         }
       }
       const store = useUserInfoStore();
-      axiosPost("/room/time", store.JWT, { roomId: this.curRoomId });
+      axiosPost("https://api.09market.site/room/time", store.JWT, {
+        roomId: this.curRoomId,
+      });
       console.log(this.myRoomList);
     });
     this.socket.on("notify", (resp) => {
@@ -326,7 +334,12 @@ export default {
           this.newMessageObj.imgPath = resp.data.imgPath;
           this.newMessageObj.title = this.curRoomName;
           this.socket.emit("messageSent", this.newMessageObj);
-          axiosPost("/room/chat", store.JWT, this.newMessageObj, onSaveSuccess);
+          axiosPost(
+            "https://api.09market.site/room/chat",
+            store.JWT,
+            this.newMessageObj,
+            onSaveSuccess
+          );
         })
         .catch((err) => {
           console.log(err);
@@ -347,7 +360,12 @@ export default {
         sendObj.content = this.newMessageObj.content;
         sendObj.imgPath = "";
         this.socket.emit("messageSent", sendObj);
-        axiosPost("/room/chat", store.JWT, sendObj, onSaveSuccess);
+        axiosPost(
+          "https://api.09market.site/room/chat",
+          store.JWT,
+          sendObj,
+          onSaveSuccess
+        );
         this.newMessageObj.content = "";
       }
     },
@@ -370,7 +388,12 @@ export default {
             });
           }
         };
-        axiosGet(`/room/${id}/chat/`, null, null, getMsgSucceed);
+        axiosGet(
+          `https://api.09market.site/room/${id}/chat/`,
+          null,
+          null,
+          getMsgSucceed
+        );
         //this.socket.emit("joinRoom", { roomId: String(id) });
         this.setRoomName(id);
         console.log(this.myRoomList.length);
