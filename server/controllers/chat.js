@@ -52,7 +52,7 @@ export const getAttachedRooms = async (req, res) => {
   }
   try {
     const myRooms = await db.query(
-      `WITH TBL AS (SELECT DISTINCT deal.deal_id, entered_at, deal.title FROM deal_member JOIN deal WHERE deal_member.nickname = '${nickname}' and deal_member.deal_id = deal.deal_id)
+      `WITH TBL AS (SELECT DISTINCT deal.deal_id, entered_at, deal.title FROM deal_member JOIN deal WHERE deal_member.nickname = '${nickname}' and deal_member.deal_id = deal.deal_id and deal.deletion = 0)
       SELECT TBL.deal_id, title, COUNT(chat_id) as notRead FROM TBL LEFT JOIN chat ON TBL.entered_at < chat.created_at and chat.deal_id = TBL.deal_id and chat.chat_type <> 'notification' GROUP BY deal_id;`
     );
     return res.status(200).json({ ok: true, rooms: myRooms[0] });
