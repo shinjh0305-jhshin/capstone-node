@@ -53,12 +53,12 @@ UI/UX 부분
 
 ### 채팅 전송
 
-<img src="https://user-images.githubusercontent.com/76815545/209288132-2691a7cf-d57a-47a3-92e1-5028162fcfda.gif">
+<img src="https://user-images.githubusercontent.com/76815545/209288132-2691a7cf-d57a-47a3-92e1-5028162fcfda.gif" width="400" height="200">
 
 ### 이미지 전송
 
-<img src="https://user-images.githubusercontent.com/76815545/206995842-b27e707c-27d5-4dfb-a213-ce5cb21756bf.gif">
+<img src="https://user-images.githubusercontent.com/76815545/206995842-b27e707c-27d5-4dfb-a213-ce5cb21756bf.gif" width="400" height="200">
 
 ### 확인하지 않은 메세지 개수 표시
 
-<img src="https://user-images.githubusercontent.com/76815545/209287396-dcc61a9e-dfd9-467b-aa9b-62457b28a3b1.gif">
+<img src="https://user-images.githubusercontent.com/76815545/209287396-dcc61a9e-dfd9-467b-aa9b-62457b28a3b1.gif" width="400" height="200">
