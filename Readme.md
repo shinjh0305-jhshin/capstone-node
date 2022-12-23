@@ -53,7 +53,7 @@ UI/UX 부분
 
 ### 채팅 전송
 
-<img src="https://user-images.githubusercontent.com/76815545/209287100-78458dae-8bb8-4f2e-a3a6-f342522210b4.gif">
+<img src="https://user-images.githubusercontent.com/76815545/209288132-2691a7cf-d57a-47a3-92e1-5028162fcfda.gif">
 
 ### 이미지 전송
 
