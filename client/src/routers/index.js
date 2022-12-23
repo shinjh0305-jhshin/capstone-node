@@ -67,21 +67,9 @@ const routes = [
     meta: { authRequired: true },
   },
   {
-    path: "/allRoom",
-    name: "allRoom",
-    component: allRoom,
-    meta: { authRequired: true },
-  },
-  {
     path: "/room/:roomId",
     name: "room",
     component: room,
-    meta: { authRequired: true },
-  },
-  {
-    path: "/createChat",
-    name: "landingPage",
-    component: landingPage,
     meta: { authRequired: true },
   },
   {

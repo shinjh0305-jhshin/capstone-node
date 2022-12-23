@@ -85,12 +85,6 @@ const navbarCollapsed = ref(true);
 const menus = [
   //{ key: "home", value: "홈", URL: "/", position: "left" },
   {
-    key: "chat",
-    value: "전체 채팅",
-    URL: "/allRoom",
-    position: "left",
-  },
-  {
     key: "raiseDeal",
     value: "공구 등록",
     URL: "/raised",
