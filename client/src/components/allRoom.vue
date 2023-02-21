@@ -1,4 +1,5 @@
 <template>
+  <!-- Not Used -->
   <h1>ALL ROOMS!!</h1>
   <div>
     <ul v-for="room in roomList">

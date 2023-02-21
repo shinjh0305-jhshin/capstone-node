@@ -1,5 +1,6 @@
 <!-- Just for test -->
 <template>
+  <!-- Not Used -->
   <h1>Landing Page - test</h1>
   <div class="container p-5">
     <div class="mb-4 bg-light rounded-3">
